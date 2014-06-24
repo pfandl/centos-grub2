@@ -51,8 +51,7 @@ Obsoletes:	grub < 1:0.98
 Source0:        ftp://alpha.gnu.org/gnu/grub/grub-%{tarversion}.tar.xz
 #Source0:	ftp://ftp.gnu.org/gnu/grub/grub-%{tarversion}.tar.xz
 
-Source1:	securebootca.cer
-Source2:	secureboot.cer
+Source1:	centos.cer
 Source4:	http://unifoundry.com/unifont-5.1.20080820.pcf.gz
 Source5:	theme.tar.bz2
 #Source6:	grub-cd.cfg
@@ -228,10 +227,10 @@ GRUB_MODULES="	all_video boot btrfs cat chain configfile echo efifwsetup \
 		mdraid09 mdraid1x blscfg multiboot2 multiboot tftp"
 ./grub-mkimage -O %{grubefiarch} -o %{grubeficdname}.orig -p /EFI/BOOT \
 		-d grub-core ${GRUB_MODULES}
-%pesign -s -i %{grubeficdname}.orig -o %{grubeficdname} -a %{SOURCE1} -c %{SOURCE2} -n redhatsecureboot301
+%pesign -s -i %{grubeficdname}.orig -o %{grubeficdname} -a %{SOURCE1} -c %{SOURCE1} -n redhatsecureboot301
 ./grub-mkimage -O %{grubefiarch} -o %{grubefiname}.orig -p /EFI/%{efidir} \
 		-d grub-core ${GRUB_MODULES}
-%pesign -s -i %{grubefiname}.orig -o %{grubefiname} -a %{SOURCE1} -c %{SOURCE2} -n redhatsecureboot301
+%pesign -s -i %{grubefiname}.orig -o %{grubefiname} -a %{SOURCE1} -c %{SOURCE1} -n redhatsecureboot301
 cd ..
 %endif
 
@@ -491,6 +490,9 @@ fi
 %{_datarootdir}/grub/themes/
 
 %changelog
+* Fri Jun 20 2014 Karanbir Singh <kbsingh@centos.org> - 2.02-0.2.10.el7.centos
+- Roll in CentOS Secureboot keys
+
 * Thu Mar 20 2014 Peter Jones <pjones@redhat.com> - 2.02-0.2.10
 - Fix GRUB_DISABLE_SUBMENU one more time.
   Resolves: rhbz#1063414
