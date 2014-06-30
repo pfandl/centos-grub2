@@ -32,6 +32,9 @@
 %if 0%{?fedora}
 %global efidir fedora
 %endif
+%if 0%{?centos}
+%global efidir centos
+%endif
 
 %endif
 
@@ -41,7 +44,7 @@
 Name:           grub2
 Epoch:          1
 Version:        2.02
-Release:        0.2.10%{?dist}
+Release:        0.2.10%{?dist}.1
 Summary:        Bootloader with support for Linux, Multiboot and more
 
 Group:          System Environment/Base
@@ -490,6 +493,9 @@ fi
 %{_datarootdir}/grub/themes/
 
 %changelog
+* Mon Jun 30 2014 Karanbir Singh <kbsingh@centos.org> - 2.02-0.2.10.el7.centos.1
+- Move the edidir to be CentOS, so people can co-install fedora, rhel and centos
+
 * Fri Jun 20 2014 Karanbir Singh <kbsingh@centos.org> - 2.02-0.2.10.el7.centos
 - Roll in CentOS Secureboot keys
 
