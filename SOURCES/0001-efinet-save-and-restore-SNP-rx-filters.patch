@@ -1,0 +1,79 @@
+From 92012e6c08336baed7d59fab449310ca4fd21fed Mon Sep 17 00:00:00 2001
+From: Mark Salter <msalter@redhat.com>
+Date: Thu, 28 May 2015 09:52:07 -0400
+Subject: [PATCH] efinet: save and restore SNP rx filters
+
+Some firmware will clear the SNP receive filter settings when
+opened with the exclusive flag. This patch saves the original
+receive filter settings and restores them after the protocol
+has been opened with the exclusive flag.
+
+Signed-off-by: Mark Salter <msalter@redhat.com>
+---
+ grub-core/net/drivers/efi/efinet.c | 9 +++++++++
+ include/grub/efi/api.h             | 7 ++++++-
+ include/grub/net.h                 | 3 +++
+ 3 files changed, 18 insertions(+), 1 deletion(-)
+
+diff --git a/grub-core/net/drivers/efi/efinet.c b/grub-core/net/drivers/efi/efinet.c
+index 775abde..e19dda0 100644
+--- a/grub-core/net/drivers/efi/efinet.c
++++ b/grub-core/net/drivers/efi/efinet.c
+@@ -156,6 +156,11 @@ open_card (struct grub_net_card *dev)
+ 	return grub_error (GRUB_ERR_NET_NO_CARD, "%s: net initialize failed",
+ 			   dev->name);
+ 
++      if (efi_call_6 (net->receive_filters, net, dev->rx_filter, 0,
++		      0, dev->mcast_filter_count, dev->mcast_filter))
++	return grub_error (GRUB_ERR_NET_NO_CARD, "%s: setting rx filters failed",
++			   dev->name);
++
+       efi_call_4 (grub_efi_system_table->boot_services->close_protocol,
+ 		  dev->efi_net, &net_io_guid,
+ 		  grub_efi_image_handle, dev->efi_handle);
+@@ -278,6 +283,10 @@ grub_efinet_findcards (void)
+       grub_memcpy (card->default_address.mac,
+ 		   net->mode->current_address,
+ 		   sizeof (card->default_address.mac));
++      card->rx_filter = net->mode->receive_filter_setting;
++      card->mcast_filter_count = net->mode->mcast_filter_count;
++      grub_memcpy (card->mcast_filter, net->mode->mcast_filter,
++		   sizeof(card->mcast_filter));
+       card->efi_net = net;
+       card->efi_handle = *handle;
+ 
+diff --git a/include/grub/efi/api.h b/include/grub/efi/api.h
+index 1423403..9dd8307 100644
+--- a/include/grub/efi/api.h
++++ b/include/grub/efi/api.h
+@@ -1574,7 +1574,12 @@ struct grub_efi_simple_network
+ 				   grub_efi_uintn_t extra_tx);
+   void (*reset) (void);
+   void (*shutdown) (void);
+-  void (*receive_filters) (void);
++  grub_efi_status_t (*receive_filters) (struct grub_efi_simple_network *this,
++				        grub_uint32_t enable,
++				        grub_uint32_t disable,
++					grub_efi_boolean_t reset,
++				        grub_efi_uintn_t mcast_cnt,
++					grub_efi_mac_address_t *mcast_filters);
+   void (*station_address) (void);
+   void (*statistics) (void);
+   void (*mcastiptomac) (void);
+diff --git a/include/grub/net.h b/include/grub/net.h
+index 88fc71c..7d7d315 100644
+--- a/include/grub/net.h
++++ b/include/grub/net.h
+@@ -140,6 +140,9 @@ struct grub_net_card
+       struct grub_efi_simple_network *efi_net;
+       grub_efi_handle_t efi_handle;
+       grub_size_t last_pkt_size;
++      grub_uint32_t rx_filter;
++      grub_uint32_t mcast_filter_count;
++      grub_efi_mac_t mcast_filter[16];
+     };
+ #endif
+     void *data;
+-- 
+1.9.3
+
