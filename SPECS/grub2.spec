@@ -33,9 +33,6 @@
 %if 0%{?fedora}
 %global efidir fedora
 %endif
-%if 0%{?centos}
-%global efidir centos
-%endif
 
 %endif
 
@@ -45,7 +42,7 @@
 Name:           grub2
 Epoch:          1
 Version:        2.02
-Release:        0.16%{?dist}
+Release:        0.17%{?dist}.4
 Summary:        Bootloader with support for Linux, Multiboot and more
 
 Group:          System Environment/Base
@@ -54,7 +51,8 @@ URL:            http://www.gnu.org/software/grub/
 Obsoletes:	grub < 1:0.98
 Source0:        ftp://alpha.gnu.org/gnu/grub/grub-%{tarversion}.tar.xz
 #Source0:	ftp://ftp.gnu.org/gnu/grub/grub-%{tarversion}.tar.xz
-Source1:	centos.cer
+Source1:	securebootca.cer
+Source2:	secureboot.cer
 Source4:	http://unifoundry.com/unifont-5.1.20080820.pcf.gz
 Source5:	theme.tar.bz2
 Source6:	gitignore
@@ -214,6 +212,8 @@ Patch0151: 0001-Initialized-initrd_ctx-so-we-don-t-free-a-random-poi.patch
 Patch0152: 0002-Load-arm-with-SB-enabled.patch
 Patch0153: 0001-Fix-up-some-man-pages-rpmdiff-noticed.patch
 Patch0154: 0001-Try-prefix-if-fw_path-doesn-t-work.patch
+Patch0155: 0002-Use-Distribution-Package-Sort-for-grub2-mkconfig-112.patch
+Patch0156: 0001-Try-to-make-sure-configure.ac-and-grub-rpm-sort-play.patch
 
 BuildRequires:  flex bison binutils python
 BuildRequires:  ncurses-devel xz-devel bzip2-devel
@@ -230,6 +230,7 @@ BuildRequires:	freetype-devel gettext-devel git
 BuildRequires:	texinfo
 BuildRequires:	dejavu-sans-fonts
 BuildRequires:	help2man
+BuildRequires:	rpm-devel
 %ifarch %{efiarchs}
 %ifnarch aarch64
 BuildRequires:	pesign >= 0.109-3.el7
@@ -361,8 +362,8 @@ GRUB_MODULES="${GRUB_MODULES} linuxefi multiboot2 multiboot"
 mv %{grubefiname}.orig %{grubefiname}
 mv %{grubeficdname}.orig %{grubeficdname}
 %else
-%pesign -s -i %{grubefiname}.orig -o %{grubefiname} -a %{SOURCE1} -c %{SOURCE1} -n redhatsecureboot301
-%pesign -s -i %{grubeficdname}.orig -o %{grubeficdname} -a %{SOURCE1} -c %{SOURCE1} -n redhatsecureboot301
+%pesign -s -i %{grubefiname}.orig -o %{grubefiname} -a %{SOURCE1} -c %{SOURCE2} -n redhatsecureboot301
+%pesign -s -i %{grubeficdname}.orig -o %{grubeficdname} -a %{SOURCE1} -c %{SOURCE2} -n redhatsecureboot301
 %endif
 cd ..
 %endif
@@ -590,6 +591,7 @@ fi
 %{_sbindir}/%{name}-ofpathname
 %{_sbindir}/%{name}-probe
 %{_sbindir}/%{name}-reboot
+%{_sbindir}/%{name}-rpm-sort
 %{_sbindir}/%{name}-set-default
 %{_sbindir}/%{name}-sparc64-setup
 %{_bindir}/%{name}-editenv
@@ -636,9 +638,25 @@ fi
 %exclude %{_datarootdir}/grub/themes/starfield
 
 %changelog
-* Thu Mar 05 2015 Johnny Hughes <johnny@centos.org> - 2.02-0.16.el7.centos
-- Move the edidir to be CentOS, so people can co-install fedora, rhel and centos
-- Roll in CentOS Secureboot keys
+* Mon Aug 03 2015 Robert Marshall <rmarshall@redhat.com> - 2.02-0.17.4
+- Reversed .17.2 and changed how rpm-sort availability is verified.
+  Resolves: rhbz#1229329
+
+* Fri Jul 31 2015 Robert Marshall <rmarshall@redhat.com> = 2.02.0.17.3
+- Built again with proper build target and updates rhbz# to be zstream.
+  Resolves: rhbz#1229329
+
+* Thu Jul 30 2015 Robert Marshall <rmarshall@redhat.com> - 2.02.0.17.2
+- Reversed order of kernel sorting.
+  Resolves: rhbz#1229329
+
+* Tue Jul 14 2015 Robert Marshall <rmarshall@redhat.com> - 2.02-0.17.1
+- Fixed rpmdiff issues.
+  Resolves: rhbz#1229329
+
+* Mon Jul 13 2015 Robert Marshall <rmarshall@redhat.com> - 2.02.0.17
+- Use an rpm-based version sorted in grub2-mkconfig
+  Resolves: rhbz#1229329
 
 * Thu Oct 09 2014 Peter Jones <pjones@redhat.com> - 2.02-0.16
 - ... and build it on the right target.
