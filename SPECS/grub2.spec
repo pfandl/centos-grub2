@@ -33,6 +33,9 @@
 %if 0%{?fedora}
 %global efidir fedora
 %endif
+%if 0%{?centos}
+%global efidir centos
+%endif
 
 %endif
 
@@ -51,8 +54,8 @@ URL:            http://www.gnu.org/software/grub/
 Obsoletes:	grub < 1:0.98
 Source0:        ftp://alpha.gnu.org/gnu/grub/grub-%{tarversion}.tar.xz
 #Source0:	ftp://ftp.gnu.org/gnu/grub/grub-%{tarversion}.tar.xz
-Source1:	securebootca.cer
-Source2:	secureboot.cer
+Source1:	centos.cer
+#(source removed)
 Source4:	http://unifoundry.com/unifont-5.1.20080820.pcf.gz
 Source5:	theme.tar.bz2
 Source6:	gitignore
@@ -362,8 +365,8 @@ GRUB_MODULES="${GRUB_MODULES} linuxefi multiboot2 multiboot"
 mv %{grubefiname}.orig %{grubefiname}
 mv %{grubeficdname}.orig %{grubeficdname}
 %else
-%pesign -s -i %{grubefiname}.orig -o %{grubefiname} -a %{SOURCE1} -c %{SOURCE2} -n redhatsecureboot301
-%pesign -s -i %{grubeficdname}.orig -o %{grubeficdname} -a %{SOURCE1} -c %{SOURCE2} -n redhatsecureboot301
+%pesign -s -i %{grubefiname}.orig -o %{grubefiname} -a %{SOURCE1} -c %{SOURCE1} -n redhatsecureboot301
+%pesign -s -i %{grubeficdname}.orig -o %{grubeficdname} -a %{SOURCE1} -c %{SOURCE1} -n redhatsecureboot301
 %endif
 cd ..
 %endif
@@ -638,6 +641,10 @@ fi
 %exclude %{_datarootdir}/grub/themes/starfield
 
 %changelog
+* Tue Sep 15 2015 CentOS Sources <bugs@centos.org> - 2.02-0.17.el7.centos.4
+- Roll in CentOS Secureboot keys
+- Move the edidir to be CentOS, so people can co-install fedora, rhel and centos
+
 * Mon Aug 03 2015 Robert Marshall <rmarshall@redhat.com> - 2.02-0.17.4
 - Reversed .17.2 and changed how rpm-sort availability is verified.
   Resolves: rhbz#1229329
