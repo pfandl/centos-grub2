@@ -33,9 +33,6 @@
 %if 0%{?fedora}
 %global efidir fedora
 %endif
-%if 0%{?centos}
-%global efidir centos
-%endif
 
 %endif
 
@@ -45,7 +42,7 @@
 Name:           grub2
 Epoch:          1
 Version:        2.02
-Release:        0.17%{?dist}.4
+Release:        0.29%{?dist}
 Summary:        Bootloader with support for Linux, Multiboot and more
 
 Group:          System Environment/Base
@@ -54,8 +51,8 @@ URL:            http://www.gnu.org/software/grub/
 Obsoletes:	grub < 1:0.98
 Source0:        ftp://alpha.gnu.org/gnu/grub/grub-%{tarversion}.tar.xz
 #Source0:	ftp://ftp.gnu.org/gnu/grub/grub-%{tarversion}.tar.xz
-Source1:	centos.cer
-#(source removed)
+Source1:	securebootca.cer
+Source2:	secureboot.cer
 Source4:	http://unifoundry.com/unifont-5.1.20080820.pcf.gz
 Source5:	theme.tar.bz2
 Source6:	gitignore
@@ -215,8 +212,39 @@ Patch0151: 0001-Initialized-initrd_ctx-so-we-don-t-free-a-random-poi.patch
 Patch0152: 0002-Load-arm-with-SB-enabled.patch
 Patch0153: 0001-Fix-up-some-man-pages-rpmdiff-noticed.patch
 Patch0154: 0001-Try-prefix-if-fw_path-doesn-t-work.patch
-Patch0155: 0002-Use-Distribution-Package-Sort-for-grub2-mkconfig-112.patch
-Patch0156: 0001-Try-to-make-sure-configure.ac-and-grub-rpm-sort-play.patch
+Patch0155: 0001-Update-info-with-grub.cfg-netboot-selection-order-11.patch
+Patch0156: 0002-Use-Distribution-Package-Sort-for-grub2-mkconfig-112.patch
+Patch0157: 0001-efidisk-move-device-path-helpers-in-core-for-efinet.patch
+Patch0158: 0158-efinet-Check-for-immediate-completition.patch
+Patch0159: 0159-efinet-memory-leak-on-module-removal.patch
+Patch0160: 0160-efinet-cannot-free-const-char-pointer.patch
+Patch0161: 0161-Revert-efinet-memory-leak-on-module-removal.patch
+Patch0162: 0162-efinet-skip-virtual-IPv4-and-IPv6-devices-when-enume.patch
+Patch0163: 0163-efinet-open-Simple-Network-Protocol-exclusively.patch
+Patch0164: 0164-efinet-enable-hardware-filters-when-opening-interfac.patch
+Patch0165: 0165-efinet-handle-get_status-on-buggy-firmware-properly.patch
+Patch0166: 0166-Handle-rssd-storage-devices.patch
+Patch0167: 0167-xfs-Fix-termination-loop-for-directory-iteration.patch
+Patch0168: 0168-xfs-Convert-inode-numbers-to-cpu-endianity-immediate.patch
+Patch0169: 0169-xfs-Add-helpers-for-inode-size.patch
+Patch0170: 0170-xfs-V5-filesystem-format-support.patch
+Patch0171: 0171-xfs-silence-Coverity-overflow-warning.patch
+Patch0172: 0172-send-router-solicitation-for-ipv6-address-autoconf-v.patch
+Patch0173: 0173-icmp6-fix-no-respond-to-neighbor-solicit-message.patch
+Patch0174: 0174-calibrate_tsc-use-the-Stall-EFI-boot-service-on-GRUB.patch
+Patch0175: 0175-fix-memory-corruption-in-pubkey-filter-over-network.patch
+Patch0176: 0176-Make-grub2-mkconfig-construct-titles-that-look-like-.patch
+Patch0177: 0177-don-t-strip-fw_path-twice-for-EFI-network-boot.patch
+Patch0178: 0178-Add-friendly-grub2-password-config-tool-985962.patch
+Patch0179: 0179-Try-to-make-sure-configure.ac-and-grub-rpm-sort-play.patch
+Patch0180: 0180-ppc64le-sync-mkconfig-to-disk-1212114.patch
+Patch0181: 0181-tcp-ack-when-we-get-an-OOO-lost-packet.patch
+Patch0182: 0182-tcp-add-window-scaling-support.patch
+Patch0183: 0183-efinet-retransmit-if-our-device-is-busy.patch
+Patch0184: 0184-Be-more-aggro-about-actually-using-the-configured-ne.patch
+Patch0185: 0185-efinet-add-filter-for-the-first-exclusive-reopen-of-.patch
+
+
 
 BuildRequires:  flex bison binutils python
 BuildRequires:  ncurses-devel xz-devel bzip2-devel
@@ -284,6 +312,7 @@ provides support for rebuilding your own grub.efi on EFI systems.
 Summary:	Support tools for GRUB.
 Group:		System Environment/Base
 Requires:	gettext os-prober which file system-logos
+Requires(pre):	sed grep coreutils
 
 %description tools
 The GRand Unified Bootloader (GRUB) is a highly configurable and customizable
@@ -337,7 +366,7 @@ cd grub-efi-%{tarversion}
 		-e 's/-mregparm=3/-mregparm=4/g'		\
 		-e 's/-fexceptions//g'				\
 		-e 's/-fasynchronous-unwind-tables//g'		\
-		-e 's/^/ -fno-strict-aliasing /' )"		\
+		-e 's/^/ -fno-strict-aliasing -std=gnu99 /' )"	\
 	TARGET_LDFLAGS=-static					\
         --with-platform=efi					\
 	--with-grubdir=%{name}					\
@@ -355,7 +384,7 @@ GRUB_MODULES="	all_video boot btrfs cat chain configfile echo efifwsetup \
 %ifarch aarch64
 GRUB_MODULES="${GRUB_MODULES} linux"
 %else
-GRUB_MODULES="${GRUB_MODULES} linuxefi multiboot2 multiboot"
+GRUB_MODULES="${GRUB_MODULES} linuxefi"
 %endif
 ./grub-mkimage -O %{grubefiarch} -o %{grubefiname}.orig -p /EFI/%{efidir} \
 		-d grub-core ${GRUB_MODULES}
@@ -365,8 +394,8 @@ GRUB_MODULES="${GRUB_MODULES} linuxefi multiboot2 multiboot"
 mv %{grubefiname}.orig %{grubefiname}
 mv %{grubeficdname}.orig %{grubeficdname}
 %else
-%pesign -s -i %{grubefiname}.orig -o %{grubefiname} -a %{SOURCE1} -c %{SOURCE1} -n redhatsecureboot301
-%pesign -s -i %{grubeficdname}.orig -o %{grubeficdname} -a %{SOURCE1} -c %{SOURCE1} -n redhatsecureboot301
+%pesign -s -i %{grubefiname}.orig -o %{grubefiname} -a %{SOURCE1} -c %{SOURCE2} -n redhatsecureboot301
+%pesign -s -i %{grubeficdname}.orig -o %{grubeficdname} -a %{SOURCE1} -c %{SOURCE2} -n redhatsecureboot301
 %endif
 cd ..
 %endif
@@ -391,7 +420,7 @@ cd grub-%{tarversion}
 		-e 's/-m64//g'					\
 		-e 's/-fasynchronous-unwind-tables//g'		\
 		-e 's/-mcpu=power7/-mcpu=power6/g'		\
-		-e 's/^/ -fno-strict-aliasing /' )"		\
+		-e 's/^/ -fno-strict-aliasing -std=gnu99 /' )"	\
 	TARGET_LDFLAGS=-static					\
         --with-platform=%{platform}				\
 	--with-grubdir=%{name}					\
@@ -516,7 +545,28 @@ ln -s /boot/efi/EFI/%{efidir}/grubenv boot/grub2/grubenv
 %clean    
 rm -rf $RPM_BUILD_ROOT
 
-%post
+%pre tools
+if [ $1 -gt 1 ]; then
+    if [ -f /etc/grub.d/01_users ] && \
+	    grep -c -q '^password_pbkdf2 root' /etc/grub.d/01_users ; then
+	if [ -f /boot/efi/EFI/%{efidir}/grub.cfg ]; then
+	    # on EFI we don't get permissions on the file, but
+	    # the directory is protected.
+	    grep '^password_pbkdf2 root' /etc/grub.d/01_users | \
+		sed 's/^password_pbkdf2 root \(.*\)$/GRUB_PASSWORD=\1/' \
+		> /boot/efi/EFI/%{efidir}/user.cfg
+	fi
+	if [ -f /boot/grub2/grub.cfg ]; then
+	    install -m 0600 /dev/null /boot/grub2/user.cfg
+	    chmod 0600 /boot/grub2/user.cfg
+	    grep '^password_pbkdf2 root' /etc/grub.d/01_users | \
+		sed 's/^password_pbkdf2 root \(.*\)$/GRUB_PASSWORD=\1/' \
+		> /boot/grub2/user.cfg
+	fi
+    fi
+fi
+
+%post tools
 if [ "$1" = 1 ]; then
 	/sbin/install-info --info-dir=%{_infodir} %{_infodir}/%{name}.info.gz || :
 	/sbin/install-info --info-dir=%{_infodir} %{_infodir}/%{name}-dev.info.gz || :
@@ -547,7 +597,7 @@ mv -f /boot/grub2.tmp/*.mod \
       /boot/grub2/ &&
 rm -r /boot/grub2.tmp/ || :
 
-%preun
+%preun tools
 if [ "$1" = 0 ]; then
 	/sbin/install-info --delete --info-dir=%{_infodir} %{_infodir}/%{name}.info.gz || :
 	/sbin/install-info --delete --info-dir=%{_infodir} %{_infodir}/%{name}-dev.info.gz || :
@@ -596,6 +646,7 @@ fi
 %{_sbindir}/%{name}-reboot
 %{_sbindir}/%{name}-rpm-sort
 %{_sbindir}/%{name}-set-default
+%{_sbindir}/%{name}-setpassword
 %{_sbindir}/%{name}-sparc64-setup
 %{_bindir}/%{name}-editenv
 %{_bindir}/%{name}-file
@@ -623,7 +674,7 @@ fi
 %{_sysconfdir}/grub.d/README
 %attr(0644,root,root) %ghost %config(noreplace) %{_sysconfdir}/default/grub
 %{_sysconfdir}/sysconfig/grub
-%dir /boot/%{name}
+%attr(0700,root,root) %dir /boot/%{name}
 %dir /boot/%{name}/themes/
 %dir /boot/%{name}/themes/system
 %exclude /boot/%{name}/themes/system/*
@@ -641,29 +692,83 @@ fi
 %exclude %{_datarootdir}/grub/themes/starfield
 
 %changelog
-* Tue Sep 15 2015 CentOS Sources <bugs@centos.org> - 2.02-0.17.el7.centos.4
-- Roll in CentOS Secureboot keys
-- Move the edidir to be CentOS, so people can co-install fedora, rhel and centos
+* Fri Oct 09 2015 Peter Jones <pjones@redhat.com> - 2.02-0.29
+- Fix DHCP6 timeouts due to failed network stack once more.
+  Resolves: rhbz#1267139
 
-* Mon Aug 03 2015 Robert Marshall <rmarshall@redhat.com> - 2.02-0.17.4
-- Reversed .17.2 and changed how rpm-sort availability is verified.
-  Resolves: rhbz#1229329
+* Thu Sep 17 2015 Peter Jones <pjones@redhat.com> - 2.02-0.28
+- Once again, rebuild for the right build target.
+  Resolves: CVE-2015-5281
 
-* Fri Jul 31 2015 Robert Marshall <rmarshall@redhat.com> = 2.02.0.17.3
-- Built again with proper build target and updates rhbz# to be zstream.
-  Resolves: rhbz#1229329
+* Thu Sep 17 2015 Peter Jones <pjones@redhat.com> - 2.02-0.27
+- Remove multiboot and multiboot2 modules from the .efi builds; they
+  should never have been there.
+  Resolves: CVE-2015-5281
 
-* Thu Jul 30 2015 Robert Marshall <rmarshall@redhat.com> - 2.02.0.17.2
-- Reversed order of kernel sorting.
-  Resolves: rhbz#1229329
+* Mon Sep 14 2015 Peter Jones <pjones@redhat.com> - 2.02-0.26
+- Be more aggressive about trying to make sure we use the configured SNP
+  device in UEFI.
+  Resolves: rhbz#1257475
 
-* Tue Jul 14 2015 Robert Marshall <rmarshall@redhat.com> - 2.02-0.17.1
-- Fixed rpmdiff issues.
-  Resolves: rhbz#1229329
+* Wed Aug 05 2015 Robert Marshall <rmarshall@redhat.com> - 2.02-0.25
+- Force file sync to disk on ppc64le machines.
+  Resolves: rhbz#1212114
 
-* Mon Jul 13 2015 Robert Marshall <rmarshall@redhat.com> - 2.02.0.17
+* Mon Aug 03 2015 Peter Jones <pjones@redhat.com> - 2.02-0.24
+- Undo 0.23 and fix it a different way.
+  Resolves: rhbz#1124074
+
+* Thu Jul 30 2015 Peter Jones <pjones@redhat.com> - 2.02-0.23
+- Reverse kernel sort order so they're displayed correctly.
+  Resolves: rhbz#1124074
+
+* Wed Jul 08 2015 Peter Jones <pjones@redhat.com> - 2.02-0.22
+- Make upgrades work reasonably well with grub2-setpassword .
+  Related: rhbz#985962
+
+* Tue Jul 07 2015 Peter Jones <pjones@redhat.com> - 2.02-0.21
+- Add a simpler grub2 password config tool
+  Related: rhbz#985962
+- Some more coverity nits.
+
+* Mon Jul 06 2015 Peter Jones <pjones@redhat.com> - 2.02-0.20
+- Deal with some coverity nits.
+  Related: rhbz#1215839
+  Related: rhbz#1124074
+
+* Mon Jul 06 2015 Peter Jones <pjones@redhat.com> - 2.02-0.19
+- Rebuild for Aarch64
+- Deal with some coverity nits.
+  Related: rhbz#1215839
+  Related: rhbz#1124074
+
+* Thu Jul 02 2015 Peter Jones <pjones@redhat.com> - 2.02-0.18
+- Update for an rpmdiff problem with one of the man pages.
+  Related: rhbz#1124074
+
+* Tue Jun 30 2015 Peter Jones <pjones@redhat.com> - 2.02-0.17
+- Handle ipv6 better
+  Resolves: rhbz#1154226
+- On UEFI, use SIMPLE_NETWORK_PROTOCOL when we can.
+  Resolves: rhbz#1233378
+- Handle rssd disk drives in grub2 utilities.
+  Resolves: rhbz#1087962
+- Handle xfs CRC disk format.
+  Resolves: rhbz#1001279
+- Calibrate TCS using the EFI Stall service
+  Resolves: rhbz#1150698
+- Fix built-in gpg verification when using TFTP
+  Resolves: rhbz#1167977
+- Generate better stanza titles so grubby can find them easier.
+  Resolves: rhbz#1177003
+- Don't strip the fw_path variable twice when we're using EFI networking.
+  Resolves: rhbz#1211101
+
+* Mon May 11 2015 Peter Jones <pjones@redhat.com> - 2.02-0.17
+- Document network boot paths better
+  Resolves: rhbz#1148650
 - Use an rpm-based version sorted in grub2-mkconfig
-  Resolves: rhbz#1229329
+  Resolves: rhbz#1124074
 
 * Thu Oct 09 2014 Peter Jones <pjones@redhat.com> - 2.02-0.16
 - ... and build it on the right target.

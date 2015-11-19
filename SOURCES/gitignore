@@ -1,12 +1,11 @@
 00_header
 10_*
-!10_*.in
 20_linux_xen
 30_os-prober
 40_custom
 41_custom
-*.[[:digit:]]
-!util/*.[[:digit:]]
+*.1
+*.8
 aclocal.m4
 ahci_test
 ascii.bitmaps
@@ -240,3 +239,5 @@ build-aux/test-driver
 /garbage-gen
 /garbage-gen.exe
 /grub-fs-tester
+!util/grub.d/[[:digit:]][[:digit:]]*.in
+!util/*.[[:digit:]]

@@ -1,7 +1,8 @@
-From 0576c43a727f095caac0b04b551ebdb66adf616a Mon Sep 17 00:00:00 2001
+From f742724d51dc84b32a1298cd6bab62f12d887052 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Mon, 3 Aug 2015 11:46:42 -0400
-Subject: [PATCH] Try to make sure configure.ac and grub-rpm-sort play nice.
+Subject: [PATCH 22/23] Try to make sure configure.ac and grub-rpm-sort play
+ nice.
 
 Apparently the test for whether to use grub-rpm-sort and also the
 renaming of it to grub2-rpm-sort on the runtime side weren't right.
