@@ -33,9 +33,6 @@
 %if 0%{?fedora}
 %global efidir fedora
 %endif
-%if 0%{?centos}
-%global efidir centos
-%endif
 
 %endif
 
@@ -45,7 +42,7 @@
 Name:           grub2
 Epoch:          1
 Version:        2.02
-Release:        0.29%{?dist}
+Release:        0.33%{?dist}
 Summary:        Bootloader with support for Linux, Multiboot and more
 
 Group:          System Environment/Base
@@ -53,9 +50,9 @@ License:        GPLv3+
 URL:            http://www.gnu.org/software/grub/
 Obsoletes:	grub < 1:0.98
 Source0:        ftp://alpha.gnu.org/gnu/grub/grub-%{tarversion}.tar.xz
-#Source0:	ftp://ftp.gnu.org/gnu/grub/grub-%{tarversion}.tar.xz
-Source1:	centos.cer
-#(source removed)
+#Source0:	ftp://ftp.gnu.org/gnu/grub/grub-%%{tarversion}.tar.xz
+Source1:	securebootca.cer
+Source2:	secureboot.cer
 Source4:	http://unifoundry.com/unifont-5.1.20080820.pcf.gz
 Source5:	theme.tar.bz2
 Source6:	gitignore
@@ -246,6 +243,8 @@ Patch0182: 0182-tcp-add-window-scaling-support.patch
 Patch0183: 0183-efinet-retransmit-if-our-device-is-busy.patch
 Patch0184: 0184-Be-more-aggro-about-actually-using-the-configured-ne.patch
 Patch0185: 0185-efinet-add-filter-for-the-first-exclusive-reopen-of-.patch
+Patch0186: 0186-Fix-security-issue-when-reading-username-and-passwor.patch
+Patch0187: 0187-01_users-Handle-GRUB_PASSWORD-better.patch
 
 
 
@@ -397,8 +396,8 @@ GRUB_MODULES="${GRUB_MODULES} linuxefi"
 mv %{grubefiname}.orig %{grubefiname}
 mv %{grubeficdname}.orig %{grubeficdname}
 %else
-%pesign -s -i %{grubefiname}.orig -o %{grubefiname} -a %{SOURCE1} -c %{SOURCE1} -n redhatsecureboot301
-%pesign -s -i %{grubeficdname}.orig -o %{grubeficdname} -a %{SOURCE1} -c %{SOURCE1} -n redhatsecureboot301
+%pesign -s -i %{grubefiname}.orig -o %{grubefiname} -a %{SOURCE1} -c %{SOURCE2} -n redhatsecureboot301
+%pesign -s -i %{grubeficdname}.orig -o %{grubeficdname} -a %{SOURCE1} -c %{SOURCE2} -n redhatsecureboot301
 %endif
 cd ..
 %endif
@@ -549,23 +548,30 @@ ln -s /boot/efi/EFI/%{efidir}/grubenv boot/grub2/grubenv
 rm -rf $RPM_BUILD_ROOT
 
 %pre tools
-if [ $1 -gt 1 ]; then
-    if [ -f /etc/grub.d/01_users ] && \
-	    grep -c -q '^password_pbkdf2 root' /etc/grub.d/01_users ; then
-	if [ -f /boot/efi/EFI/%{efidir}/grub.cfg ]; then
-	    # on EFI we don't get permissions on the file, but
-	    # the directory is protected.
-	    grep '^password_pbkdf2 root' /etc/grub.d/01_users | \
-		sed 's/^password_pbkdf2 root \(.*\)$/GRUB_PASSWORD=\1/' \
-		> /boot/efi/EFI/%{efidir}/user.cfg
-	fi
-	if [ -f /boot/grub2/grub.cfg ]; then
-	    install -m 0600 /dev/null /boot/grub2/user.cfg
-	    chmod 0600 /boot/grub2/user.cfg
-	    grep '^password_pbkdf2 root' /etc/grub.d/01_users | \
-		sed 's/^password_pbkdf2 root \(.*\)$/GRUB_PASSWORD=\1/' \
-		> /boot/grub2/user.cfg
-	fi
+if [ -f /boot/grub2/user.cfg ]; then
+    if grep -q '^GRUB_PASSWORD=' /boot/grub2/user.cfg ; then
+	sed -i 's/^GRUB_PASSWORD=/GRUB2_PASSWORD=/' /boot/grub2/user.cfg
+    fi
+elif [ -f /boot/efi/EFI/%{efidir}/user.cfg ]; then
+    if grep -q '^GRUB_PASSWORD=' /boot/efi/EFI/%{efidir}/user.cfg ; then
+	sed -i 's/^GRUB_PASSWORD=/GRUB2_PASSWORD=/' \
+	    /boot/efi/EFI/%{efidir}/user.cfg
+    fi
+elif [ -f /etc/grub.d/01_users ] && \
+	grep -q '^password_pbkdf2 root' /etc/grub.d/01_users ; then
+    if [ -f /boot/efi/EFI/%{efidir}/grub.cfg ]; then
+	# on EFI we don't get permissions on the file, but
+	# the directory is protected.
+	grep '^password_pbkdf2 root' /etc/grub.d/01_users | \
+		sed 's/^password_pbkdf2 root \(.*\)$/GRUB2_PASSWORD=\1/' \
+	    > /boot/efi/EFI/%{efidir}/user.cfg
+    fi
+    if [ -f /boot/grub2/grub.cfg ]; then
+	install -m 0600 /dev/null /boot/grub2/user.cfg
+	chmod 0600 /boot/grub2/user.cfg
+	grep '^password_pbkdf2 root' /etc/grub.d/01_users | \
+		sed 's/^password_pbkdf2 root \(.*\)$/GRUB2_PASSWORD=\1/' \
+	    > /boot/grub2/user.cfg
     fi
 fi
 
@@ -695,9 +701,23 @@ fi
 %exclude %{_datarootdir}/grub/themes/starfield
 
 %changelog
-* Thu Nov 19 2015 CentOS Sources <bugs@centos.org> - 2.02-0.29.el7.centos
-- Roll in CentOS Secureboot keys
-- Move the edidir to be CentOS, so people can co-install fedora, rhel and centos
+* Thu Dec 10 2015 Peter Jones <pjones@redhat.com> - 2.02-0.33
+- Don't remove 01_users, it's the wrong thing to do.
+  Related:rhbz1290089
+
+* Wed Dec 09 2015 Peter Jones <pjones@redhat.com> - 2.02-0.32
+- Rebuild for .z so the release number is different.
+  Related: rhbz#1290089
+
+* Wed Dec 09 2015 Peter Jones <pjones@redhat.com> - 2.02-0.31
+- More work on handling of GRUB2_PASSWORD
+  Resolves: rhbz#1290089
+
+* Tue Dec 08 2015 Peter Jones <pjones@redhat.com> - 2.02-0.30
+- Fix security issue when reading username and password
+  Resolves: CVE-2015-8370
+- Do a better job of handling GRUB_PASSWORD
+  Resolves: rhbz#1290089
 
 * Fri Oct 09 2015 Peter Jones <pjones@redhat.com> - 2.02-0.29
 - Fix DHCP6 timeouts due to failed network stack once more.
