@@ -248,7 +248,7 @@ Patch0184: 0184-Be-more-aggro-about-actually-using-the-configured-ne.patch
 Patch0185: 0185-efinet-add-filter-for-the-first-exclusive-reopen-of-.patch
 Patch0186: 0186-Fix-security-issue-when-reading-username-and-passwor.patch
 Patch0187: 0187-01_users-Handle-GRUB_PASSWORD-better.patch
-
+Patch9999: 0001-centos-grub2-password-fix.patch
 
 
 BuildRequires:  flex bison binutils python
