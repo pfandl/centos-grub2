@@ -33,9 +33,6 @@
 %if 0%{?fedora}
 %global efidir fedora
 %endif
-%if 0%{?centos}
-%global efidir centos
-%endif
 
 %endif
 
@@ -45,7 +42,7 @@
 Name:           grub2
 Epoch:          1
 Version:        2.02
-Release:        0.33%{?dist}
+Release:        0.34%{?dist}
 Summary:        Bootloader with support for Linux, Multiboot and more
 
 Group:          System Environment/Base
@@ -54,8 +51,8 @@ URL:            http://www.gnu.org/software/grub/
 Obsoletes:	grub < 1:0.98
 Source0:        ftp://alpha.gnu.org/gnu/grub/grub-%{tarversion}.tar.xz
 #Source0:	ftp://ftp.gnu.org/gnu/grub/grub-%%{tarversion}.tar.xz
-Source1:	centos.cer
-#(source removed)
+Source1:	securebootca.cer
+Source2:	secureboot.cer
 Source4:	http://unifoundry.com/unifont-5.1.20080820.pcf.gz
 Source5:	theme.tar.bz2
 Source6:	gitignore
@@ -248,7 +245,7 @@ Patch0184: 0184-Be-more-aggro-about-actually-using-the-configured-ne.patch
 Patch0185: 0185-efinet-add-filter-for-the-first-exclusive-reopen-of-.patch
 Patch0186: 0186-Fix-security-issue-when-reading-username-and-passwor.patch
 Patch0187: 0187-01_users-Handle-GRUB_PASSWORD-better.patch
-Patch9999: 0001-centos-grub2-password-fix.patch
+
 
 
 BuildRequires:  flex bison binutils python
@@ -399,8 +396,8 @@ GRUB_MODULES="${GRUB_MODULES} linuxefi"
 mv %{grubefiname}.orig %{grubefiname}
 mv %{grubeficdname}.orig %{grubeficdname}
 %else
-%pesign -s -i %{grubefiname}.orig -o %{grubefiname} -a %{SOURCE1} -c %{SOURCE1} -n redhatsecureboot301
-%pesign -s -i %{grubeficdname}.orig -o %{grubeficdname} -a %{SOURCE1} -c %{SOURCE1} -n redhatsecureboot301
+%pesign -s -i %{grubefiname}.orig -o %{grubefiname} -a %{SOURCE1} -c %{SOURCE2} -n redhatsecureboot301
+%pesign -s -i %{grubeficdname}.orig -o %{grubeficdname} -a %{SOURCE1} -c %{SOURCE2} -n redhatsecureboot301
 %endif
 cd ..
 %endif
@@ -704,9 +701,9 @@ fi
 %exclude %{_datarootdir}/grub/themes/starfield
 
 %changelog
-* Tue Dec 15 2015 CentOS Sources <bugs@centos.org> - 2.02-0.33.el7.centos
-- Roll in CentOS Secureboot keys
-- Move the edidir to be CentOS, so people can co-install fedora, rhel and centos
+* Tue Dec 15 2015 Peter Jones <pjones@redhat.com> - 2.02-0.34
+- Rebuild with the right credentials.
+  Related: rhbz#1290089
 
 * Thu Dec 10 2015 Peter Jones <pjones@redhat.com> - 2.02-0.33
 - Don't remove 01_users, it's the wrong thing to do.
