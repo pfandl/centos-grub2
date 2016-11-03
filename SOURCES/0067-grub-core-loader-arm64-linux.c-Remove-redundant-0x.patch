@@ -1,8 +1,8 @@
-From 530b22a1c04a08fbdb4dcbc3d34bc610af17cc68 Mon Sep 17 00:00:00 2001
+From 234e316455c92875f3cc7d35f11da7f7a4d3cb6b Mon Sep 17 00:00:00 2001
 From: Fu Wei <fu.wei@linaro.org>
 Date: Wed, 26 Mar 2014 08:13:07 +0100
-Subject: [PATCH 067/143] 	* grub-core/loader/arm64/linux.c: Remove
- redundant "0x".
+Subject: [PATCH 067/198] * grub-core/loader/arm64/linux.c: Remove redundant
+ "0x".
 
 ---
  ChangeLog                      | 4 ++++
@@ -35,5 +35,5 @@ index 65129c2..f1d10a1 100644
        }
  
 -- 
-1.9.3
+2.7.4
 

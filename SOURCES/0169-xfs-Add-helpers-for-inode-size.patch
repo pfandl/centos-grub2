@@ -1,7 +1,7 @@
 From bc7e3f1e508c91b9ad7d3459998c5cd31d1caca0 Mon Sep 17 00:00:00 2001
 From: Jan Kara <jack@suse.cz>
 Date: Mon, 1 Jun 2015 14:28:45 +0200
-Subject: [PATCH 12/23] xfs: Add helpers for inode size
+Subject: [PATCH 169/198] xfs: Add helpers for inode size
 
 Add helpers to return size of XFS inode on disk and when loaded in
 memory.
@@ -93,5 +93,5 @@ index 0d704e9..26d8147 100644
      }
  
 -- 
-2.4.3
+2.7.4
 

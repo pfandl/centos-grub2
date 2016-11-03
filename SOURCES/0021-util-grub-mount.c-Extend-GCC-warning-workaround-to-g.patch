@@ -1,8 +1,8 @@
-From fa9e3a9aa30988c2339e9d05c81b5d91534f4049 Mon Sep 17 00:00:00 2001
+From 762b39fcff62416481f12d2002abf7cdb76adbf3 Mon Sep 17 00:00:00 2001
 From: Vladimir Serbinenko <phcoder@gmail.com>
 Date: Sat, 18 Jan 2014 16:43:29 +0100
-Subject: [PATCH 021/143] 	* util/grub-mount.c: Extend GCC warning
- workaround to grub-mount.
+Subject: [PATCH 021/198] * util/grub-mount.c: Extend GCC warning workaround to
+ grub-mount.
 
 ---
  ChangeLog         | 4 ++++
@@ -43,5 +43,5 @@ index 118881e..19de2e6 100644
  static const char *root = NULL;
  grub_device_t dev = NULL;
 -- 
-1.9.3
+2.7.4
 

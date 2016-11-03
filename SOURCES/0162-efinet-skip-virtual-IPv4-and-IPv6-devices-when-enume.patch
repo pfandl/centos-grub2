@@ -1,7 +1,7 @@
 From 0faa80b06bc1e9956d7ee6aa3b23574b7c4c18c8 Mon Sep 17 00:00:00 2001
 From: Andrei Borzenkov <arvidjaar@gmail.com>
 Date: Thu, 7 May 2015 20:37:17 +0300
-Subject: [PATCH 05/23] efinet: skip virtual IPv4 and IPv6 devices when
+Subject: [PATCH 162/198] efinet: skip virtual IPv4 and IPv6 devices when
  enumerating cards
 
 EDK2 PXE driver creates two child devices - IPv4 and IPv6 - with
@@ -93,5 +93,5 @@ index 78df215..caa7b50 100644
  				  GRUB_EFI_OPEN_PROTOCOL_GET_PROTOCOL);
      if (! pxe)
 -- 
-2.4.3
+2.7.4
 

@@ -1,8 +1,8 @@
 From 54a4f53f9ecae2378195e4e66a8410d3862a0be2 Mon Sep 17 00:00:00 2001
 From: Jan Kara <jack@suse.cz>
 Date: Mon, 14 Jul 2014 17:21:30 +0200
-Subject: [PATCH 11/23] xfs: Convert inode numbers to cpu endianity immediately
- after reading
+Subject: [PATCH 168/198] xfs: Convert inode numbers to cpu endianity
+ immediately after reading
 
 Currently XFS driver converted inode numbers to native endianity only
 when using them to compute inode position. Although this works, it is
@@ -78,5 +78,5 @@ index 4bd52d1..0d704e9 100644
    data->bsize = grub_be_to_cpu32 (data->sblock.bsize);
    data->agsize = grub_be_to_cpu32 (data->sblock.agsize);
 -- 
-2.4.3
+2.7.4
 

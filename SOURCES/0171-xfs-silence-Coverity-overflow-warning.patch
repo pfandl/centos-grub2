@@ -1,7 +1,7 @@
 From 4ac2b84fea9a90d68970c0729a02895d47a8b40c Mon Sep 17 00:00:00 2001
 From: Andrei Borzenkov <arvidjaar@gmail.com>
 Date: Fri, 19 Jun 2015 18:38:25 +0300
-Subject: [PATCH 14/23] xfs: silence Coverity overflow warning
+Subject: [PATCH 171/198] xfs: silence Coverity overflow warning
 
 inode size cannot really overflow integer, but Coverity does not know it.
 CID: 96602
@@ -23,5 +23,5 @@ index f00e43e..7249291 100644
  
  /*
 -- 
-2.4.3
+2.7.4
 

@@ -1,7 +1,7 @@
 From 763eff26748ca3d2ae8b178aef15da54a70527a5 Mon Sep 17 00:00:00 2001
 From: Martin Wilck <martin.wilck@ts.fujitsu.com>
 Date: Fri, 27 Mar 2015 14:27:56 +0100
-Subject: [PATCH 01/23] efinet: Check for immediate completition.
+Subject: [PATCH 158/198] efinet: Check for immediate completition.
 
 This both speeds GRUB up and workarounds unexpected EFI behaviour.
 ---
@@ -47,5 +47,5 @@ index a6e4c79..78df215 100644
  }
  
 -- 
-2.4.3
+2.7.4
 

@@ -1,8 +1,8 @@
-From 3f6bd432acbf2244e6f4b83dd3a259392b10afb6 Mon Sep 17 00:00:00 2001
+From 62d74eb68cebd48250469a1bfd4a042267fb04c9 Mon Sep 17 00:00:00 2001
 From: Vladimir Serbinenko <phcoder@gmail.com>
 Date: Sat, 18 Jan 2014 19:43:19 +0100
-Subject: [PATCH 030/143] 	* Makefile.am (default_payload.elf): Add
- modules 	multiboot cbmemc linux16 gzio echo help.
+Subject: [PATCH 030/198] * Makefile.am (default_payload.elf): Add modules
+ multiboot cbmemc linux16 gzio echo help.
 
 ---
  ChangeLog   | 7 ++++++-
@@ -38,5 +38,5 @@ index aa526f5..97c062d 100644
  
  windowsdir=$(top_builddir)/$(PACKAGE)-$(VERSION)-for-windows
 -- 
-1.9.3
+2.7.4
 

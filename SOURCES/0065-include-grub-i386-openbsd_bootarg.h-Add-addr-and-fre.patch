@@ -1,9 +1,9 @@
-From 1cdf2c717c0f4a2efac0e5dc8b5c564f930c537a Mon Sep 17 00:00:00 2001
+From 738e0c73073b27de660696d32c2030bc683de2a2 Mon Sep 17 00:00:00 2001
 From: Vladimir Serbinenko <phcoder@gmail.com>
 Date: Fri, 28 Feb 2014 10:50:05 +0100
-Subject: [PATCH 065/143] 	* include/grub/i386/openbsd_bootarg.h: Add
- addr and frequency fields. 	* grub-core/loader/i386/bsd.c
- (grub_cmd_openbsd): Fill addr field.
+Subject: [PATCH 065/198] * include/grub/i386/openbsd_bootarg.h: Add addr and
+ frequency fields. * grub-core/loader/i386/bsd.c (grub_cmd_openbsd): Fill addr
+ field.
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -66,5 +66,5 @@ index 01ca486..9ebe6b4 100644
  
  struct grub_openbsd_bootarg_pcibios
 -- 
-1.9.3
+2.7.4
 

@@ -1,7 +1,7 @@
-From b5adb83344dfeb6ff142dc41bd2a82d29029c1c2 Mon Sep 17 00:00:00 2001
+From 6d94c560ac4fa7bf0b8db3a37b414cc188fe4376 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Fri, 3 Oct 2014 11:08:03 -0400
-Subject: [PATCH] Try $prefix if $fw_path doesn't work.
+Subject: [PATCH 154/198] Try $prefix if $fw_path doesn't work.
 
 Related: rhbz#1148652
 
@@ -207,5 +207,5 @@ index 4190985..aa14499 100644
  }
  
 -- 
-1.9.3
+2.7.4
 

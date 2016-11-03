@@ -1,8 +1,8 @@
-From 94763697f5f33614b7bd6da91707a27b6872b750 Mon Sep 17 00:00:00 2001
+From 5e5536c1c547f3d9969d87f345a93fb454086992 Mon Sep 17 00:00:00 2001
 From: Colin Watson <cjwatson@ubuntu.com>
 Date: Sat, 28 Dec 2013 02:20:27 +0000
-Subject: [PATCH 006/143] * NEWS: The cmosclean command in fact dates back to
- 1.99.  Remove mention of it from 2.02.
+Subject: [PATCH 006/198] * NEWS: The cmosclean command in fact dates back to
+ 1.99. Remove mention of it from 2.02.
 
 ---
  ChangeLog | 5 +++++
@@ -37,5 +37,5 @@ index 577d9fd..b74c05f 100644
      coreboot.
    * Improve opcode parsing in ACPI halt implementation.
 -- 
-1.9.3
+2.7.4
 

@@ -1,7 +1,7 @@
 From a1f8402056e13cadab252dd64d7dc28ccdf6fda0 Mon Sep 17 00:00:00 2001
 From: Michael Chang <mchang@suse.com>
 Date: Tue, 18 Nov 2014 16:03:08 +0800
-Subject: [PATCH 15/23] send router solicitation for ipv6 address autoconf v2
+Subject: [PATCH 172/198] send router solicitation for ipv6 address autoconf v2
 
 Many routers have long router advertisment interval configured by
 default. The Neighbor Discovery protocol (RFC4861) has defined default
@@ -159,5 +159,5 @@ index 7a8e614..dcceaa5 100644
 +grub_net_icmp6_send_router_solicit (struct grub_net_network_level_interface *inf);
  #endif 
 -- 
-2.4.3
+2.7.4
 

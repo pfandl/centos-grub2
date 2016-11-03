@@ -1,8 +1,8 @@
-From 5d1749ea5730be5c9c32228461b784317a500f4b Mon Sep 17 00:00:00 2001
+From aadd7669d805fcd510687ba5d0ca9e78c2d88a93 Mon Sep 17 00:00:00 2001
 From: Vladimir Serbinenko <phcoder@gmail.com>
 Date: Wed, 26 Mar 2014 08:48:30 +0100
-Subject: [PATCH 068/143] 	* grub-core/lib/relocator.c: Fix the case when
- end of leftover is used.
+Subject: [PATCH 068/198] * grub-core/lib/relocator.c: Fix the case when end of
+ leftover is used.
 
 ---
  ChangeLog                 | 4 ++++
@@ -35,5 +35,5 @@ index 9f9770b..cb11ea5 100644
  			&= ((1 << (8 - (start % 8))) - 1);
  		      grub_memset (lo->freebytes + (offstart + 7) / 8, 0,
 -- 
-1.9.3
+2.7.4
 

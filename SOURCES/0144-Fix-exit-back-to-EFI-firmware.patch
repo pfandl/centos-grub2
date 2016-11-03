@@ -1,7 +1,7 @@
-From a919488cc979e1c4f5bd468bb97c6e9562af0e5a Mon Sep 17 00:00:00 2001
+From d4c213d4c71336cefdc0419de510ac19665b5d32 Mon Sep 17 00:00:00 2001
 From: Fedora Ninjas <grub2-owner@fedoraproject.org>
 Date: Fri, 15 Aug 2014 11:29:22 -0400
-Subject: [PATCH] Fix exit back to EFI firmware
+Subject: [PATCH 144/198] Fix exit back to EFI firmware
 
 Arm/AArch64 machines set up a timer event which is not getting
 canceled when returning to firmware. This is because grub_exit()
@@ -27,7 +27,7 @@ index 0c17d83..06df60e 100644
  
    grub_efi_fini ();
 diff --git a/grub-core/kern/efi/efi.c b/grub-core/kern/efi/efi.c
-index 394e9fd..1e96754 100644
+index 1a8dba5..d99a6fb 100644
 --- a/grub-core/kern/efi/efi.c
 +++ b/grub-core/kern/efi/efi.c
 @@ -27,6 +27,7 @@
@@ -48,5 +48,5 @@ index 394e9fd..1e96754 100644
                grub_efi_image_handle, GRUB_EFI_LOAD_ERROR, 0, 0);
    for (;;) ;
 -- 
-1.9.3
+2.7.4
 

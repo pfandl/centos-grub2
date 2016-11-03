@@ -1,7 +1,7 @@
-From 34f60bd4d04b142667c5fc0a4287b118834e71bb Mon Sep 17 00:00:00 2001
+From ee3cd4eb157b2b455a3d6dc31c4ff39d38ecc740 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Tue, 18 Feb 2014 09:37:49 -0500
-Subject: [PATCH 128/143] Don't emit "Booting ..." message.
+Subject: [PATCH 128/198] Don't emit "Booting ..." message.
 
 UI team still hates this stuff, so we're disabling it for RHEL 7.
 
@@ -44,5 +44,5 @@ index b485df8..62e5db1 100644
    errs_before = grub_err_printed_errors;
  
 -- 
-1.9.3
+2.7.4
 

@@ -1,7 +1,7 @@
 From 57df7233ae3789f525b8d7e910bf1e3ffe50ac87 Mon Sep 17 00:00:00 2001
 From: Robert Marshall <rmarshall@redhat.com>
 Date: Mon, 16 Mar 2015 14:14:19 -0400
-Subject: [PATCH 2/2] Use Distribution Package Sort for grub2-mkconfig
+Subject: [PATCH 156/198] Use Distribution Package Sort for grub2-mkconfig
  (#1124074)
 
 Users reported that newly installed kernels on their systems installed
@@ -446,5 +446,5 @@ index 0000000..f33bd1e
 +  return 0;
 +}
 -- 
-2.4.3
+2.7.4
 

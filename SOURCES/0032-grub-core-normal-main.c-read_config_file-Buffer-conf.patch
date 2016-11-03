@@ -1,8 +1,8 @@
-From 221f6e1ac22f66881276d4cb012d588ecfb17e47 Mon Sep 17 00:00:00 2001
+From 8a7b98011d7a26e4e73b8b772921e011e4da3aa1 Mon Sep 17 00:00:00 2001
 From: Vladimir Serbinenko <phcoder@gmail.com>
 Date: Sat, 18 Jan 2014 19:54:09 +0100
-Subject: [PATCH 032/143] 	* grub-core/normal/main.c (read_config_file):
- Buffer config file. 	Reduces boot time.
+Subject: [PATCH 032/198] * grub-core/normal/main.c (read_config_file): Buffer
+ config file. Reduces boot time.
 
 ---
  ChangeLog               |  5 +++++
@@ -64,5 +64,5 @@ index c36663f..3a926fc 100644
    if (ctmp)
      old_file = grub_strdup (ctmp);
 -- 
-1.9.3
+2.7.4
 

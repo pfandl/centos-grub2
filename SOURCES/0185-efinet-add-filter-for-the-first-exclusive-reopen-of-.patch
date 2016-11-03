@@ -1,7 +1,8 @@
-From 2cdea5ad6c34d04e0a2a833fc010618d3e6bddac Mon Sep 17 00:00:00 2001
+From f7cfef0838ab21316699cad18c3621ec0a67dd3f Mon Sep 17 00:00:00 2001
 From: RHEL Ninjas <example@example.com>
 Date: Fri, 25 Sep 2015 16:24:23 +0900
-Subject: [PATCH] efinet: add filter for the first exclusive reopen of SNP
+Subject: [PATCH 185/198] efinet: add filter for the first exclusive reopen of
+ SNP
 
 ---
  grub-core/net/drivers/efi/efinet.c | 24 ++++++++++++++++++++++++
@@ -43,5 +44,5 @@ index fd47b8a..b6b5187 100644
      }
      return;
 -- 
-2.5.0
+2.7.4
 

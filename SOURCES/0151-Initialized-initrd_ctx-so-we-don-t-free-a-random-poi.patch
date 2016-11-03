@@ -1,8 +1,8 @@
-From 3cb3d2a07b11c95b3f8a908ae9d43eabef4dcf62 Mon Sep 17 00:00:00 2001
+From 22107f5857dd95a55f14fbdf8a78c6b26e9a134e Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Wed, 17 Sep 2014 15:13:14 -0500
-Subject: [PATCH 1/2] Initialized initrd_ctx so we don't free a random pointer
- from the stack.
+Subject: [PATCH 151/198] Initialized initrd_ctx so we don't free a random
+ pointer from the stack.
 
 Currently, if "linux" fails, the "goto fail;" in grub_cmd_initrd sends us
 into grub_initrd_close() without grub_initrd_init() being called, and thus
@@ -130,5 +130,5 @@ index de6ee2f..c5e8dfa 100644
    if (argc == 0)
      {
 -- 
-1.9.3
+2.7.4
 

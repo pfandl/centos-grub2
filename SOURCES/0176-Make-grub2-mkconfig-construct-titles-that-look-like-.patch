@@ -1,8 +1,8 @@
 From 204d0616ba497656d21e65f1b26561c539ea1a21 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Tue, 28 Apr 2015 11:15:03 -0400
-Subject: [PATCH 19/23] Make grub2-mkconfig construct titles that look like the
- ones we want elsewhere.
+Subject: [PATCH 176/198] Make grub2-mkconfig construct titles that look like
+ the ones we want elsewhere.
 
 Resolves: rhbz#1215839
 
@@ -68,5 +68,5 @@ index e8088a1..b3c460c 100644
        echo "menuentry '$(echo "$title" | grub_quote)' ${CLASS} \$menuentry_id_option 'gnulinux-$version-$type-$boot_device_id' {" | sed "s/^/$submenu_indentation/"
    else
 -- 
-2.4.3
+2.7.4
 

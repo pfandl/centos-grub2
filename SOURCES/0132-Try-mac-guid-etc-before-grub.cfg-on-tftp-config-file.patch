@@ -1,7 +1,7 @@
-From 2927c4943326f09bd626744b8a46fc8ee16fea1c Mon Sep 17 00:00:00 2001
+From 3043f62cdff6d08927a99b3aa19ee76daf678fab Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Thu, 6 Mar 2014 11:51:33 -0500
-Subject: [PATCH 132/143] Try mac/guid/etc before grub.cfg on tftp config
+Subject: [PATCH 132/198] Try mac/guid/etc before grub.cfg on tftp config
  files.
 
 Signed-off-by: Peter Jones <pjones@redhat.com>
@@ -111,5 +111,5 @@ index 5e2ac15..4190985 100644
    else
      grub_enter_normal_mode (argv[0]);
 -- 
-1.9.3
+2.7.4
 

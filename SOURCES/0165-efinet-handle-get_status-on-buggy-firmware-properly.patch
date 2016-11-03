@@ -1,7 +1,8 @@
 From 17bd27e298d2b27859c8c6ee2e654d8f03988c42 Mon Sep 17 00:00:00 2001
 From: Josef Bacik <jbacik@fb.com>
 Date: Thu, 6 Aug 2015 10:49:46 -0700
-Subject: [PATCH 08/23] efinet: handle get_status() on buggy firmware properly
+Subject: [PATCH 165/198] efinet: handle get_status() on buggy firmware
+ properly
 
 The EFI spec indicates that get_status() should return the address of the buffer
 we passed into transmit to indicate the the buffer was transmitted.  However we
@@ -62,5 +63,5 @@ index 7b8c4a5..ea0e0ca 100644
    return GRUB_ERR_NONE;
  }
 -- 
-2.4.3
+2.7.4
 

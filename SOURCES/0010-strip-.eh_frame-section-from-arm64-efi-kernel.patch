@@ -1,7 +1,7 @@
-From 9e9507d2e1eaed4fc2ebe2959c5405687485f613 Mon Sep 17 00:00:00 2001
+From 5274da98cb155276f8b692340ec6cc4e26beb9b4 Mon Sep 17 00:00:00 2001
 From: Andrey Borzenkov <arvidjaar@gmail.com>
 Date: Mon, 30 Dec 2013 12:56:19 +0000
-Subject: [PATCH 010/143] strip .eh_frame section from arm64-efi kernel
+Subject: [PATCH 010/198] strip .eh_frame section from arm64-efi kernel
 
 Fixes grub-mkimage error "relocation 0x105 is not implemented yet."
 ---
@@ -35,5 +35,5 @@ index c916246..42443bc 100644
    i386_pc_ldflags          = '$(TARGET_IMG_LDFLAGS)';
    i386_pc_ldflags          = '$(TARGET_IMG_BASE_LDOPT),0x9000';
 -- 
-1.9.3
+2.7.4
 

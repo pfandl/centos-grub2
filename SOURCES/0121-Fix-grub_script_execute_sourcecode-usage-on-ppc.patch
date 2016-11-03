@@ -1,7 +1,7 @@
-From a7a033ed92a55dd44314ed20f720a3d32fa9c684 Mon Sep 17 00:00:00 2001
+From c9f932e3dc369211b6e5c2c64c3525a7d4cdd54a Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Fri, 10 Jan 2014 09:36:24 -0500
-Subject: [PATCH 121/143] Fix grub_script_execute_sourcecode() usage on ppc.
+Subject: [PATCH 121/198] Fix grub_script_execute_sourcecode() usage on ppc.
 
 593e430c made it not take the extra argc/argv that this code still
 passes it.
@@ -25,5 +25,5 @@ index 0da2a52..f66c03c 100644
          }
        grub_free (script);
 -- 
-1.9.3
+2.7.4
 

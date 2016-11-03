@@ -1,7 +1,7 @@
 From 27d2434ea9aed09b6cefdcc8600e191fa6d1c2fb Mon Sep 17 00:00:00 2001
 From: Andrei Borzenkov <arvidjaar@gmail.com>
 Date: Fri, 5 Dec 2014 21:17:08 +0300
-Subject: [PATCH 18/23] fix memory corruption in pubkey filter over network
+Subject: [PATCH 175/198] fix memory corruption in pubkey filter over network
 
 grub_pubkey_open closed original file after it was read; it set
 io->device to NULL to prevent grub_file_close from trying to close device.
@@ -163,5 +163,5 @@ index 525bdd1..d599576 100644
  }
  
 -- 
-2.4.3
+2.7.4
 

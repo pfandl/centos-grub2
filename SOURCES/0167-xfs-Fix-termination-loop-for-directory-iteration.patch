@@ -1,7 +1,7 @@
 From 6afb93f24d48ff10d4266396b079b79033e05b0a Mon Sep 17 00:00:00 2001
 From: Jan Kara <jack@suse.cz>
 Date: Mon, 14 Jul 2014 17:21:29 +0200
-Subject: [PATCH 10/23] xfs: Fix termination loop for directory iteration
+Subject: [PATCH 167/198] xfs: Fix termination loop for directory iteration
 
 Directory iteration used wrong position (sizeof wrong structure) for
 termination of iteration inside a directory block. Luckily the position
@@ -28,5 +28,5 @@ index 16ffd3f..4bd52d1 100644
  		struct grub_xfs_dir2_entry *direntry;
  		grub_uint8_t *freetag;
 -- 
-2.4.3
+2.7.4
 
