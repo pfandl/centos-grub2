@@ -1,7 +1,7 @@
 From 66e6d4e742919936d7de18eb06e6f4218596354c Mon Sep 17 00:00:00 2001
 From: Paulo Flabiano Smorigo <pfsmorigo@br.ibm.com>
 Date: Tue, 27 Nov 2012 17:22:07 -0200
-Subject: [PATCH 100/198] Search for specific config file for netboot
+Subject: [PATCH 100/260] Search for specific config file for netboot
 
 This patch implements a search for a specific configuration when the config
 file is on a remoteserver. It uses the following order:
@@ -22,7 +22,7 @@ https://bugzilla.redhat.com/show_bug.cgi?id=873406
  3 files changed, 135 insertions(+), 4 deletions(-)
 
 diff --git a/grub-core/net/net.c b/grub-core/net/net.c
-index f2e723b..578e057 100644
+index f2e723bd4..578e057e1 100644
 --- a/grub-core/net/net.c
 +++ b/grub-core/net/net.c
 @@ -1702,6 +1702,124 @@ grub_net_restore_hw (void)
@@ -151,7 +151,7 @@ index f2e723b..578e057 100644
  
  static grub_command_t cmd_addaddr, cmd_deladdr, cmd_addroute, cmd_delroute;
 diff --git a/grub-core/normal/main.c b/grub-core/normal/main.c
-index f72844c..85d2a28 100644
+index f72844c9f..85d2a2862 100644
 --- a/grub-core/normal/main.c
 +++ b/grub-core/normal/main.c
 @@ -33,6 +33,7 @@
@@ -187,7 +187,7 @@ index f72844c..85d2a28 100644
  	  grub_enter_normal_mode (config);
  	  grub_free (config);
 diff --git a/include/grub/net.h b/include/grub/net.h
-index 59e5975..88fc71c 100644
+index 59e5975b1..88fc71cef 100644
 --- a/include/grub/net.h
 +++ b/include/grub/net.h
 @@ -542,4 +542,7 @@ extern char *grub_net_default_server;
@@ -199,5 +199,5 @@ index 59e5975..88fc71c 100644
 +
  #endif /* ! GRUB_NET_HEADER */
 -- 
-2.7.4
+2.13.0
 

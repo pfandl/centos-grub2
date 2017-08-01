@@ -1,7 +1,7 @@
 From 990b8a55e4adbf26763df3c42320e7891cbd599e Mon Sep 17 00:00:00 2001
 From: Colin Watson <cjwatson@ubuntu.com>
 Date: Fri, 27 Dec 2013 03:05:38 +0000
-Subject: [PATCH 004/198] * NEWS: First draft of 2.02 entry.
+Subject: [PATCH 004/260] * NEWS: First draft of 2.02 entry.
 
 ---
  ChangeLog |   4 +++
@@ -9,7 +9,7 @@ Subject: [PATCH 004/198] * NEWS: First draft of 2.02 entry.
  2 files changed, 123 insertions(+)
 
 diff --git a/ChangeLog b/ChangeLog
-index bbb0f31..82dc61d 100644
+index bbb0f3153..82dc61d24 100644
 --- a/ChangeLog
 +++ b/ChangeLog
 @@ -1,5 +1,9 @@
@@ -23,7 +23,7 @@ index bbb0f31..82dc61d 100644
  	* docs/grub.texi (Getting the source code): Likewise.
  
 diff --git a/NEWS b/NEWS
-index 4bb5f98..577d9fd 100644
+index 4bb5f9801..577d9fd73 100644
 --- a/NEWS
 +++ b/NEWS
 @@ -1,3 +1,122 @@
@@ -150,5 +150,5 @@ index 4bb5f98..577d9fd 100644
  
  * Appearance:
 -- 
-2.7.4
+2.13.0
 

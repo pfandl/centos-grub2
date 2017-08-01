@@ -1,7 +1,7 @@
 From 8219e2570e551ccf6034ce4bc6f8da1f61ff6663 Mon Sep 17 00:00:00 2001
 From: Fedora Ninjas <grub2-owner@fedoraproject.org>
 Date: Wed, 12 Feb 2014 14:54:04 -0500
-Subject: [PATCH 137/198] Use the default device tree from the grub default
+Subject: [PATCH 137/260] Use the default device tree from the grub default
  file
 
 instead of hardcoding a value.
@@ -13,7 +13,7 @@ Signed-off-by: David A. Marlin <dmarlin@redhat.com>
  2 files changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/util/grub-mkconfig.in b/util/grub-mkconfig.in
-index b00f9e6..beb22de 100644
+index b00f9e61f..beb22deee 100644
 --- a/util/grub-mkconfig.in
 +++ b/util/grub-mkconfig.in
 @@ -224,7 +224,8 @@ export GRUB_DEFAULT \
@@ -27,7 +27,7 @@ index b00f9e6..beb22de 100644
  if test "x${grub_cfg}" != "x"; then
    rm -f "${grub_cfg}.new"
 diff --git a/util/grub.d/10_linux.in b/util/grub.d/10_linux.in
-index 3722c1e..8782d8c 100644
+index 3722c1ea2..8782d8c67 100644
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
 @@ -228,8 +228,8 @@ while [ "x$list" != "x" ] ; do
@@ -42,5 +42,5 @@ index 3722c1e..8782d8c 100644
      fi
    done
 -- 
-2.7.4
+2.13.0
 

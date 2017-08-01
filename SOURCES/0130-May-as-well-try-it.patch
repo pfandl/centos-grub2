@@ -1,7 +1,7 @@
 From b93064670dd42ff44c1cebb0a223477afcb89b56 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Tue, 4 Mar 2014 11:00:23 -0500
-Subject: [PATCH 130/198] May as well try it.
+Subject: [PATCH 130/260] May as well try it.
 
 ---
  conf/Makefile.extra-dist          |   1 -
@@ -121,7 +121,7 @@ Subject: [PATCH 130/198] May as well try it.
  create mode 100644 util/grub-sparc64-setup.8
 
 diff --git a/conf/Makefile.extra-dist b/conf/Makefile.extra-dist
-index 51f08c1..e914dfd 100644
+index 51f08c1f9..e914dfd89 100644
 --- a/conf/Makefile.extra-dist
 +++ b/conf/Makefile.extra-dist
 @@ -10,7 +10,6 @@ EXTRA_DIST += unicode
@@ -133,7 +133,7 @@ index 51f08c1..e914dfd 100644
  EXTRA_DIST += docs/grub.cfg
  EXTRA_DIST += docs/osdetect.cfg
 diff --git a/configure.ac b/configure.ac
-index 8888c2f..2632e2d 100644
+index 8888c2ff2..2632e2dad 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -70,6 +70,29 @@ grub_TRANSFORM([grub-set-default])
@@ -167,7 +167,7 @@ index 8888c2f..2632e2d 100644
  # Optimization flag.  Allow user to override.
  if test "x$TARGET_CFLAGS" = x; then
 diff --git a/docs/Makefile.am b/docs/Makefile.am
-index 93eb396..ab28f19 100644
+index 93eb39627..ab28f1996 100644
 --- a/docs/Makefile.am
 +++ b/docs/Makefile.am
 @@ -5,5 +5,3 @@ info_TEXINFOS = grub.texi grub-dev.texi
@@ -178,7 +178,7 @@ index 93eb396..ab28f19 100644
 -
 diff --git a/docs/man/grub-bios-setup.h2m b/docs/man/grub-bios-setup.h2m
 deleted file mode 100644
-index ac6ede3..0000000
+index ac6ede362..000000000
 --- a/docs/man/grub-bios-setup.h2m
 +++ /dev/null
 @@ -1,6 +0,0 @@
@@ -190,7 +190,7 @@ index ac6ede3..0000000
 -.BR grub-mkrescue (1)
 diff --git a/docs/man/grub-editenv.h2m b/docs/man/grub-editenv.h2m
 deleted file mode 100644
-index 3859d3d..0000000
+index 3859d3d4c..000000000
 --- a/docs/man/grub-editenv.h2m
 +++ /dev/null
 @@ -1,5 +0,0 @@
@@ -201,7 +201,7 @@ index 3859d3d..0000000
 -.BR grub-set-default (8)
 diff --git a/docs/man/grub-emu.h2m b/docs/man/grub-emu.h2m
 deleted file mode 100644
-index ef1c000..0000000
+index ef1c00065..000000000
 --- a/docs/man/grub-emu.h2m
 +++ /dev/null
 @@ -1,6 +0,0 @@
@@ -213,7 +213,7 @@ index ef1c000..0000000
 -rather than this program.
 diff --git a/docs/man/grub-file.h2m b/docs/man/grub-file.h2m
 deleted file mode 100644
-index e09bb4d..0000000
+index e09bb4d31..000000000
 --- a/docs/man/grub-file.h2m
 +++ /dev/null
 @@ -1,2 +0,0 @@
@@ -221,7 +221,7 @@ index e09bb4d..0000000
 -grub-file \- check file type
 diff --git a/docs/man/grub-fstest.h2m b/docs/man/grub-fstest.h2m
 deleted file mode 100644
-index 9676b15..0000000
+index 9676b159a..000000000
 --- a/docs/man/grub-fstest.h2m
 +++ /dev/null
 @@ -1,4 +0,0 @@
@@ -231,7 +231,7 @@ index 9676b15..0000000
 -.BR grub-probe (8)
 diff --git a/docs/man/grub-glue-efi.h2m b/docs/man/grub-glue-efi.h2m
 deleted file mode 100644
-index c1c6ded..0000000
+index c1c6ded49..000000000
 --- a/docs/man/grub-glue-efi.h2m
 +++ /dev/null
 @@ -1,4 +0,0 @@
@@ -241,7 +241,7 @@ index c1c6ded..0000000
 -grub-glue-efi processes ia32 and amd64 EFI images and glues them according to Apple format.
 diff --git a/docs/man/grub-install.h2m b/docs/man/grub-install.h2m
 deleted file mode 100644
-index 8cbbc87..0000000
+index 8cbbc87a0..000000000
 --- a/docs/man/grub-install.h2m
 +++ /dev/null
 @@ -1,6 +0,0 @@
@@ -253,7 +253,7 @@ index 8cbbc87..0000000
 -.BR grub-mkrescue (1)
 diff --git a/docs/man/grub-kbdcomp.h2m b/docs/man/grub-kbdcomp.h2m
 deleted file mode 100644
-index d81f915..0000000
+index d81f9157e..000000000
 --- a/docs/man/grub-kbdcomp.h2m
 +++ /dev/null
 @@ -1,10 +0,0 @@
@@ -269,7 +269,7 @@ index d81f915..0000000
 -.BR grub-mklayout (8)
 diff --git a/docs/man/grub-macbless.h2m b/docs/man/grub-macbless.h2m
 deleted file mode 100644
-index 0197c00..0000000
+index 0197c0087..000000000
 --- a/docs/man/grub-macbless.h2m
 +++ /dev/null
 @@ -1,4 +0,0 @@
@@ -279,7 +279,7 @@ index 0197c00..0000000
 -.BR grub-install (1)
 diff --git a/docs/man/grub-macho2img.h2m b/docs/man/grub-macho2img.h2m
 deleted file mode 100644
-index d79aaee..0000000
+index d79aaeed8..000000000
 --- a/docs/man/grub-macho2img.h2m
 +++ /dev/null
 @@ -1,4 +0,0 @@
@@ -289,7 +289,7 @@ index d79aaee..0000000
 -.BR grub-mkimage (1)
 diff --git a/docs/man/grub-menulst2cfg.h2m b/docs/man/grub-menulst2cfg.h2m
 deleted file mode 100644
-index c2e0055..0000000
+index c2e0055ed..000000000
 --- a/docs/man/grub-menulst2cfg.h2m
 +++ /dev/null
 @@ -1,4 +0,0 @@
@@ -299,7 +299,7 @@ index c2e0055..0000000
 -.BR grub-mkconfig (8)
 diff --git a/docs/man/grub-mkconfig.h2m b/docs/man/grub-mkconfig.h2m
 deleted file mode 100644
-index 9b42f81..0000000
+index 9b42f8130..000000000
 --- a/docs/man/grub-mkconfig.h2m
 +++ /dev/null
 @@ -1,4 +0,0 @@
@@ -309,7 +309,7 @@ index 9b42f81..0000000
 -.BR grub-install (8)
 diff --git a/docs/man/grub-mkfont.h2m b/docs/man/grub-mkfont.h2m
 deleted file mode 100644
-index d46fe60..0000000
+index d46fe600e..000000000
 --- a/docs/man/grub-mkfont.h2m
 +++ /dev/null
 @@ -1,4 +0,0 @@
@@ -319,7 +319,7 @@ index d46fe60..0000000
 -.BR grub-mkconfig (8)
 diff --git a/docs/man/grub-mkimage.h2m b/docs/man/grub-mkimage.h2m
 deleted file mode 100644
-index f0fbc2b..0000000
+index f0fbc2bb1..000000000
 --- a/docs/man/grub-mkimage.h2m
 +++ /dev/null
 @@ -1,6 +0,0 @@
@@ -331,7 +331,7 @@ index f0fbc2b..0000000
 -.BR grub-mknetdir (8)
 diff --git a/docs/man/grub-mklayout.h2m b/docs/man/grub-mklayout.h2m
 deleted file mode 100644
-index 1e43409..0000000
+index 1e43409c0..000000000
 --- a/docs/man/grub-mklayout.h2m
 +++ /dev/null
 @@ -1,10 +0,0 @@
@@ -347,7 +347,7 @@ index 1e43409..0000000
 -.BR grub-mkconfig (8)
 diff --git a/docs/man/grub-mknetdir.h2m b/docs/man/grub-mknetdir.h2m
 deleted file mode 100644
-index a2ef13e..0000000
+index a2ef13ec1..000000000
 --- a/docs/man/grub-mknetdir.h2m
 +++ /dev/null
 @@ -1,4 +0,0 @@
@@ -357,7 +357,7 @@ index a2ef13e..0000000
 -.BR grub-mkimage (1)
 diff --git a/docs/man/grub-mkpasswd-pbkdf2.h2m b/docs/man/grub-mkpasswd-pbkdf2.h2m
 deleted file mode 100644
-index 4d202f3..0000000
+index 4d202f3da..000000000
 --- a/docs/man/grub-mkpasswd-pbkdf2.h2m
 +++ /dev/null
 @@ -1,4 +0,0 @@
@@ -367,7 +367,7 @@ index 4d202f3..0000000
 -.BR grub-mkconfig (8)
 diff --git a/docs/man/grub-mkrelpath.h2m b/docs/man/grub-mkrelpath.h2m
 deleted file mode 100644
-index d01f396..0000000
+index d01f3961e..000000000
 --- a/docs/man/grub-mkrelpath.h2m
 +++ /dev/null
 @@ -1,4 +0,0 @@
@@ -377,7 +377,7 @@ index d01f396..0000000
 -.BR grub-probe (8)
 diff --git a/docs/man/grub-mkrescue.h2m b/docs/man/grub-mkrescue.h2m
 deleted file mode 100644
-index a427f02..0000000
+index a427f02e3..000000000
 --- a/docs/man/grub-mkrescue.h2m
 +++ /dev/null
 @@ -1,4 +0,0 @@
@@ -387,7 +387,7 @@ index a427f02..0000000
 -.BR grub-mkimage (1)
 diff --git a/docs/man/grub-mkstandalone.h2m b/docs/man/grub-mkstandalone.h2m
 deleted file mode 100644
-index c773139..0000000
+index c77313978..000000000
 --- a/docs/man/grub-mkstandalone.h2m
 +++ /dev/null
 @@ -1,4 +0,0 @@
@@ -397,7 +397,7 @@ index c773139..0000000
 -.BR grub-mkimage (1)
 diff --git a/docs/man/grub-mount.h2m b/docs/man/grub-mount.h2m
 deleted file mode 100644
-index 8d16898..0000000
+index 8d168982d..000000000
 --- a/docs/man/grub-mount.h2m
 +++ /dev/null
 @@ -1,2 +0,0 @@
@@ -405,7 +405,7 @@ index 8d16898..0000000
 -grub-mount \- export GRUB filesystem with FUSE
 diff --git a/docs/man/grub-ofpathname.h2m b/docs/man/grub-ofpathname.h2m
 deleted file mode 100644
-index 74b43ee..0000000
+index 74b43eea0..000000000
 --- a/docs/man/grub-ofpathname.h2m
 +++ /dev/null
 @@ -1,4 +0,0 @@
@@ -415,7 +415,7 @@ index 74b43ee..0000000
 -.BR grub-probe (8)
 diff --git a/docs/man/grub-pe2elf.h2m b/docs/man/grub-pe2elf.h2m
 deleted file mode 100644
-index 7ca29bd..0000000
+index 7ca29bd70..000000000
 --- a/docs/man/grub-pe2elf.h2m
 +++ /dev/null
 @@ -1,4 +0,0 @@
@@ -425,7 +425,7 @@ index 7ca29bd..0000000
 -.BR grub-mkimage (1)
 diff --git a/docs/man/grub-probe.h2m b/docs/man/grub-probe.h2m
 deleted file mode 100644
-index 6e1ffdc..0000000
+index 6e1ffdcf9..000000000
 --- a/docs/man/grub-probe.h2m
 +++ /dev/null
 @@ -1,4 +0,0 @@
@@ -435,7 +435,7 @@ index 6e1ffdc..0000000
 -.BR grub-fstest (1)
 diff --git a/docs/man/grub-reboot.h2m b/docs/man/grub-reboot.h2m
 deleted file mode 100644
-index e4acace..0000000
+index e4acace65..000000000
 --- a/docs/man/grub-reboot.h2m
 +++ /dev/null
 @@ -1,5 +0,0 @@
@@ -446,7 +446,7 @@ index e4acace..0000000
 -.BR grub-editenv (1)
 diff --git a/docs/man/grub-render-label.h2m b/docs/man/grub-render-label.h2m
 deleted file mode 100644
-index 50ae524..0000000
+index 50ae5247c..000000000
 --- a/docs/man/grub-render-label.h2m
 +++ /dev/null
 @@ -1,3 +0,0 @@
@@ -455,7 +455,7 @@ index 50ae524..0000000
 -
 diff --git a/docs/man/grub-script-check.h2m b/docs/man/grub-script-check.h2m
 deleted file mode 100644
-index 3653682..0000000
+index 365368267..000000000
 --- a/docs/man/grub-script-check.h2m
 +++ /dev/null
 @@ -1,4 +0,0 @@
@@ -465,7 +465,7 @@ index 3653682..0000000
 -.BR grub-mkconfig (8)
 diff --git a/docs/man/grub-set-default.h2m b/docs/man/grub-set-default.h2m
 deleted file mode 100644
-index 7945001..0000000
+index 7945001c1..000000000
 --- a/docs/man/grub-set-default.h2m
 +++ /dev/null
 @@ -1,5 +0,0 @@
@@ -476,7 +476,7 @@ index 7945001..0000000
 -.BR grub-editenv (1)
 diff --git a/docs/man/grub-sparc64-setup.h2m b/docs/man/grub-sparc64-setup.h2m
 deleted file mode 100644
-index 18f803a..0000000
+index 18f803a50..000000000
 --- a/docs/man/grub-sparc64-setup.h2m
 +++ /dev/null
 @@ -1,6 +0,0 @@
@@ -488,7 +488,7 @@ index 18f803a..0000000
 -.BR grub-mkrescue (1)
 diff --git a/docs/man/grub-syslinux2cfg.h2m b/docs/man/grub-syslinux2cfg.h2m
 deleted file mode 100644
-index ad25c8a..0000000
+index ad25c8ab7..000000000
 --- a/docs/man/grub-syslinux2cfg.h2m
 +++ /dev/null
 @@ -1,4 +0,0 @@
@@ -497,7 +497,7 @@ index ad25c8a..0000000
 -[SEE ALSO]
 -.BR grub-menulst2cfg (8)
 diff --git a/gentpl.py b/gentpl.py
-index bdcae1a..889cc91 100644
+index bdcae1a1c..889cc91d3 100644
 --- a/gentpl.py
 +++ b/gentpl.py
 @@ -792,10 +792,7 @@ def manpage(defn, adddeps):
@@ -514,7 +514,7 @@ index bdcae1a..889cc91 100644
  
 diff --git a/util/grub-bios-setup.8 b/util/grub-bios-setup.8
 new file mode 100644
-index 0000000..56f582b
+index 000000000..56f582b3d
 --- /dev/null
 +++ b/util/grub-bios-setup.8
 @@ -0,0 +1,54 @@
@@ -574,7 +574,7 @@ index 0000000..56f582b
 +.BR "info grub"
 diff --git a/util/grub-editenv.1 b/util/grub-editenv.1
 new file mode 100644
-index 0000000..8dad33f
+index 000000000..8dad33f8d
 --- /dev/null
 +++ b/util/grub-editenv.1
 @@ -0,0 +1,46 @@
@@ -626,7 +626,7 @@ index 0000000..8dad33f
 +.BR "info grub"
 diff --git a/util/grub-file.1 b/util/grub-file.1
 new file mode 100644
-index 0000000..b29cb32
+index 000000000..b29cb3278
 --- /dev/null
 +++ b/util/grub-file.1
 @@ -0,0 +1,165 @@
@@ -797,7 +797,7 @@ index 0000000..b29cb32
 +.BR "info grub"
 diff --git a/util/grub-fstest.1 b/util/grub-fstest.1
 new file mode 100644
-index 0000000..792fa78
+index 000000000..792fa7863
 --- /dev/null
 +++ b/util/grub-fstest.1
 @@ -0,0 +1,99 @@
@@ -902,7 +902,7 @@ index 0000000..792fa78
 +.BR "info grub"
 diff --git a/util/grub-glue-efi.1 b/util/grub-glue-efi.1
 new file mode 100644
-index 0000000..72bd555
+index 000000000..72bd555d5
 --- /dev/null
 +++ b/util/grub-glue-efi.1
 @@ -0,0 +1,31 @@
@@ -939,7 +939,7 @@ index 0000000..72bd555
 +.BR "info grub"
 diff --git a/util/grub-install.8 b/util/grub-install.8
 new file mode 100644
-index 0000000..76272a3
+index 000000000..76272a39d
 --- /dev/null
 +++ b/util/grub-install.8
 @@ -0,0 +1,129 @@
@@ -1074,7 +1074,7 @@ index 0000000..76272a3
 +.BR "info grub"
 diff --git a/util/grub-kbdcomp.1 b/util/grub-kbdcomp.1
 new file mode 100644
-index 0000000..0bb969a
+index 000000000..0bb969a5b
 --- /dev/null
 +++ b/util/grub-kbdcomp.1
 @@ -0,0 +1,19 @@
@@ -1099,7 +1099,7 @@ index 0000000..0bb969a
 +.BR "info grub"
 diff --git a/util/grub-macbless.1 b/util/grub-macbless.1
 new file mode 100644
-index 0000000..41a9618
+index 000000000..41a96186f
 --- /dev/null
 +++ b/util/grub-macbless.1
 @@ -0,0 +1,22 @@
@@ -1127,7 +1127,7 @@ index 0000000..41a9618
 +.BR "info grub"
 diff --git a/util/grub-menulst2cfg.1 b/util/grub-menulst2cfg.1
 new file mode 100644
-index 0000000..91e2ef8
+index 000000000..91e2ef871
 --- /dev/null
 +++ b/util/grub-menulst2cfg.1
 @@ -0,0 +1,12 @@
@@ -1145,7 +1145,7 @@ index 0000000..91e2ef8
 +.BR "info grub"
 diff --git a/util/grub-mkconfig.8 b/util/grub-mkconfig.8
 new file mode 100644
-index 0000000..a2d1f57
+index 000000000..a2d1f577b
 --- /dev/null
 +++ b/util/grub-mkconfig.8
 @@ -0,0 +1,17 @@
@@ -1168,7 +1168,7 @@ index 0000000..a2d1f57
 +.BR "info grub"
 diff --git a/util/grub-mkfont.1 b/util/grub-mkfont.1
 new file mode 100644
-index 0000000..3494857
+index 000000000..349485798
 --- /dev/null
 +++ b/util/grub-mkfont.1
 @@ -0,0 +1,87 @@
@@ -1261,7 +1261,7 @@ index 0000000..3494857
 +.BR "info grub"
 diff --git a/util/grub-mkimage.1 b/util/grub-mkimage.1
 new file mode 100644
-index 0000000..4dea4f5
+index 000000000..4dea4f545
 --- /dev/null
 +++ b/util/grub-mkimage.1
 @@ -0,0 +1,95 @@
@@ -1362,7 +1362,7 @@ index 0000000..4dea4f5
 +.BR "info grub"
 diff --git a/util/grub-mklayout.1 b/util/grub-mklayout.1
 new file mode 100644
-index 0000000..d1bbc2e
+index 000000000..d1bbc2ec5
 --- /dev/null
 +++ b/util/grub-mklayout.1
 @@ -0,0 +1,27 @@
@@ -1395,7 +1395,7 @@ index 0000000..d1bbc2e
 +.BR "info grub"
 diff --git a/util/grub-mknetdir.1 b/util/grub-mknetdir.1
 new file mode 100644
-index 0000000..69c2262
+index 000000000..69c22628f
 --- /dev/null
 +++ b/util/grub-mknetdir.1
 @@ -0,0 +1,12 @@
@@ -1413,7 +1413,7 @@ index 0000000..69c2262
 +.BR "info grub"
 diff --git a/util/grub-mkpasswd-pbkdf2.1 b/util/grub-mkpasswd-pbkdf2.1
 new file mode 100644
-index 0000000..73c437c
+index 000000000..73c437c15
 --- /dev/null
 +++ b/util/grub-mkpasswd-pbkdf2.1
 @@ -0,0 +1,27 @@
@@ -1446,7 +1446,7 @@ index 0000000..73c437c
 +.BR "info grub"
 diff --git a/util/grub-mkrelpath.1 b/util/grub-mkrelpath.1
 new file mode 100644
-index 0000000..85f1113
+index 000000000..85f111362
 --- /dev/null
 +++ b/util/grub-mkrelpath.1
 @@ -0,0 +1,12 @@
@@ -1464,7 +1464,7 @@ index 0000000..85f1113
 +.BR "info grub"
 diff --git a/util/grub-mkrescue.1 b/util/grub-mkrescue.1
 new file mode 100644
-index 0000000..4ed9fc7
+index 000000000..4ed9fc723
 --- /dev/null
 +++ b/util/grub-mkrescue.1
 @@ -0,0 +1,123 @@
@@ -1593,7 +1593,7 @@ index 0000000..4ed9fc7
 +.BR "info grub"
 diff --git a/util/grub-mkstandalone.1 b/util/grub-mkstandalone.1
 new file mode 100644
-index 0000000..ba2d2bd
+index 000000000..ba2d2bdf2
 --- /dev/null
 +++ b/util/grub-mkstandalone.1
 @@ -0,0 +1,100 @@
@@ -1699,7 +1699,7 @@ index 0000000..ba2d2bd
 +.BR "info grub"
 diff --git a/util/grub-ofpathname.8 b/util/grub-ofpathname.8
 new file mode 100644
-index 0000000..bf3743a
+index 000000000..bf3743aeb
 --- /dev/null
 +++ b/util/grub-ofpathname.8
 @@ -0,0 +1,12 @@
@@ -1717,7 +1717,7 @@ index 0000000..bf3743a
 +.BR "info grub"
 diff --git a/util/grub-probe.8 b/util/grub-probe.8
 new file mode 100644
-index 0000000..04e26c8
+index 000000000..04e26c832
 --- /dev/null
 +++ b/util/grub-probe.8
 @@ -0,0 +1,80 @@
@@ -1803,7 +1803,7 @@ index 0000000..04e26c8
 +.BR "info grub"
 diff --git a/util/grub-reboot.8 b/util/grub-reboot.8
 new file mode 100644
-index 0000000..faa5e4e
+index 000000000..faa5e4eec
 --- /dev/null
 +++ b/util/grub-reboot.8
 @@ -0,0 +1,21 @@
@@ -1830,7 +1830,7 @@ index 0000000..faa5e4e
 +.BR "info grub"
 diff --git a/util/grub-render-label.1 b/util/grub-render-label.1
 new file mode 100644
-index 0000000..4d51c8a
+index 000000000..4d51c8abf
 --- /dev/null
 +++ b/util/grub-render-label.1
 @@ -0,0 +1,51 @@
@@ -1887,7 +1887,7 @@ index 0000000..4d51c8a
 +.BR "info grub"
 diff --git a/util/grub-script-check.1 b/util/grub-script-check.1
 new file mode 100644
-index 0000000..0f1f625
+index 000000000..0f1f625b0
 --- /dev/null
 +++ b/util/grub-script-check.1
 @@ -0,0 +1,21 @@
@@ -1914,7 +1914,7 @@ index 0000000..0f1f625
 +.BR "info grub"
 diff --git a/util/grub-set-default.8 b/util/grub-set-default.8
 new file mode 100644
-index 0000000..a96265a
+index 000000000..a96265a15
 --- /dev/null
 +++ b/util/grub-set-default.8
 @@ -0,0 +1,21 @@
@@ -1941,7 +1941,7 @@ index 0000000..a96265a
 +.BR "info grub"
 diff --git a/util/grub-sparc64-setup.8 b/util/grub-sparc64-setup.8
 new file mode 100644
-index 0000000..37ea2dd
+index 000000000..37ea2dd5e
 --- /dev/null
 +++ b/util/grub-sparc64-setup.8
 @@ -0,0 +1,12 @@
@@ -1958,5 +1958,5 @@ index 0000000..37ea2dd
 +.SH SEE ALSO
 +.BR "info grub"
 -- 
-2.7.4
+2.13.0
 

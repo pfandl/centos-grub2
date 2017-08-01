@@ -1,7 +1,7 @@
 From 034afc94f6126bd352587265f03fa383f998f0fc Mon Sep 17 00:00:00 2001
 From: Paulo Flabiano Smorigo <pfsmorigo@linux.vnet.ibm.com>
 Date: Wed, 13 Aug 2014 19:00:19 +0000
-Subject: [PATCH 142/198] Files reorganization and include some libgcc fuctions
+Subject: [PATCH 142/260] Files reorganization and include some libgcc fuctions
 
 As we avoid libgcc dependency for powerpc64el, we moved some functions
 to other files and add the necessary ones.
@@ -24,7 +24,7 @@ Also-By: Vladimir 'phcoder' Serbinenko <phcoder@gmail.com>
  create mode 100644 grub-core/kern/powerpc/compiler-rt.S
 
 diff --git a/grub-core/Makefile.core.def b/grub-core/Makefile.core.def
-index 7bf1c8a..9ff9ae5 100644
+index 7bf1c8a58..9ff9ae5a3 100644
 --- a/grub-core/Makefile.core.def
 +++ b/grub-core/Makefile.core.def
 @@ -252,6 +252,7 @@ kernel = {
@@ -36,7 +36,7 @@ index 7bf1c8a..9ff9ae5 100644
    sparc64_ieee1275 = kern/sparc64/cache.S;
    sparc64_ieee1275 = kern/sparc64/dl.c;
 diff --git a/grub-core/kern/misc.c b/grub-core/kern/misc.c
-index a56cfe7..a3e5056 100644
+index a56cfe789..a3e5056db 100644
 --- a/grub-core/kern/misc.c
 +++ b/grub-core/kern/misc.c
 @@ -1345,3 +1345,110 @@ grub_real_boot_time (const char *file,
@@ -152,7 +152,7 @@ index a56cfe7..a3e5056 100644
 +#endif
 diff --git a/grub-core/kern/powerpc/compiler-rt.S b/grub-core/kern/powerpc/compiler-rt.S
 new file mode 100644
-index 0000000..63e3a0d
+index 000000000..63e3a0d4e
 --- /dev/null
 +++ b/grub-core/kern/powerpc/compiler-rt.S
 @@ -0,0 +1,130 @@
@@ -287,7 +287,7 @@ index 0000000..63e3a0d
 +			blr
 +CFI_ENDPROC
 diff --git a/include/grub/compiler.h b/include/grub/compiler.h
-index c9e1d7a..a9a684c 100644
+index c9e1d7a73..a9a684ccb 100644
 --- a/include/grub/compiler.h
 +++ b/include/grub/compiler.h
 @@ -48,4 +48,65 @@
@@ -357,7 +357,7 @@ index c9e1d7a..a9a684c 100644
 +
  #endif /* ! GRUB_COMPILER_HEADER */
 diff --git a/include/grub/libgcc.h b/include/grub/libgcc.h
-index 8e93b67..5bdb8fb 100644
+index 8e93b6792..5bdb8fb5c 100644
 --- a/include/grub/libgcc.h
 +++ b/include/grub/libgcc.h
 @@ -16,73 +16,6 @@
@@ -435,5 +435,5 @@ index 8e93b67..5bdb8fb 100644
  void EXPORT_FUNC (__aeabi_lasr) (void);
  void EXPORT_FUNC (__aeabi_llsl) (void);
 -- 
-2.7.4
+2.13.0
 

@@ -1,7 +1,7 @@
 From 738e0c73073b27de660696d32c2030bc683de2a2 Mon Sep 17 00:00:00 2001
 From: Vladimir Serbinenko <phcoder@gmail.com>
 Date: Fri, 28 Feb 2014 10:50:05 +0100
-Subject: [PATCH 065/198] * include/grub/i386/openbsd_bootarg.h: Add addr and
+Subject: [PATCH 065/260] * include/grub/i386/openbsd_bootarg.h: Add addr and
  frequency fields. * grub-core/loader/i386/bsd.c (grub_cmd_openbsd): Fill addr
  field.
 MIME-Version: 1.0
@@ -16,7 +16,7 @@ Content-Transfer-Encoding: 8bit
  3 files changed, 11 insertions(+)
 
 diff --git a/ChangeLog b/ChangeLog
-index 97cf57e..f571f66 100644
+index 97cf57e25..f571f6653 100644
 --- a/ChangeLog
 +++ b/ChangeLog
 @@ -1,5 +1,12 @@
@@ -33,7 +33,7 @@ index 97cf57e..f571f66 100644
  	if E820 failed to return any regions.
  
 diff --git a/grub-core/loader/i386/bsd.c b/grub-core/loader/i386/bsd.c
-index ea0edfa..19985f0 100644
+index ea0edfafe..19985f03e 100644
 --- a/grub-core/loader/i386/bsd.c
 +++ b/grub-core/loader/i386/bsd.c
 @@ -1646,6 +1646,7 @@ grub_cmd_openbsd (grub_extcmd_context_t ctxt, int argc, char *argv[])
@@ -53,7 +53,7 @@ index ea0edfa..19985f0 100644
        bootflags &= ~OPENBSD_RB_SERCONS;
      }
 diff --git a/include/grub/i386/openbsd_bootarg.h b/include/grub/i386/openbsd_bootarg.h
-index 01ca486..9ebe6b4 100644
+index 01ca4868b..9ebe6b4e4 100644
 --- a/include/grub/i386/openbsd_bootarg.h
 +++ b/include/grub/i386/openbsd_bootarg.h
 @@ -75,6 +75,8 @@ struct grub_openbsd_bootarg_console
@@ -66,5 +66,5 @@ index 01ca486..9ebe6b4 100644
  
  struct grub_openbsd_bootarg_pcibios
 -- 
-2.7.4
+2.13.0
 

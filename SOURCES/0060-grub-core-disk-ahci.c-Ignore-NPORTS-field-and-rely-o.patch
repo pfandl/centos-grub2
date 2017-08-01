@@ -1,7 +1,7 @@
 From d92788a92466b22fb10c2d3f6c9c68d0002227b3 Mon Sep 17 00:00:00 2001
 From: Vladimir Serbinenko <phcoder@gmail.com>
 Date: Thu, 20 Feb 2014 10:11:43 +0100
-Subject: [PATCH 060/198] * grub-core/disk/ahci.c: Ignore NPORTS field and rely
+Subject: [PATCH 060/260] * grub-core/disk/ahci.c: Ignore NPORTS field and rely
  on PI exclusively.
 
 ---
@@ -10,7 +10,7 @@ Subject: [PATCH 060/198] * grub-core/disk/ahci.c: Ignore NPORTS field and rely
  2 files changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/ChangeLog b/ChangeLog
-index 5237631..be41aa5 100644
+index 523763158..be41aa51f 100644
 --- a/ChangeLog
 +++ b/ChangeLog
 @@ -1,3 +1,8 @@
@@ -23,7 +23,7 @@ index 5237631..be41aa5 100644
  
  	Add bootpath parser for open firmware.
 diff --git a/grub-core/disk/ahci.c b/grub-core/disk/ahci.c
-index 5e4a639..89365cd 100644
+index 5e4a6397a..89365cd09 100644
 --- a/grub-core/disk/ahci.c
 +++ b/grub-core/disk/ahci.c
 @@ -322,7 +322,7 @@ grub_ahci_pciinit (grub_pci_device_t dev,
@@ -36,5 +36,5 @@ index 5e4a639..89365cd 100644
    grub_dprintf ("ahci", "%d AHCI ports, PI = 0x%x\n", nports,
  		hba->ports_implemented);
 -- 
-2.7.4
+2.13.0
 

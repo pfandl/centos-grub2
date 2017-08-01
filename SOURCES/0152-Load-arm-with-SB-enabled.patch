@@ -1,7 +1,7 @@
 From 0c0ca3a51e6edda6900a3f812c3a442a57b9c8d1 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Thu, 18 Sep 2014 11:26:14 -0400
-Subject: [PATCH 152/198] Load arm with SB enabled.
+Subject: [PATCH 152/260] Load arm with SB enabled.
 
 Make sure we actually try to validate secure boot on this platform (even
 though we're not shipping it enabled by default.)
@@ -21,7 +21,7 @@ is enabled.
  create mode 100644 include/grub/efi/linux.h
 
 diff --git a/grub-core/Makefile.core.def b/grub-core/Makefile.core.def
-index 9ff9ae5..9378c73 100644
+index 9ff9ae5a3..9378c7329 100644
 --- a/grub-core/Makefile.core.def
 +++ b/grub-core/Makefile.core.def
 @@ -1682,6 +1682,7 @@ module = {
@@ -41,7 +41,7 @@ index 9ff9ae5..9378c73 100644
    enable = x86_64_efi;
  };
 diff --git a/grub-core/loader/arm64/linux.c b/grub-core/loader/arm64/linux.c
-index 0dc144e..bdd9c9b 100644
+index 0dc144e5d..bdd9c9b49 100644
 --- a/grub-core/loader/arm64/linux.c
 +++ b/grub-core/loader/arm64/linux.c
 @@ -27,6 +27,7 @@
@@ -234,7 +234,7 @@ index 0dc144e..bdd9c9b 100644
  GRUB_MOD_INIT (linux)
 diff --git a/grub-core/loader/efi/linux.c b/grub-core/loader/efi/linux.c
 new file mode 100644
-index 0000000..aea378a
+index 000000000..aea378adf
 --- /dev/null
 +++ b/grub-core/loader/efi/linux.c
 @@ -0,0 +1,65 @@
@@ -304,7 +304,7 @@ index 0000000..aea378a
 +  return GRUB_ERR_BUG;
 +}
 diff --git a/grub-core/loader/i386/efi/linux.c b/grub-core/loader/i386/efi/linux.c
-index b79e632..e5b7785 100644
+index b79e6320b..e5b778577 100644
 --- a/grub-core/loader/i386/efi/linux.c
 +++ b/grub-core/loader/i386/efi/linux.c
 @@ -26,6 +26,7 @@
@@ -371,7 +371,7 @@ index b79e632..e5b7785 100644
  
  static grub_err_t
 diff --git a/include/grub/arm64/linux.h b/include/grub/arm64/linux.h
-index 864e5dc..2cbd64f 100644
+index 864e5dc36..2cbd64f8c 100644
 --- a/include/grub/arm64/linux.h
 +++ b/include/grub/arm64/linux.h
 @@ -20,6 +20,7 @@
@@ -396,7 +396,7 @@ index 864e5dc..2cbd64f 100644
  #endif /* ! GRUB_LINUX_CPU_HEADER */
 diff --git a/include/grub/efi/linux.h b/include/grub/efi/linux.h
 new file mode 100644
-index 0000000..d9ede36
+index 000000000..d9ede3677
 --- /dev/null
 +++ b/include/grub/efi/linux.h
 @@ -0,0 +1,31 @@
@@ -432,5 +432,5 @@ index 0000000..d9ede36
 +
 +#endif /* ! GRUB_EFI_LINUX_HEADER */
 -- 
-2.7.4
+2.13.0
 

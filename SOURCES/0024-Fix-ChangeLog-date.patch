@@ -1,14 +1,14 @@
 From 5e0b14595aa213e38740d5908493999cbe4206af Mon Sep 17 00:00:00 2001
 From: Andrey Borzenkov <arvidjaar@gmail.com>
 Date: Sat, 18 Jan 2014 20:01:16 +0400
-Subject: [PATCH 024/198] Fix ChangeLog date
+Subject: [PATCH 024/260] Fix ChangeLog date
 
 ---
  ChangeLog | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/ChangeLog b/ChangeLog
-index bdfbf44..fcbf220 100644
+index bdfbf44da..fcbf2207b 100644
 --- a/ChangeLog
 +++ b/ChangeLog
 @@ -2,7 +2,7 @@
@@ -21,5 +21,5 @@ index bdfbf44..fcbf220 100644
  	* configure.ac: Add support for BUILD_LDFLAGS.
  	* Makefile.am: Use BUILD_LDFLAGS for build time programs here ...
 -- 
-2.7.4
+2.13.0
 

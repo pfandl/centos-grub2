@@ -1,7 +1,7 @@
 From c47197b3425d1629d6633ffff8fd1e81f8321119 Mon Sep 17 00:00:00 2001
 From: Vladimir Serbinenko <phcoder@gmail.com>
 Date: Fri, 4 Apr 2014 08:02:38 +0200
-Subject: [PATCH 074/198] * include/grub/libgcc.h: Remove ctzsi2 and ctzdi2.
+Subject: [PATCH 074/260] * include/grub/libgcc.h: Remove ctzsi2 and ctzdi2.
  They're no longer pulled from libgcc.
 
 ---
@@ -10,7 +10,7 @@ Subject: [PATCH 074/198] * include/grub/libgcc.h: Remove ctzsi2 and ctzdi2.
  2 files changed, 5 insertions(+), 7 deletions(-)
 
 diff --git a/ChangeLog b/ChangeLog
-index f18cdba..90e41bd 100644
+index f18cdba90..90e41bdad 100644
 --- a/ChangeLog
 +++ b/ChangeLog
 @@ -1,5 +1,10 @@
@@ -25,7 +25,7 @@ index f18cdba..90e41bd 100644
  	grub_memcmp/grub_memcpy.
  
 diff --git a/include/grub/libgcc.h b/include/grub/libgcc.h
-index fdc6611..97233d7 100644
+index fdc6611a0..97233d79e 100644
 --- a/include/grub/libgcc.h
 +++ b/include/grub/libgcc.h
 @@ -42,13 +42,6 @@ void EXPORT_FUNC (__bswapsi2) (void);
@@ -43,5 +43,5 @@ index fdc6611..97233d7 100644
  #ifdef HAVE__RESTGPR_14_X
  void EXPORT_FUNC (_restgpr_14_x) (void);
 -- 
-2.7.4
+2.13.0
 

@@ -1,7 +1,7 @@
 From 729607c36706453f0a035aa3261f1c2ff8ee8253 Mon Sep 17 00:00:00 2001
 From: Vladimir Serbinenko <phcoder@gmail.com>
 Date: Wed, 29 Jan 2014 23:50:49 +0100
-Subject: [PATCH 055/198] * grub-core/disk/ahci.c: Increase timeout. Some SSDs
+Subject: [PATCH 055/260] * grub-core/disk/ahci.c: Increase timeout. Some SSDs
  take up to 7 seconds to recover if last poweroff was bad.
 
 ---
@@ -10,7 +10,7 @@ Subject: [PATCH 055/198] * grub-core/disk/ahci.c: Increase timeout. Some SSDs
  2 files changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/ChangeLog b/ChangeLog
-index bc1ab23..1a822f3 100644
+index bc1ab231b..1a822f3d2 100644
 --- a/ChangeLog
 +++ b/ChangeLog
 @@ -1,5 +1,10 @@
@@ -25,7 +25,7 @@ index bc1ab23..1a822f3 100644
  	transferred data.
  
 diff --git a/grub-core/disk/ahci.c b/grub-core/disk/ahci.c
-index fdd40c6..5e4a639 100644
+index fdd40c64d..5e4a6397a 100644
 --- a/grub-core/disk/ahci.c
 +++ b/grub-core/disk/ahci.c
 @@ -1022,7 +1022,7 @@ grub_ahci_readwrite_real (struct grub_ahci_device *dev,
@@ -38,5 +38,5 @@ index fdd40c6..5e4a639 100644
      if (grub_get_time_ms () > endtime)
        {
 -- 
-2.7.4
+2.13.0
 

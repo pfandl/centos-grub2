@@ -1,7 +1,7 @@
 From 2dae852b62bb2227ba2e4faf4864c7779104657a Mon Sep 17 00:00:00 2001
 From: Paulo Flabiano Smorigo <pfsmorigo@linux.vnet.ibm.com>
 Date: Fri, 15 Aug 2014 14:39:53 -0300
-Subject: [PATCH 143/198] Suport for bi-endianess in elf file
+Subject: [PATCH 143/260] Suport for bi-endianess in elf file
 
 * grub-core/kern/elf.c: check and switch endianess with grub_{be,le}_to
   cpu functions.
@@ -14,7 +14,7 @@ Also-by: Tomohiro B Berry <tbberry@us.ibm.com>
  2 files changed, 131 insertions(+), 2 deletions(-)
 
 diff --git a/grub-core/kern/elf.c b/grub-core/kern/elf.c
-index 5f99c43..de90811 100644
+index 5f99c43cc..de9081180 100644
 --- a/grub-core/kern/elf.c
 +++ b/grub-core/kern/elf.c
 @@ -28,6 +28,11 @@
@@ -117,7 +117,7 @@ index 5f99c43..de90811 100644
  
  #include "elfXX.c"
 diff --git a/grub-core/kern/elfXX.c b/grub-core/kern/elfXX.c
-index 1d09971..ecf9df6 100644
+index 1d0997186..ecf9df63a 100644
 --- a/grub-core/kern/elfXX.c
 +++ b/grub-core/kern/elfXX.c
 @@ -154,3 +154,76 @@ grub_elfXX_load (grub_elf_t elf, const char *filename,
@@ -198,5 +198,5 @@ index 1d09971..ecf9df6 100644
 +  return GRUB_ERR_NONE;
 +}
 -- 
-2.7.4
+2.13.0
 

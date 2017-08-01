@@ -1,7 +1,7 @@
 From d98c0be0194a7c0d618b87293f5fc926c09ee611 Mon Sep 17 00:00:00 2001
 From: Andrey Borzenkov <arvidjaar@gmail.com>
 Date: Sat, 25 Jan 2014 19:54:51 +0400
-Subject: [PATCH 044/198] do not set default prefix in grub-mkimage
+Subject: [PATCH 044/260] do not set default prefix in grub-mkimage
 
 Default prefix is likely wrong on Unix and completely wrong on Windows.
 Let caller set it explicitly to avoid any ambiguity.
@@ -11,7 +11,7 @@ Let caller set it explicitly to avoid any ambiguity.
  2 files changed, 15 insertions(+), 5 deletions(-)
 
 diff --git a/ChangeLog b/ChangeLog
-index e149d8e..b405b7e 100644
+index e149d8ef3..b405b7ee5 100644
 --- a/ChangeLog
 +++ b/ChangeLog
 @@ -1,3 +1,7 @@
@@ -23,7 +23,7 @@ index e149d8e..b405b7e 100644
  
  	Fix several translatable strings.
 diff --git a/util/grub-mkimage.c b/util/grub-mkimage.c
-index a2bd4c1..1e0bcf1 100644
+index a2bd4c196..1e0bcf1bf 100644
 --- a/util/grub-mkimage.c
 +++ b/util/grub-mkimage.c
 @@ -64,7 +64,7 @@ static struct argp_option options[] = {
@@ -71,5 +71,5 @@ index a2bd4c1..1e0bcf1 100644
  			       arguments.memdisk, arguments.pubkeys,
  			       arguments.npubkeys, arguments.config,
 -- 
-2.7.4
+2.13.0
 

@@ -1,7 +1,7 @@
 From 6249aac7ff8e18595ad74e26cb727a0c94461d10 Mon Sep 17 00:00:00 2001
 From: Paulo Flabiano Smorigo <pfsmorigo@br.ibm.com>
 Date: Tue, 30 Oct 2012 15:19:39 -0200
-Subject: [PATCH 097/198] Add vlan-tag support
+Subject: [PATCH 097/260] Add vlan-tag support
 
 This patch adds support for virtual LAN (VLAN) tagging. VLAN tagging allows
 multiple VLANs in a bridged network to share the same physical network link but
@@ -20,7 +20,7 @@ https://bugzilla.redhat.com/show_bug.cgi?id=871563
  5 files changed, 73 insertions(+), 3 deletions(-)
 
 diff --git a/grub-core/kern/ieee1275/init.c b/grub-core/kern/ieee1275/init.c
-index d5bd74d..8191f8c 100644
+index d5bd74d35..8191f8cd6 100644
 --- a/grub-core/kern/ieee1275/init.c
 +++ b/grub-core/kern/ieee1275/init.c
 @@ -117,6 +117,7 @@ grub_machine_get_bootlocation (char **device, char **path)
@@ -32,7 +32,7 @@ index d5bd74d..8191f8c 100644
        ptr = canon + grub_strlen (canon) - 1;
        while (ptr > canon && (*ptr == ',' || *ptr == ':'))
 diff --git a/grub-core/kern/ieee1275/openfw.c b/grub-core/kern/ieee1275/openfw.c
-index 6db8b98..81276fa 100644
+index 6db8b9865..81276fae7 100644
 --- a/grub-core/kern/ieee1275/openfw.c
 +++ b/grub-core/kern/ieee1275/openfw.c
 @@ -23,6 +23,7 @@
@@ -80,7 +80,7 @@ index 6db8b98..81276fa 100644
  grub_ieee1275_get_device_type (const char *path)
  {
 diff --git a/grub-core/net/ethernet.c b/grub-core/net/ethernet.c
-index c397b1b..faaca67 100644
+index c397b1b34..faaca67c5 100644
 --- a/grub-core/net/ethernet.c
 +++ b/grub-core/net/ethernet.c
 @@ -23,6 +23,7 @@
@@ -159,7 +159,7 @@ index c397b1b..faaca67 100644
      return err;
  
 diff --git a/include/grub/ieee1275/ieee1275.h b/include/grub/ieee1275/ieee1275.h
-index 9f26c69..6a21f5d 100644
+index 9f26c69a2..6a21f5d6d 100644
 --- a/include/grub/ieee1275/ieee1275.h
 +++ b/include/grub/ieee1275/ieee1275.h
 @@ -236,6 +236,7 @@ void EXPORT_FUNC(grub_ieee1275_children_first) (const char *devpath,
@@ -171,7 +171,7 @@ index 9f26c69..6a21f5d 100644
  #define FOR_IEEE1275_DEVALIASES(alias) for (grub_ieee1275_devalias_init_iterator (&(alias)); grub_ieee1275_devalias_next (&(alias));)
  
 diff --git a/include/grub/net.h b/include/grub/net.h
-index 538baa3..a799e6b 100644
+index 538baa33e..a799e6b8b 100644
 --- a/include/grub/net.h
 +++ b/include/grub/net.h
 @@ -538,4 +538,6 @@ extern char *grub_net_default_server;
@@ -182,5 +182,5 @@ index 538baa3..a799e6b 100644
 +
  #endif /* ! GRUB_NET_HEADER */
 -- 
-2.7.4
+2.13.0
 

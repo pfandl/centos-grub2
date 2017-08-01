@@ -1,7 +1,7 @@
 From 6ff67fe45fcb69a278f5aaeeb5eebff3b7bb6dc2 Mon Sep 17 00:00:00 2001
 From: Vladimir Serbinenko <phcoder@gmail.com>
 Date: Wed, 29 Jan 2014 23:43:25 +0100
-Subject: [PATCH 051/198] * grub-core/disk/ahci.c: Do not enable I/O decoding
+Subject: [PATCH 051/260] * grub-core/disk/ahci.c: Do not enable I/O decoding
  and keep enabling busmaster for the end.
 
 ---
@@ -10,7 +10,7 @@ Subject: [PATCH 051/198] * grub-core/disk/ahci.c: Do not enable I/O decoding
  2 files changed, 11 insertions(+), 4 deletions(-)
 
 diff --git a/ChangeLog b/ChangeLog
-index 9837c7f..51eba95 100644
+index 9837c7f8d..51eba95f3 100644
 --- a/ChangeLog
 +++ b/ChangeLog
 @@ -1,5 +1,10 @@
@@ -25,7 +25,7 @@ index 9837c7f..51eba95 100644
  	to debug.
  
 diff --git a/grub-core/disk/ahci.c b/grub-core/disk/ahci.c
-index 0b13fb8..18c1327 100644
+index 0b13fb8eb..18c13270c 100644
 --- a/grub-core/disk/ahci.c
 +++ b/grub-core/disk/ahci.c
 @@ -194,10 +194,8 @@ grub_ahci_pciinit (grub_pci_device_t dev,
@@ -53,5 +53,5 @@ index 0b13fb8..18c1327 100644
      if (adevs[i])
        {
 -- 
-2.7.4
+2.13.0
 

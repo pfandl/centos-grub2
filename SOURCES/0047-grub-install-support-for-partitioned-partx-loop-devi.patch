@@ -1,7 +1,7 @@
 From 5fc42eeb85e2971ea777fbe2c95e2b0d384bb86d Mon Sep 17 00:00:00 2001
 From: Mike Gilbert <floppym@gentoo.org>
 Date: Sun, 26 Jan 2014 02:56:04 +0100
-Subject: [PATCH 047/198] grub-install: support for partitioned partx loop
+Subject: [PATCH 047/260] grub-install: support for partitioned partx loop
  devices.
 
 	* grub-core/osdep/linux/getroot.c (grub_util_part_to_disk): Detect
@@ -12,7 +12,7 @@ Subject: [PATCH 047/198] grub-install: support for partitioned partx loop
  2 files changed, 20 insertions(+)
 
 diff --git a/ChangeLog b/ChangeLog
-index 67b4d5c..bbec1e7 100644
+index 67b4d5c2a..bbec1e70b 100644
 --- a/ChangeLog
 +++ b/ChangeLog
 @@ -1,3 +1,10 @@
@@ -27,7 +27,7 @@ index 67b4d5c..bbec1e7 100644
  
  	* grub-core/term/serial.c (grub_serial_register): Fix invalid free.
 diff --git a/grub-core/osdep/linux/getroot.c b/grub-core/osdep/linux/getroot.c
-index 772de0a..19581d3 100644
+index 772de0a9b..19581d329 100644
 --- a/grub-core/osdep/linux/getroot.c
 +++ b/grub-core/osdep/linux/getroot.c
 @@ -883,6 +883,19 @@ grub_util_part_to_disk (const char *os_dev, struct stat *st,
@@ -51,5 +51,5 @@ index 772de0a..19581d3 100644
  
    return path;
 -- 
-2.7.4
+2.13.0
 

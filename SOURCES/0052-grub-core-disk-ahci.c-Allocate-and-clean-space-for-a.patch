@@ -1,7 +1,7 @@
 From d8b18f6b814a830dd1279669e10fb5f714e2138f Mon Sep 17 00:00:00 2001
 From: Vladimir Serbinenko <phcoder@gmail.com>
 Date: Wed, 29 Jan 2014 23:45:18 +0100
-Subject: [PATCH 052/198] * grub-core/disk/ahci.c: Allocate and clean space for
+Subject: [PATCH 052/260] * grub-core/disk/ahci.c: Allocate and clean space for
  all possible 32 slots to avoid pointing to uninited area.
 
 ---
@@ -10,7 +10,7 @@ Subject: [PATCH 052/198] * grub-core/disk/ahci.c: Allocate and clean space for
  2 files changed, 12 insertions(+), 1 deletion(-)
 
 diff --git a/ChangeLog b/ChangeLog
-index 51eba95..9bb1817 100644
+index 51eba95f3..9bb181777 100644
 --- a/ChangeLog
 +++ b/ChangeLog
 @@ -1,5 +1,10 @@
@@ -25,7 +25,7 @@ index 51eba95..9bb1817 100644
  	enabling busmaster for the end.
  
 diff --git a/grub-core/disk/ahci.c b/grub-core/disk/ahci.c
-index 18c1327..d63fd09 100644
+index 18c13270c..d63fd09fd 100644
 --- a/grub-core/disk/ahci.c
 +++ b/grub-core/disk/ahci.c
 @@ -358,7 +358,7 @@ grub_ahci_pciinit (grub_pci_device_t dev,
@@ -51,5 +51,5 @@ index 18c1327..d63fd09 100644
  	  = grub_dma_get_phys (adevs[i]->command_table_chunk);
  
 -- 
-2.7.4
+2.13.0
 

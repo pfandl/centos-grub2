@@ -1,7 +1,7 @@
 From f44c6a2cdb0e1c211fd5effb78c70c12e6da2006 Mon Sep 17 00:00:00 2001
 From: Paulo Flabiano Smorigo <pfsmorigo@br.ibm.com>
 Date: Tue, 4 Feb 2014 19:00:55 -0200
-Subject: [PATCH 059/198] add bootpath parser for open firmware
+Subject: [PATCH 059/260] add bootpath parser for open firmware
 
 It enables net boot even when there is no bootp/dhcp server.
 
@@ -17,7 +17,7 @@ call it at grub_ieee1275_net_config_real.
  4 files changed, 125 insertions(+), 7 deletions(-)
 
 diff --git a/ChangeLog b/ChangeLog
-index 63f5aa3..5237631 100644
+index 63f5aa322..523763158 100644
 --- a/ChangeLog
 +++ b/ChangeLog
 @@ -1,5 +1,18 @@
@@ -40,7 +40,7 @@ index 63f5aa3..5237631 100644
  
  	* grub-core/net/bootp.c: Remove set_env_limn_ro.
 diff --git a/grub-core/kern/ieee1275/init.c b/grub-core/kern/ieee1275/init.c
-index 89b2822..d5bd74d 100644
+index 89b2822e1..d5bd74d35 100644
 --- a/grub-core/kern/ieee1275/init.c
 +++ b/grub-core/kern/ieee1275/init.c
 @@ -80,9 +80,8 @@ grub_translate_ieee1275_path (char *filepath)
@@ -65,7 +65,7 @@ index 89b2822..d5bd74d 100644
        grub_free (canon);
      }
 diff --git a/grub-core/net/drivers/ieee1275/ofnet.c b/grub-core/net/drivers/ieee1275/ofnet.c
-index 4483c91..eea8e71 100644
+index 4483c9122..eea8e71d3 100644
 --- a/grub-core/net/drivers/ieee1275/ofnet.c
 +++ b/grub-core/net/drivers/ieee1275/ofnet.c
 @@ -127,8 +127,111 @@ bootp_response_properties[] =
@@ -191,7 +191,7 @@ index 4483c91..eea8e71 100644
        if (grub_ieee1275_get_property_length (grub_ieee1275_chosen,
  					     bootp_response_properties[i].name,
 diff --git a/include/grub/ieee1275/ieee1275.h b/include/grub/ieee1275/ieee1275.h
-index dc54bea..8e42513 100644
+index dc54beabb..8e4251303 100644
 --- a/include/grub/ieee1275/ieee1275.h
 +++ b/include/grub/ieee1275/ieee1275.h
 @@ -70,8 +70,9 @@ struct grub_ieee1275_devalias
@@ -207,5 +207,5 @@ index dc54bea..8e42513 100644
  /* Maps a device alias to a pathname.  */
  extern grub_ieee1275_phandle_t EXPORT_VAR(grub_ieee1275_chosen);
 -- 
-2.7.4
+2.13.0
 

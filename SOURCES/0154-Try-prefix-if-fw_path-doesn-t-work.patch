@@ -1,7 +1,7 @@
 From 6d94c560ac4fa7bf0b8db3a37b414cc188fe4376 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Fri, 3 Oct 2014 11:08:03 -0400
-Subject: [PATCH 154/198] Try $prefix if $fw_path doesn't work.
+Subject: [PATCH 154/260] Try $prefix if $fw_path doesn't work.
 
 Related: rhbz#1148652
 
@@ -13,7 +13,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  3 files changed, 75 insertions(+), 75 deletions(-)
 
 diff --git a/grub-core/kern/ieee1275/init.c b/grub-core/kern/ieee1275/init.c
-index 8191f8c..8ca4bf7 100644
+index 8191f8cd6..8ca4bf79f 100644
 --- a/grub-core/kern/ieee1275/init.c
 +++ b/grub-core/kern/ieee1275/init.c
 @@ -131,23 +131,25 @@ grub_machine_get_bootlocation (char **device, char **path)
@@ -57,7 +57,7 @@ index 8191f8c..8ca4bf7 100644
  }
  
 diff --git a/grub-core/net/net.c b/grub-core/net/net.c
-index 578e057..10bfed3 100644
+index 578e057e1..10bfed31b 100644
 --- a/grub-core/net/net.c
 +++ b/grub-core/net/net.c
 @@ -1817,7 +1817,7 @@ grub_net_search_configfile (char *config)
@@ -70,7 +70,7 @@ index 578e057..10bfed3 100644
  
  static struct grub_preboot *fini_hnd;
 diff --git a/grub-core/normal/main.c b/grub-core/normal/main.c
-index 4190985..aa14499 100644
+index 4190985ad..aa1449999 100644
 --- a/grub-core/normal/main.c
 +++ b/grub-core/normal/main.c
 @@ -331,74 +331,72 @@ grub_enter_normal_mode (const char *config)
@@ -207,5 +207,5 @@ index 4190985..aa14499 100644
  }
  
 -- 
-2.7.4
+2.13.0
 

@@ -1,7 +1,7 @@
 From bd7b390604d6122afda2763345406fa880fa4fd7 Mon Sep 17 00:00:00 2001
 From: Vladimir Serbinenko <phcoder@gmail.com>
 Date: Sat, 18 Jan 2014 20:02:51 +0100
-Subject: [PATCH 033/198] * util/grub-install.c: Fix a typo.
+Subject: [PATCH 033/260] * util/grub-install.c: Fix a typo.
 
 ---
  ChangeLog           | 4 ++++
@@ -9,7 +9,7 @@ Subject: [PATCH 033/198] * util/grub-install.c: Fix a typo.
  2 files changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/ChangeLog b/ChangeLog
-index c84f7e7..9360345 100644
+index c84f7e7cc..9360345ef 100644
 --- a/ChangeLog
 +++ b/ChangeLog
 @@ -1,5 +1,9 @@
@@ -23,7 +23,7 @@ index c84f7e7..9360345 100644
  	Reduces boot time.
  
 diff --git a/util/grub-install.c b/util/grub-install.c
-index 4608b80..5903f34 100644
+index 4608b80fe..5903f340a 100644
 --- a/util/grub-install.c
 +++ b/util/grub-install.c
 @@ -1259,7 +1259,7 @@ main (int argc, char *argv[])
@@ -36,5 +36,5 @@ index 4608b80..5903f34 100644
  
    if (disk_module && grub_strcmp (disk_module, "ata") == 0)
 -- 
-2.7.4
+2.13.0
 

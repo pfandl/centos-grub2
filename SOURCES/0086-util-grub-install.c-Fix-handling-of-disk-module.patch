@@ -1,7 +1,7 @@
 From c4640480f1a6a5eefcfcb8f82fbc8680c2f2989b Mon Sep 17 00:00:00 2001
 From: Glenn Washburn <development@efficientek.com>
 Date: Sun, 22 Jun 2014 01:45:11 +0200
-Subject: [PATCH 086/198] * util/grub-install.c: Fix handling of --disk-module.
+Subject: [PATCH 086/260] * util/grub-install.c: Fix handling of --disk-module.
 
 ---
  ChangeLog           | 4 ++++
@@ -9,7 +9,7 @@ Subject: [PATCH 086/198] * util/grub-install.c: Fix handling of --disk-module.
  2 files changed, 5 insertions(+), 2 deletions(-)
 
 diff --git a/ChangeLog b/ChangeLog
-index 0cdd095..4ce6643 100644
+index 0cdd095a4..4ce664327 100644
 --- a/ChangeLog
 +++ b/ChangeLog
 @@ -1,3 +1,7 @@
@@ -21,7 +21,7 @@ index 0cdd095..4ce6643 100644
  
  	* grub-core/loader/i386/bsd.c (grub_netbsd_boot): Pass pointer to
 diff --git a/util/grub-install.c b/util/grub-install.c
-index e9c6a46..7d61c32 100644
+index e9c6a4656..7d61c32be 100644
 --- a/util/grub-install.c
 +++ b/util/grub-install.c
 @@ -94,7 +94,6 @@ enum
@@ -42,5 +42,5 @@ index e9c6a46..7d61c32 100644
        "This option is only available on BIOS target."), 2},
    {"no-nvram", OPTION_NO_NVRAM, 0, 0,
 -- 
-2.7.4
+2.13.0
 

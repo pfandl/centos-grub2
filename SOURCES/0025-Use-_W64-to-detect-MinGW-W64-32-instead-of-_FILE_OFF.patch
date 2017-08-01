@@ -1,7 +1,7 @@
 From d52c3c475935ab1b1da008f9523c297422145297 Mon Sep 17 00:00:00 2001
 From: Andrey Borzenkov <arvidjaar@gmail.com>
 Date: Sat, 18 Jan 2014 20:04:11 +0400
-Subject: [PATCH 025/198] Use _W64 to detect MinGW W64-32 instead of
+Subject: [PATCH 025/260] Use _W64 to detect MinGW W64-32 instead of
  _FILE_OFFSET_BITS
 
 In 94cee4a4c201bb506377b2c26e072eee8cb19d6f I overlooked that config.h
@@ -15,7 +15,7 @@ http://lists.gnu.org/archive/html/emacs-devel/2013-03/msg00723.html
  2 files changed, 7 insertions(+), 2 deletions(-)
 
 diff --git a/ChangeLog b/ChangeLog
-index fcbf220..5aac7c1 100644
+index fcbf2207b..5aac7c1d8 100644
 --- a/ChangeLog
 +++ b/ChangeLog
 @@ -1,3 +1,8 @@
@@ -28,7 +28,7 @@ index fcbf220..5aac7c1 100644
  
  	* grub-core/term/terminfo.c: Recognize keys F1-F12.
 diff --git a/include/grub/osdep/hostfile_windows.h b/include/grub/osdep/hostfile_windows.h
-index 79efcfa..bf6451b 100644
+index 79efcfa50..bf6451b6d 100644
 --- a/include/grub/osdep/hostfile_windows.h
 +++ b/include/grub/osdep/hostfile_windows.h
 @@ -69,8 +69,8 @@ enum grub_util_fd_open_flags_t
@@ -43,5 +43,5 @@ index 79efcfa..bf6451b 100644
  #define ftello ftello64
  #endif
 -- 
-2.7.4
+2.13.0
 

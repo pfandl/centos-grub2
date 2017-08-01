@@ -1,7 +1,7 @@
 From a990af656571a24156a183dd8a09765e788c3b22 Mon Sep 17 00:00:00 2001
 From: Vladimir Serbinenko <phcoder@gmail.com>
 Date: Sat, 18 Jan 2014 16:41:47 +0100
-Subject: [PATCH 020/198] * grub-core/kern/efi/efi.c: Ensure that the result
+Subject: [PATCH 020/260] * grub-core/kern/efi/efi.c: Ensure that the result
  starts with / and has no //.
 
 ---
@@ -10,7 +10,7 @@ Subject: [PATCH 020/198] * grub-core/kern/efi/efi.c: Ensure that the result
  2 files changed, 22 insertions(+), 8 deletions(-)
 
 diff --git a/ChangeLog b/ChangeLog
-index 6a19f85..b04a4ef 100644
+index 6a19f8504..b04a4ef70 100644
 --- a/ChangeLog
 +++ b/ChangeLog
 @@ -1,5 +1,10 @@
@@ -25,7 +25,7 @@ index 6a19f85..b04a4ef 100644
  
  2014-01-17  Colin Watson  <cjwatson@ubuntu.com>
 diff --git a/grub-core/kern/efi/efi.c b/grub-core/kern/efi/efi.c
-index b253141..b9eb1ab 100644
+index b253141f2..b9eb1ab1e 100644
 --- a/grub-core/kern/efi/efi.c
 +++ b/grub-core/kern/efi/efi.c
 @@ -309,7 +309,7 @@ grub_efi_modules_addr (void)
@@ -86,5 +86,5 @@ index b253141..b9eb1ab 100644
    return name;
  }
 -- 
-2.7.4
+2.13.0
 

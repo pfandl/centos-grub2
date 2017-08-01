@@ -1,7 +1,7 @@
 From 15e18b7beca626007718183d25c626272f689a5c Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Fri, 5 Sep 2014 10:07:04 -0400
-Subject: [PATCH 150/198] Allow "fallback" to include entries by title, not
+Subject: [PATCH 150/260] Allow "fallback" to include entries by title, not
  just number.
 
 Resolves: rhbz#1026084
@@ -12,7 +12,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  1 file changed, 49 insertions(+), 27 deletions(-)
 
 diff --git a/grub-core/normal/menu.c b/grub-core/normal/menu.c
-index cc27c37..a446d9a 100644
+index cc27c3707..a446d9ae7 100644
 --- a/grub-core/normal/menu.c
 +++ b/grub-core/normal/menu.c
 @@ -163,12 +163,35 @@ grub_menu_set_timeout (int timeout)
@@ -127,5 +127,5 @@ index cc27c37..a446d9a 100644
  static int
  get_entry_number (grub_menu_t menu, const char *name)
 -- 
-2.7.4
+2.13.0
 

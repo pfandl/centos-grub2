@@ -1,7 +1,7 @@
 From 559b04c2e29643b73f238cf95add8cef9a192a00 Mon Sep 17 00:00:00 2001
 From: Andrei Borzenkov <arvidjaar@gmail.com>
 Date: Thu, 7 May 2015 20:37:16 +0300
-Subject: [PATCH 157/198] efidisk: move device path helpers in core for efinet
+Subject: [PATCH 157/260] efidisk: move device path helpers in core for efinet
 
 ---
  grub-core/disk/efi/efidisk.c | 61 ++++++++------------------------------------
@@ -10,7 +10,7 @@ Subject: [PATCH 157/198] efidisk: move device path helpers in core for efinet
  3 files changed, 55 insertions(+), 51 deletions(-)
 
 diff --git a/grub-core/disk/efi/efidisk.c b/grub-core/disk/efi/efidisk.c
-index 3b12c34..845c66f 100644
+index 3b12c3499..845c66fa9 100644
 --- a/grub-core/disk/efi/efidisk.c
 +++ b/grub-core/disk/efi/efidisk.c
 @@ -43,47 +43,6 @@ static struct grub_efidisk_data *fd_devices;
@@ -136,7 +136,7 @@ index 3b12c34..845c66f 100644
  		&& (GRUB_EFI_DEVICE_PATH_SUBTYPE (dup_ldp) == GRUB_EFI_CDROM_DEVICE_PATH_SUBTYPE
  		    || GRUB_EFI_DEVICE_PATH_SUBTYPE (dup_ldp) == GRUB_EFI_HARD_DRIVE_DEVICE_PATH_SUBTYPE)))
 diff --git a/grub-core/kern/efi/efi.c b/grub-core/kern/efi/efi.c
-index d99a6fb..c80d85b 100644
+index d99a6fbdf..c80d85b67 100644
 --- a/grub-core/kern/efi/efi.c
 +++ b/grub-core/kern/efi/efi.c
 @@ -423,6 +423,47 @@ grub_efi_get_device_path (grub_efi_handle_t handle)
@@ -188,7 +188,7 @@ index d99a6fb..c80d85b 100644
  dump_vendor_path (const char *type, grub_efi_vendor_device_path_t *vendor)
  {
 diff --git a/include/grub/efi/efi.h b/include/grub/efi/efi.h
-index a000c38..2245632 100644
+index a000c383e..22456327e 100644
 --- a/include/grub/efi/efi.h
 +++ b/include/grub/efi/efi.h
 @@ -56,6 +56,10 @@ void EXPORT_FUNC(grub_efi_print_device_path) (grub_efi_device_path_t *dp);
@@ -203,5 +203,5 @@ index a000c38..2245632 100644
  							grub_efi_uintn_t *map_key,
  							grub_efi_uintn_t *efi_desc_size,
 -- 
-2.7.4
+2.13.0
 

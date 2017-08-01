@@ -1,7 +1,7 @@
 From 82366b73d1430f2ff2086401e09c88be1f170bd5 Mon Sep 17 00:00:00 2001
 From: Colin Watson <cjwatson@ubuntu.com>
 Date: Fri, 17 Jan 2014 02:28:46 +0000
-Subject: [PATCH 035/198] Ignore EPERM when modifying kern.geom.debugflags
+Subject: [PATCH 035/260] Ignore EPERM when modifying kern.geom.debugflags
 
 Many tests fail when run as a non-root user on FreeBSD.  The failures
 all amount to an inability to open files using grub_util_fd_open,
@@ -16,7 +16,7 @@ perfectly reasonable operations.
  2 files changed, 17 insertions(+), 2 deletions(-)
 
 diff --git a/ChangeLog b/ChangeLog
-index 4688ff4..10abfe2 100644
+index 4688ff4e6..10abfe28f 100644
 --- a/ChangeLog
 +++ b/ChangeLog
 @@ -1,3 +1,10 @@
@@ -31,7 +31,7 @@ index 4688ff4..10abfe2 100644
  
  	* grub-core/Makefile.am: Build grub_emu_init.[ch] from MODULE_FILES
 diff --git a/grub-core/osdep/freebsd/hostdisk.c b/grub-core/osdep/freebsd/hostdisk.c
-index eb202dc..6145d07 100644
+index eb202dcc8..6145d0735 100644
 --- a/grub-core/osdep/freebsd/hostdisk.c
 +++ b/grub-core/osdep/freebsd/hostdisk.c
 @@ -102,8 +102,16 @@ grub_util_fd_open (const char *os_dev, int flags)
@@ -54,5 +54,5 @@ index eb202dc..6145d07 100644
  
    ret = open (os_dev, flags, S_IROTH | S_IRGRP | S_IRUSR | S_IWUSR);
 -- 
-2.7.4
+2.13.0
 

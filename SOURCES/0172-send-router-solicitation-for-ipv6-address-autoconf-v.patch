@@ -1,7 +1,7 @@
 From a1f8402056e13cadab252dd64d7dc28ccdf6fda0 Mon Sep 17 00:00:00 2001
 From: Michael Chang <mchang@suse.com>
 Date: Tue, 18 Nov 2014 16:03:08 +0800
-Subject: [PATCH 172/198] send router solicitation for ipv6 address autoconf v2
+Subject: [PATCH 172/260] send router solicitation for ipv6 address autoconf v2
 
 Many routers have long router advertisment interval configured by
 default. The Neighbor Discovery protocol (RFC4861) has defined default
@@ -23,7 +23,7 @@ add missing error handling
  3 files changed, 88 insertions(+), 1 deletion(-)
 
 diff --git a/grub-core/net/icmp6.c b/grub-core/net/icmp6.c
-index bbc9020..0843a15 100644
+index bbc902014..0843a15af 100644
 --- a/grub-core/net/icmp6.c
 +++ b/grub-core/net/icmp6.c
 @@ -72,6 +72,11 @@ struct neighbour_advertise
@@ -128,7 +128,7 @@ index bbc9020..0843a15 100644
 +  return err;
 +}
 diff --git a/grub-core/net/net.c b/grub-core/net/net.c
-index 10bfed3..b10addb 100644
+index 10bfed31b..b10addbe2 100644
 --- a/grub-core/net/net.c
 +++ b/grub-core/net/net.c
 @@ -380,12 +380,14 @@ grub_cmd_ipv6_autoconf (struct grub_command *cmd __attribute__ ((unused)),
@@ -148,7 +148,7 @@ index 10bfed3..b10addb 100644
  	}
        if (done)
 diff --git a/include/grub/net/ip.h b/include/grub/net/ip.h
-index 7a8e614..dcceaa5 100644
+index 7a8e61479..dcceaa568 100644
 --- a/include/grub/net/ip.h
 +++ b/include/grub/net/ip.h
 @@ -92,4 +92,6 @@ grub_err_t
@@ -159,5 +159,5 @@ index 7a8e614..dcceaa5 100644
 +grub_net_icmp6_send_router_solicit (struct grub_net_network_level_interface *inf);
  #endif 
 -- 
-2.7.4
+2.13.0
 

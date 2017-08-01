@@ -1,7 +1,7 @@
 From aadd7669d805fcd510687ba5d0ca9e78c2d88a93 Mon Sep 17 00:00:00 2001
 From: Vladimir Serbinenko <phcoder@gmail.com>
 Date: Wed, 26 Mar 2014 08:48:30 +0100
-Subject: [PATCH 068/198] * grub-core/lib/relocator.c: Fix the case when end of
+Subject: [PATCH 068/260] * grub-core/lib/relocator.c: Fix the case when end of
  leftover is used.
 
 ---
@@ -10,7 +10,7 @@ Subject: [PATCH 068/198] * grub-core/lib/relocator.c: Fix the case when end of
  2 files changed, 6 insertions(+)
 
 diff --git a/ChangeLog b/ChangeLog
-index 091535b..9404eda 100644
+index 091535beb..9404edab8 100644
 --- a/ChangeLog
 +++ b/ChangeLog
 @@ -1,3 +1,7 @@
@@ -22,7 +22,7 @@ index 091535b..9404eda 100644
  
  	* grub-core/loader/arm64/linux.c: Remove redundant "0x".
 diff --git a/grub-core/lib/relocator.c b/grub-core/lib/relocator.c
-index 9f9770b..cb11ea5 100644
+index 9f9770bc4..cb11ea5fa 100644
 --- a/grub-core/lib/relocator.c
 +++ b/grub-core/lib/relocator.c
 @@ -865,6 +865,8 @@ malloc_in_range (struct grub_relocator *rel,
@@ -35,5 +35,5 @@ index 9f9770b..cb11ea5 100644
  			&= ((1 << (8 - (start % 8))) - 1);
  		      grub_memset (lo->freebytes + (offstart + 7) / 8, 0,
 -- 
-2.7.4
+2.13.0
 

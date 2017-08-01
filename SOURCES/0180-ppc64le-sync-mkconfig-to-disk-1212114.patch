@@ -1,7 +1,7 @@
 From f1edaeeeffdfc291e0b17d87f8727baaecbfaf63 Mon Sep 17 00:00:00 2001
 From: Don Zickus <dzickus@redhat.com>
 Date: Wed, 22 Jul 2015 13:59:55 -0400
-Subject: [PATCH 180/198] ppc64le sync mkconfig to disk (#1212114)
+Subject: [PATCH 180/260] ppc64le sync mkconfig to disk (#1212114)
 
 If creating a new grub2 entry using grub2-mkconfig, the entry is not
 immediately sync'd to disk.  If a crash happens before the writeback,
@@ -21,7 +21,7 @@ Resolves: rhbz#1212114
  1 file changed, 9 insertions(+)
 
 diff --git a/util/grub-mkconfig.in b/util/grub-mkconfig.in
-index e029d0d..cf315e2 100644
+index e029d0d5e..cf315e241 100644
 --- a/util/grub-mkconfig.in
 +++ b/util/grub-mkconfig.in
 @@ -290,3 +290,12 @@ fi
@@ -38,5 +38,5 @@ index e029d0d..cf315e2 100644
 +    sync && mountpoint -q /boot &&fsfreeze -f /boot && fsfreeze -u /boot
 +fi
 -- 
-2.7.4
+2.13.0
 

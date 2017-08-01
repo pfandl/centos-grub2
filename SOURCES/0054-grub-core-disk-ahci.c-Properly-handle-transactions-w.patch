@@ -1,7 +1,7 @@
 From d0c3c16e995308838d724775cd8624a69907046e Mon Sep 17 00:00:00 2001
 From: Vladimir Serbinenko <phcoder@gmail.com>
 Date: Wed, 29 Jan 2014 23:49:51 +0100
-Subject: [PATCH 054/198] * grub-core/disk/ahci.c: Properly handle transactions
+Subject: [PATCH 054/260] * grub-core/disk/ahci.c: Properly handle transactions
  with no transferred data.
 
 ---
@@ -10,7 +10,7 @@ Subject: [PATCH 054/198] * grub-core/disk/ahci.c: Properly handle transactions
  2 files changed, 10 insertions(+), 2 deletions(-)
 
 diff --git a/ChangeLog b/ChangeLog
-index 15300b0..bc1ab23 100644
+index 15300b020..bc1ab231b 100644
 --- a/ChangeLog
 +++ b/ChangeLog
 @@ -1,5 +1,10 @@
@@ -25,7 +25,7 @@ index 15300b0..bc1ab23 100644
  
  2014-01-29  Vladimir Serbinenko  <phcoder@gmail.com>
 diff --git a/grub-core/disk/ahci.c b/grub-core/disk/ahci.c
-index 643e691..fdd40c6 100644
+index 643e691ef..fdd40c64d 100644
 --- a/grub-core/disk/ahci.c
 +++ b/grub-core/disk/ahci.c
 @@ -932,7 +932,10 @@ grub_ahci_readwrite_real (struct grub_ahci_device *dev,
@@ -50,5 +50,5 @@ index 643e691..fdd40c6 100644
      | (parms->write ? GRUB_AHCI_CONFIG_WRITE : GRUB_AHCI_CONFIG_READ)
      | (parms->taskfile.cmd == 8 ? (1 << 8) : 0);
 -- 
-2.7.4
+2.13.0
 

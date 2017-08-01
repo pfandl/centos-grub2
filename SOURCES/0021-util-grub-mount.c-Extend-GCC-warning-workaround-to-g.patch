@@ -1,7 +1,7 @@
 From 762b39fcff62416481f12d2002abf7cdb76adbf3 Mon Sep 17 00:00:00 2001
 From: Vladimir Serbinenko <phcoder@gmail.com>
 Date: Sat, 18 Jan 2014 16:43:29 +0100
-Subject: [PATCH 021/198] * util/grub-mount.c: Extend GCC warning workaround to
+Subject: [PATCH 021/260] * util/grub-mount.c: Extend GCC warning workaround to
  grub-mount.
 
 ---
@@ -10,7 +10,7 @@ Subject: [PATCH 021/198] * util/grub-mount.c: Extend GCC warning workaround to
  2 files changed, 10 insertions(+), 1 deletion(-)
 
 diff --git a/ChangeLog b/ChangeLog
-index b04a4ef..8534158 100644
+index b04a4ef70..8534158b6 100644
 --- a/ChangeLog
 +++ b/ChangeLog
 @@ -1,5 +1,9 @@
@@ -24,7 +24,7 @@ index b04a4ef..8534158 100644
  	and has no //.
  
 diff --git a/util/grub-mount.c b/util/grub-mount.c
-index 118881e..19de2e6 100644
+index 118881e0d..19de2e620 100644
 --- a/util/grub-mount.c
 +++ b/util/grub-mount.c
 @@ -41,8 +41,13 @@
@@ -43,5 +43,5 @@ index 118881e..19de2e6 100644
  static const char *root = NULL;
  grub_device_t dev = NULL;
 -- 
-2.7.4
+2.13.0
 

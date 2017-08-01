@@ -1,7 +1,7 @@
 From 6539eeb60268e646ca9f99a6ba8967c8fcb55807 Mon Sep 17 00:00:00 2001
 From: Colin Watson <cjwatson@ubuntu.com>
 Date: Thu, 10 Apr 2014 14:42:41 +0100
-Subject: [PATCH 077/198] Improve LVM "logical_volumes" string matching
+Subject: [PATCH 077/260] Improve LVM "logical_volumes" string matching
 
 * grub-core/disk/lvm.c (grub_lvm_detect): Search for
 "logical_volumes" block a little more accurately.
@@ -11,7 +11,7 @@ Subject: [PATCH 077/198] Improve LVM "logical_volumes" string matching
  2 files changed, 7 insertions(+), 2 deletions(-)
 
 diff --git a/ChangeLog b/ChangeLog
-index 50d9291..7f0c57d 100644
+index 50d929162..7f0c57dc0 100644
 --- a/ChangeLog
 +++ b/ChangeLog
 @@ -1,3 +1,8 @@
@@ -24,7 +24,7 @@ index 50d9291..7f0c57d 100644
  
  	* grub-core/lib/syslinux_parse.c: Fix timeout quoting.
 diff --git a/grub-core/disk/lvm.c b/grub-core/disk/lvm.c
-index 483c17e..862a966 100644
+index 483c17eb5..862a9664f 100644
 --- a/grub-core/disk/lvm.c
 +++ b/grub-core/disk/lvm.c
 @@ -333,10 +333,10 @@ grub_lvm_detect (grub_disk_t disk,
@@ -41,5 +41,5 @@ index 483c17e..862a966 100644
  	  /* And add all the lvs to the volume group. */
  	  while (1)
 -- 
-2.7.4
+2.13.0
 

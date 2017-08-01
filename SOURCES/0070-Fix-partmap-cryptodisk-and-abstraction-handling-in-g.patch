@@ -1,7 +1,7 @@
 From 0ec41b585c1cc4dfa79f880d3a62c72bc5f24d22 Mon Sep 17 00:00:00 2001
 From: Colin Watson <cjwatson@ubuntu.com>
 Date: Mon, 31 Mar 2014 14:48:33 +0100
-Subject: [PATCH 070/198] Fix partmap, cryptodisk, and abstraction handling in
+Subject: [PATCH 070/260] Fix partmap, cryptodisk, and abstraction handling in
  grub-mkconfig.
 
 Commit 588744d0dc655177d5883bdcb8f72ff5160109ed caused grub-mkconfig
@@ -35,7 +35,7 @@ probe_abstraction): Use configured delimiter.  Update callers.
  7 files changed, 74 insertions(+), 41 deletions(-)
 
 diff --git a/ChangeLog b/ChangeLog
-index efbed8c..1cb3b68 100644
+index efbed8ccb..1cb3b683f 100644
 --- a/ChangeLog
 +++ b/ChangeLog
 @@ -1,5 +1,30 @@
@@ -70,7 +70,7 @@ index efbed8c..1cb3b68 100644
  	conversion to argp).
  	(main): Simplify logic.
 diff --git a/grub-core/disk/cryptodisk.c b/grub-core/disk/cryptodisk.c
-index 75c6e1f..f0e3a90 100644
+index 75c6e1f91..f0e3a900a 100644
 --- a/grub-core/disk/cryptodisk.c
 +++ b/grub-core/disk/cryptodisk.c
 @@ -762,25 +762,26 @@ grub_cryptodisk_cheat_insert (grub_cryptodisk_t newdev, const char *name,
@@ -110,7 +110,7 @@ index 75c6e1f..f0e3a90 100644
  
  const char *
 diff --git a/grub-core/disk/diskfilter.c b/grub-core/disk/diskfilter.c
-index 28b70c6..e8a3bcb 100644
+index 28b70c666..e8a3bcbd1 100644
 --- a/grub-core/disk/diskfilter.c
 +++ b/grub-core/disk/diskfilter.c
 @@ -354,7 +354,8 @@ grub_diskfilter_memberlist (grub_disk_t disk)
@@ -133,7 +133,7 @@ index 28b70c6..e8a3bcb 100644
  }
  
 diff --git a/include/grub/cryptodisk.h b/include/grub/cryptodisk.h
-index 66f3e1e..f2ad2a7 100644
+index 66f3e1e22..f2ad2a79a 100644
 --- a/include/grub/cryptodisk.h
 +++ b/include/grub/cryptodisk.h
 @@ -145,7 +145,8 @@ grub_cryptodisk_cheat_insert (grub_cryptodisk_t newdev, const char *name,
@@ -147,7 +147,7 @@ index 66f3e1e..f2ad2a7 100644
  char *
  grub_util_get_geli_uuid (const char *dev);
 diff --git a/include/grub/diskfilter.h b/include/grub/diskfilter.h
-index 042fe04..1aedcd3 100644
+index 042fe04a5..1aedcd3df 100644
 --- a/include/grub/diskfilter.h
 +++ b/include/grub/diskfilter.h
 @@ -202,7 +202,8 @@ grub_diskfilter_get_pv_from_disk (grub_disk_t disk,
@@ -161,7 +161,7 @@ index 042fe04..1aedcd3 100644
  
  #endif /* ! GRUB_RAID_H */
 diff --git a/util/grub-install.c b/util/grub-install.c
-index 2e6226a..e9c6a46 100644
+index 2e6226a37..e9c6a4656 100644
 --- a/util/grub-install.c
 +++ b/util/grub-install.c
 @@ -387,7 +387,7 @@ probe_raid_level (grub_disk_t disk)
@@ -210,7 +210,7 @@ index 2e6226a..e9c6a46 100644
        have_cryptodisk = 1;
      }
 diff --git a/util/grub-probe.c b/util/grub-probe.c
-index 80509be..ecb7b6b 100644
+index 80509be8a..ecb7b6bbd 100644
 --- a/util/grub-probe.c
 +++ b/util/grub-probe.c
 @@ -130,13 +130,14 @@ get_targets_string (void)
@@ -362,5 +362,5 @@ index 80509be..ecb7b6b 100644
  	  continue;
  	}
 -- 
-2.7.4
+2.13.0
 

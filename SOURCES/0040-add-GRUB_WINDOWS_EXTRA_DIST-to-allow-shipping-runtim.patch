@@ -1,7 +1,7 @@
 From 290dac0294fcf7a441e80f10a59ffdea61a1c422 Mon Sep 17 00:00:00 2001
 From: Andrey Borzenkov <arvidjaar@gmail.com>
 Date: Tue, 21 Jan 2014 20:54:09 +0400
-Subject: [PATCH 040/198] add GRUB_WINDOWS_EXTRA_DIST to allow shipping runtime
+Subject: [PATCH 040/260] add GRUB_WINDOWS_EXTRA_DIST to allow shipping runtime
  files
 
 Not all toolkits provide static libraries. This patch enables creation of self
@@ -24,7 +24,7 @@ targets.
  2 files changed, 9 insertions(+)
 
 diff --git a/ChangeLog b/ChangeLog
-index 3ba57ae..1ede370 100644
+index 3ba57aed8..1ede37091 100644
 --- a/ChangeLog
 +++ b/ChangeLog
 @@ -1,5 +1,10 @@
@@ -39,7 +39,7 @@ index 3ba57ae..1ede370 100644
  	Show detected font path in summary.
  
 diff --git a/Makefile.am b/Makefile.am
-index 97c062d..f02ae0a 100644
+index 97c062d7d..f02ae0a39 100644
 --- a/Makefile.am
 +++ b/Makefile.am
 @@ -420,10 +420,14 @@ windowsdir: $(PROGRAMS) $(starfield_DATA) $(platform_DATA)
@@ -58,5 +58,5 @@ index 97c062d..f02ae0a 100644
  
  EXTRA_DIST += linguas.sh
 -- 
-2.7.4
+2.13.0
 

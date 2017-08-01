@@ -1,7 +1,7 @@
 From 5e1b45be24a3614eb8ce083e06c71a1f651b5ae7 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Tue, 18 Feb 2014 11:34:00 -0500
-Subject: [PATCH 134/198] Fix convert function to support NVMe devices
+Subject: [PATCH 134/260] Fix convert function to support NVMe devices
 
 This is adapted from the patch at
 https://bugzilla.redhat.com/show_bug.cgi?id=1019660 , which is against
@@ -18,7 +18,7 @@ Signed-off-by: Peter Jones <grub2-owner@fedoraproject.org>
  1 file changed, 19 insertions(+)
 
 diff --git a/util/getroot.c b/util/getroot.c
-index 3958105..e700610 100644
+index 3958105d8..e70061099 100644
 --- a/util/getroot.c
 +++ b/util/getroot.c
 @@ -152,6 +152,7 @@ convert_system_partition_to_system_disk (const char *os_dev, int *is_part)
@@ -55,5 +55,5 @@ index 3958105..e700610 100644
      return grub_util_devmapper_part_to_disk (&st, is_part, os_dev);
  
 -- 
-2.7.4
+2.13.0
 

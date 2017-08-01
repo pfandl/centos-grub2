@@ -1,7 +1,7 @@
 From 5d3c633229d54d0e3825fe0a9775858a93a664a7 Mon Sep 17 00:00:00 2001
 From: Vladimir Serbinenko <phcoder@gmail.com>
 Date: Mon, 3 Feb 2014 14:35:51 +0100
-Subject: [PATCH 057/198] * util/grub-mkrescue.c: Build fix for argp.h with
+Subject: [PATCH 057/260] * util/grub-mkrescue.c: Build fix for argp.h with
  older gcc.
 
 ---
@@ -10,7 +10,7 @@ Subject: [PATCH 057/198] * util/grub-mkrescue.c: Build fix for argp.h with
  2 files changed, 8 insertions(+)
 
 diff --git a/ChangeLog b/ChangeLog
-index f2bba84..f4a4721 100644
+index f2bba8402..f4a472144 100644
 --- a/ChangeLog
 +++ b/ChangeLog
 @@ -1,5 +1,9 @@
@@ -24,7 +24,7 @@ index f2bba84..f4a4721 100644
  
  2014-01-29  Vladimir Serbinenko  <phcoder@gmail.com>
 diff --git a/util/grub-mkrescue.c b/util/grub-mkrescue.c
-index 34e0b7a..e719839 100644
+index 34e0b7aff..e71983982 100644
 --- a/util/grub-mkrescue.c
 +++ b/util/grub-mkrescue.c
 @@ -25,7 +25,11 @@
@@ -40,5 +40,5 @@ index 34e0b7a..e719839 100644
  #include <sys/types.h>
  #include <sys/wait.h>
 -- 
-2.7.4
+2.13.0
 

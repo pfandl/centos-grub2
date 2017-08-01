@@ -1,7 +1,7 @@
 From 62d74eb68cebd48250469a1bfd4a042267fb04c9 Mon Sep 17 00:00:00 2001
 From: Vladimir Serbinenko <phcoder@gmail.com>
 Date: Sat, 18 Jan 2014 19:43:19 +0100
-Subject: [PATCH 030/198] * Makefile.am (default_payload.elf): Add modules
+Subject: [PATCH 030/260] * Makefile.am (default_payload.elf): Add modules
  multiboot cbmemc linux16 gzio echo help.
 
 ---
@@ -10,7 +10,7 @@ Subject: [PATCH 030/198] * Makefile.am (default_payload.elf): Add modules
  2 files changed, 7 insertions(+), 2 deletions(-)
 
 diff --git a/ChangeLog b/ChangeLog
-index edceb66..cff9386 100644
+index edceb66db..cff9386d3 100644
 --- a/ChangeLog
 +++ b/ChangeLog
 @@ -1,4 +1,9 @@
@@ -25,7 +25,7 @@ index edceb66..cff9386 100644
  	* Makefile.util.def: Link grub-ofpathname with zfs libs.
  
 diff --git a/Makefile.am b/Makefile.am
-index aa526f5..97c062d 100644
+index aa526f573..97c062d7d 100644
 --- a/Makefile.am
 +++ b/Makefile.am
 @@ -399,7 +399,7 @@ bootcheck: $(BOOTCHECKS)
@@ -38,5 +38,5 @@ index aa526f5..97c062d 100644
  
  windowsdir=$(top_builddir)/$(PACKAGE)-$(VERSION)-for-windows
 -- 
-2.7.4
+2.13.0
 

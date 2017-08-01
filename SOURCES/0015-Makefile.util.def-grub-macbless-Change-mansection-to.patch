@@ -1,7 +1,7 @@
 From 8dcec304d484c978c8cee9bada8bd0bfc8e73a79 Mon Sep 17 00:00:00 2001
 From: Colin Watson <cjwatson@ubuntu.com>
 Date: Wed, 8 Jan 2014 11:05:20 +0000
-Subject: [PATCH 015/198] * Makefile.util.def (grub-macbless): Change
+Subject: [PATCH 015/260] * Makefile.util.def (grub-macbless): Change
  mansection to 8.
 
 ---
@@ -10,7 +10,7 @@ Subject: [PATCH 015/198] * Makefile.util.def (grub-macbless): Change
  2 files changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/ChangeLog b/ChangeLog
-index 4ec5517..b445f12 100644
+index 4ec5517bd..b445f1215 100644
 --- a/ChangeLog
 +++ b/ChangeLog
 @@ -1,3 +1,7 @@
@@ -22,7 +22,7 @@ index 4ec5517..b445f12 100644
  
  	* grub-core/loader/arm64/linux.c: correctly set device path end length.
 diff --git a/Makefile.util.def b/Makefile.util.def
-index 985e76c..3c99be2 100644
+index 985e76ca4..3c99be2b0 100644
 --- a/Makefile.util.def
 +++ b/Makefile.util.def
 @@ -405,7 +405,7 @@ program = {
@@ -35,5 +35,5 @@ index 985e76c..3c99be2 100644
    common = grub-core/osdep/init.c;
    common = grub-core/kern/emu/argp_common.c;
 -- 
-2.7.4
+2.13.0
 

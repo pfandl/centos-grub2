@@ -1,7 +1,7 @@
 From 12cbfd02ce0d0dc29dfd11350478371243257f47 Mon Sep 17 00:00:00 2001
 From: Andrey Borzenkov <arvidjaar@gmail.com>
 Date: Sun, 12 Jan 2014 15:29:21 +0400
-Subject: [PATCH 016/198] add part_apple to EFI rescue image to fix missing
+Subject: [PATCH 016/260] add part_apple to EFI rescue image to fix missing
  prefix
 
 On Mac rescue image is booted from HFS+ partition, so bootpath looks like
@@ -14,7 +14,7 @@ table. The simplest fix is to add part_apple by default.
  1 file changed, 6 insertions(+)
 
 diff --git a/util/grub-mkrescue.c b/util/grub-mkrescue.c
-index 0d03e55..34e0b7a 100644
+index 0d03e55d2..34e0b7aff 100644
 --- a/util/grub-mkrescue.c
 +++ b/util/grub-mkrescue.c
 @@ -653,11 +653,15 @@ main (int argc, char *argv[])
@@ -44,5 +44,5 @@ index 0d03e55..34e0b7a 100644
    if (source_dirs[GRUB_INSTALL_PLATFORM_POWERPC_IEEE1275])
      {
 -- 
-2.7.4
+2.13.0
 

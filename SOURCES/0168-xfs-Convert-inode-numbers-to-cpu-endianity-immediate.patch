@@ -1,7 +1,7 @@
 From 54a4f53f9ecae2378195e4e66a8410d3862a0be2 Mon Sep 17 00:00:00 2001
 From: Jan Kara <jack@suse.cz>
 Date: Mon, 14 Jul 2014 17:21:30 +0200
-Subject: [PATCH 168/198] xfs: Convert inode numbers to cpu endianity
+Subject: [PATCH 168/260] xfs: Convert inode numbers to cpu endianity
  immediately after reading
 
 Currently XFS driver converted inode numbers to native endianity only
@@ -15,7 +15,7 @@ Signed-off-by: Jan Kara <jack@suse.cz>
  1 file changed, 6 insertions(+), 7 deletions(-)
 
 diff --git a/grub-core/fs/xfs.c b/grub-core/fs/xfs.c
-index 4bd52d1..0d704e9 100644
+index 4bd52d1e0..0d704e9a4 100644
 --- a/grub-core/fs/xfs.c
 +++ b/grub-core/fs/xfs.c
 @@ -180,14 +180,14 @@ static inline grub_uint64_t
@@ -78,5 +78,5 @@ index 4bd52d1..0d704e9 100644
    data->bsize = grub_be_to_cpu32 (data->sblock.bsize);
    data->agsize = grub_be_to_cpu32 (data->sblock.agsize);
 -- 
-2.7.4
+2.13.0
 

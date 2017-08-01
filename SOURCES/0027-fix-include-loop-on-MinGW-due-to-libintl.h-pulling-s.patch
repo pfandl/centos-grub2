@@ -1,7 +1,7 @@
 From 903a7b030c82d7e23acf89e2cd25ecd2138397bd Mon Sep 17 00:00:00 2001
 From: Andrey Borzenkov <arvidjaar@gmail.com>
 Date: Sat, 18 Jan 2014 21:22:57 +0400
-Subject: [PATCH 027/198] fix include loop on MinGW due to libintl.h pulling
+Subject: [PATCH 027/260] fix include loop on MinGW due to libintl.h pulling
  stdio.h
 
 In file included from ./include/grub/dl.h:23:0,
@@ -45,7 +45,7 @@ into separate file grub/compiler.h and include it instead.
  create mode 100644 include/grub/compiler.h
 
 diff --git a/ChangeLog b/ChangeLog
-index dad2da2..dad469b 100644
+index dad2da2fa..dad469b43 100644
 --- a/ChangeLog
 +++ b/ChangeLog
 @@ -1,5 +1,19 @@
@@ -69,7 +69,7 @@ index dad2da2..dad469b 100644
  	* Makefile.am: ... here.
  	* Makefile.util.def: ... and here.
 diff --git a/grub-core/commands/fileXX.c b/grub-core/commands/fileXX.c
-index c9857ff..58e1094 100644
+index c9857ff67..58e1094c6 100644
 --- a/grub-core/commands/fileXX.c
 +++ b/grub-core/commands/fileXX.c
 @@ -18,6 +18,7 @@
@@ -81,7 +81,7 @@ index c9857ff..58e1094 100644
  #pragma GCC diagnostic ignored "-Wcast-align"
  
 diff --git a/grub-core/efiemu/prepare.c b/grub-core/efiemu/prepare.c
-index fb1b25d..84c3368 100644
+index fb1b25d17..84c3368a8 100644
 --- a/grub-core/efiemu/prepare.c
 +++ b/grub-core/efiemu/prepare.c
 @@ -21,6 +21,7 @@
@@ -93,7 +93,7 @@ index fb1b25d..84c3368 100644
  #include <grub/crypto.h>
  
 diff --git a/grub-core/loader/i386/xen_file.c b/grub-core/loader/i386/xen_file.c
-index ebbf6aa..ff23235 100644
+index ebbf6aa11..ff23235f0 100644
 --- a/grub-core/loader/i386/xen_file.c
 +++ b/grub-core/loader/i386/xen_file.c
 @@ -18,6 +18,7 @@
@@ -105,7 +105,7 @@ index ebbf6aa..ff23235 100644
  grub_elf_t
  grub_xen_file (grub_file_t file)
 diff --git a/grub-core/loader/i386/xen_fileXX.c b/grub-core/loader/i386/xen_fileXX.c
-index 6df0015..73a5f90 100644
+index 6df001576..73a5f90fd 100644
 --- a/grub-core/loader/i386/xen_fileXX.c
 +++ b/grub-core/loader/i386/xen_fileXX.c
 @@ -17,6 +17,7 @@
@@ -117,7 +117,7 @@ index 6df0015..73a5f90 100644
  static grub_err_t
  parse_xen_guest (grub_elf_t elf, struct grub_xen_file_info *xi,
 diff --git a/grub-core/video/capture.c b/grub-core/video/capture.c
-index 67c8edd..4f83c74 100644
+index 67c8edde8..4f83c7441 100644
 --- a/grub-core/video/capture.c
 +++ b/grub-core/video/capture.c
 @@ -4,6 +4,7 @@
@@ -129,7 +129,7 @@ index 67c8edd..4f83c74 100644
  static struct
  {
 diff --git a/include/grub/command.h b/include/grub/command.h
-index 8705a63..eee4e84 100644
+index 8705a6355..eee4e847e 100644
 --- a/include/grub/command.h
 +++ b/include/grub/command.h
 @@ -22,6 +22,7 @@
@@ -142,7 +142,7 @@ index 8705a63..eee4e84 100644
    {
 diff --git a/include/grub/compiler.h b/include/grub/compiler.h
 new file mode 100644
-index 0000000..c9e1d7a
+index 000000000..c9e1d7a73
 --- /dev/null
 +++ b/include/grub/compiler.h
 @@ -0,0 +1,51 @@
@@ -198,7 +198,7 @@ index 0000000..c9e1d7a
 +
 +#endif /* ! GRUB_COMPILER_HEADER */
 diff --git a/include/grub/dl.h b/include/grub/dl.h
-index d29a899..9562fa6 100644
+index d29a899f5..9562fa663 100644
 --- a/include/grub/dl.h
 +++ b/include/grub/dl.h
 @@ -26,6 +26,7 @@
@@ -210,7 +210,7 @@ index d29a899..9562fa6 100644
  
  /*
 diff --git a/include/grub/list.h b/include/grub/list.h
-index edd20ad..d170ff6 100644
+index edd20adfd..d170ff6da 100644
 --- a/include/grub/list.h
 +++ b/include/grub/list.h
 @@ -21,8 +21,8 @@
@@ -225,7 +225,7 @@ index edd20ad..d170ff6 100644
  struct grub_list
  {
 diff --git a/include/grub/misc.h b/include/grub/misc.h
-index 2cf74b5..c6cd456 100644
+index 2cf74b550..c6cd4564d 100644
 --- a/include/grub/misc.h
 +++ b/include/grub/misc.h
 @@ -25,34 +25,7 @@
@@ -265,7 +265,7 @@ index 2cf74b5..c6cd456 100644
  #define ALIGN_UP(addr, align) \
  	((addr + (typeof (addr)) align - 1) & ~((typeof (addr)) align - 1))
 diff --git a/include/grub/procfs.h b/include/grub/procfs.h
-index d393da7..8cc331d 100644
+index d393da77f..8cc331d94 100644
 --- a/include/grub/procfs.h
 +++ b/include/grub/procfs.h
 @@ -20,6 +20,7 @@
@@ -277,5 +277,5 @@ index d393da7..8cc331d 100644
  struct grub_procfs_entry
  {
 -- 
-2.7.4
+2.13.0
 

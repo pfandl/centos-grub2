@@ -1,7 +1,7 @@
 From 637ab9f9d8415bb29cafbbec51d32916b3975061 Mon Sep 17 00:00:00 2001
 From: Andrey Borzenkov <arvidjaar@gmail.com>
 Date: Tue, 7 Jan 2014 20:34:25 +0400
-Subject: [PATCH 013/198] Change grub-mkrescue to use bootaa64.efi too
+Subject: [PATCH 013/260] Change grub-mkrescue to use bootaa64.efi too
 
 Also add ChangeLog entry for previous change.
 ---
@@ -10,7 +10,7 @@ Also add ChangeLog entry for previous change.
  2 files changed, 8 insertions(+), 1 deletion(-)
 
 diff --git a/ChangeLog b/ChangeLog
-index e87f0a7..0b9fa05 100644
+index e87f0a7a4..0b9fa05b2 100644
 --- a/ChangeLog
 +++ b/ChangeLog
 @@ -1,5 +1,12 @@
@@ -27,7 +27,7 @@ index e87f0a7..0b9fa05 100644
  	on MinGW-64 when compiling for 32 bits.
  
 diff --git a/util/grub-mkrescue.c b/util/grub-mkrescue.c
-index 317879d..0d03e55 100644
+index 317879d0b..0d03e55d2 100644
 --- a/util/grub-mkrescue.c
 +++ b/util/grub-mkrescue.c
 @@ -663,7 +663,7 @@ main (int argc, char *argv[])
@@ -40,5 +40,5 @@ index 317879d..0d03e55 100644
  			     imgname);
        free (imgname);
 -- 
-2.7.4
+2.13.0
 

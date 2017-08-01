@@ -1,14 +1,14 @@
 From cf0b5ad37f8bdfd77e1d0e81962ddc8db477db65 Mon Sep 17 00:00:00 2001
 From: Paulo Flabiano Smorigo <pfsmorigo@br.ibm.com>
 Date: Tue, 27 Nov 2012 16:58:39 -0200
-Subject: [PATCH 098/198] Add %X option to printf functions.
+Subject: [PATCH 098/260] Add %X option to printf functions.
 
 ---
  grub-core/kern/misc.c | 7 +++++--
  1 file changed, 5 insertions(+), 2 deletions(-)
 
 diff --git a/grub-core/kern/misc.c b/grub-core/kern/misc.c
-index c5c815d..a56cfe7 100644
+index c5c815d8d..a56cfe789 100644
 --- a/grub-core/kern/misc.c
 +++ b/grub-core/kern/misc.c
 @@ -762,7 +762,7 @@ __umoddi3 (grub_uint64_t a, grub_uint64_t b)
@@ -54,5 +54,5 @@ index c5c815d..a56cfe7 100644
  	case 'd':
  	  {
 -- 
-2.7.4
+2.13.0
 
