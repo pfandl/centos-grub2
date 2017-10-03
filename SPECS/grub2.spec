@@ -3,6 +3,16 @@
 %global tarversion 2.02~beta2
 %undefine _missing_build_ids_terminate_build
 
+%ifarch i686
+%define platform pc
+%define legacy_package_arch i386
+%define legacy_target_cpu_name i386
+%define target_cpu_name i386
+%endif
+%ifarch x86_64
+%define mock 1
+%endif
+
 Name:           grub2
 Epoch:          1
 Version:        2.02
@@ -59,7 +69,7 @@ BuildRequires:	pesign >= 0.99-8
 BuildRequires:  ccache
 %endif
 
-ExcludeArch:	s390 s390x %{arm} %{?ix86}
+ExcludeArch:	s390 s390x %{arm} 
 Obsoletes:	%{name} <= %{evr}
 
 %if 0%{with_legacy_arch}
@@ -461,6 +471,9 @@ fi
 %endif
 
 %changelog
+* Tue Oct  3 2017 Johnny Hughes <johnny@centos.org> - 2.02-0.64
+- Roll in i686 mods
+
 * Wed Aug  9 2017 Johnny Hughes <johnny@centos.org> - 2.02-0.64
 - Manual Debranding after auto debranding failed
 
