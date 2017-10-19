@@ -155,10 +155,10 @@ This subpackage provides tools for support of all platforms.
 
 %build
 %if 0%{with_efi_arch}
-%do_primary_efi_build %{grubefiarch} %{grubefiname} %{grubeficdname} %{_target_platform} "'%{efi_cflags}'" %{SOURCE3} %{SOURCE4} redhatsecureboot301
+%do_primary_efi_build %{grubefiarch} %{grubefiname} %{grubeficdname} %{_target_platform} "'%{efi_cflags}'" %{SOURCE3} %{SOURCE3} redhatsecureboot301
 %endif
 %if 0%{with_alt_efi_arch}
-%do_alt_efi_build %{grubaltefiarch} %{grubaltefiname} %{grubalteficdname} %{_alt_target_platform} "'%{alt_efi_cflags}'" %{SOURCE3} %{SOURCE4} redhatsecureboot301
+%do_alt_efi_build %{grubaltefiarch} %{grubaltefiname} %{grubalteficdname} %{_alt_target_platform} "'%{alt_efi_cflags}'" %{SOURCE3} %{SOURCE3} redhatsecureboot301
 %endif
 %if 0%{with_legacy_arch}
 %do_legacy_build %{grublegacyarch}
@@ -170,6 +170,13 @@ set -e
 rm -fr $RPM_BUILD_ROOT
 
 %do_common_install
++# Fix for hardcoded efidir
+sed -i.orig -e 's@/efi/EFI/redhat/@/efi/EFI/%{efidir}/@' \
+    grub-%{tarversion}/util/grub-setpassword.in
+touch --reference=grub-%{tarversion}/util/grub-setpassword.in.orig \
+    grub-%{tarversion}/util/grub-setpassword.in
+rm -f grub-%{tarversion}/util/grub-setpassword.in.orig
+
 %if 0%{with_efi_arch}
 %do_efi_install %{grubefiarch} %{grubefiname} %{grubeficdname}
 %endif
