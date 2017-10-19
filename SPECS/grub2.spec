@@ -6,7 +6,7 @@
 Name:           grub2
 Epoch:          1
 Version:        2.02
-Release:        0.64%{?dist}%{?buildid}
+Release:        0.65%{?dist}%{?buildid}.2
 Summary:        Bootloader with support for Linux, Multiboot and more
 Group:          System Environment/Base
 License:        GPLv3+
@@ -15,8 +15,8 @@ Source0:        ftp://alpha.gnu.org/gnu/grub/grub-%{tarversion}.tar.xz
 #Source0:	ftp://ftp.gnu.org/gnu/grub/grub-%%{tarversion}.tar.xz
 Source1:	grub.macros
 Source2:	grub.patches
-Source3:	centos.cer
-# (source removed)
+Source3:	securebootca.cer
+Source4:	secureboot.cer
 Source5:	http://unifoundry.com/unifont-5.1.20080820.pcf.gz
 Source6:	gitignore
 
@@ -60,7 +60,7 @@ BuildRequires:  ccache
 %endif
 
 ExcludeArch:	s390 s390x %{arm} %{?ix86}
-Obsoletes:	%{name} <= %{evr}
+Obsoletes:	%{name} <= %{flagday}
 
 %if 0%{with_legacy_arch}
 Requires:	%{name}-%{legacy_package_arch} = %{evr}
@@ -90,8 +90,11 @@ subpackages.
 %package tools
 Summary:	Support tools for GRUB.
 Group:		System Environment/Base
-Obsoletes:	%{name}-tools < %{evr}
-Requires:	%{name}-common = %{epoch}:%{version}-%{release}
+Obsoletes:	%{name}-tools <= %{flagday}
+Obsoletes:	%{name}-tools-efi <= %{flagday}
+Provides:	%{name}-tools-efi = %{evr}
+Requires:	%{name}-tools-minimal = %{evr}
+Requires:	%{name}-common = %{evr}
 Requires:	gettext os-prober which file
 Requires(pre):  dracut
 Requires(post): dracut
@@ -100,25 +103,12 @@ Requires(post): dracut
 %{desc}
 This subpackage provides tools for support of all platforms.
 
-%ifarch x86_64 %{ix86}
-%package tools-efi
-Summary:	Support tools for GRUB.
-Group:		System Environment/Base
-Requires:	gettext os-prober which file
-Requires:	%{name}-common = %{epoch}:%{version}-%{release}
-Obsoletes:	%{name}-tools < %{evr}
-
-%description tools-efi
-%{desc}
-This subpackage provides tools for support of EFI platforms.
-%endif
-
 %package tools-minimal
 Summary:	Support tools for GRUB.
 Group:		System Environment/Base
 Requires:	gettext
-Requires:	%{name}-common = %{epoch}:%{version}-%{release}
-Obsoletes:	%{name}-tools < %{evr}
+Requires:	%{name}-common = %{evr}
+Obsoletes:	%{name}-tools <= %{flagday}
 
 %description tools-minimal
 %{desc}
@@ -130,7 +120,8 @@ Group:		System Environment/Base
 Requires:	gettext os-prober which file
 Requires:	%{name}-tools-minimal = %{epoch}:%{version}-%{release}
 Requires:	%{name}-common = %{epoch}:%{version}-%{release}
-Obsoletes:	%{name}-tools < %{evr}
+Requires:	%{name}-tools = %{evr}
+Obsoletes:	%{name}-tools <= %{flagday}
 
 %description tools-extra
 %{desc}
@@ -161,10 +152,10 @@ This subpackage provides tools for support of all platforms.
 
 %build
 %if 0%{with_efi_arch}
-%do_primary_efi_build %{grubefiarch} %{grubefiname} %{grubeficdname} %{_target_platform} "'%{efi_cflags}'" %{SOURCE3} %{SOURCE3} redhatsecureboot301
+%do_primary_efi_build %{grubefiarch} %{grubefiname} %{grubeficdname} %{_target_platform} "'%{efi_cflags}'" %{SOURCE3} %{SOURCE4} redhatsecureboot301
 %endif
 %if 0%{with_alt_efi_arch}
-%do_alt_efi_build %{grubaltefiarch} %{grubaltefiname} %{grubalteficdname} %{_alt_target_platform} "'%{alt_efi_cflags}'" %{SOURCE3} %{SOURCE3} redhatsecureboot301
+%do_alt_efi_build %{grubaltefiarch} %{grubaltefiname} %{grubalteficdname} %{_alt_target_platform} "'%{alt_efi_cflags}'" %{SOURCE3} %{SOURCE4} redhatsecureboot301
 %endif
 %if 0%{with_legacy_arch}
 %do_legacy_build %{grublegacyarch}
@@ -176,13 +167,6 @@ set -e
 rm -fr $RPM_BUILD_ROOT
 
 %do_common_install
-# Fix for hardcoded efidir
-sed -i.orig -e 's@/efi/EFI/redhat/@/efi/EFI/%{efidir}/@' \
-    grub-%{tarversion}/util/grub-setpassword.in
-touch --reference=grub-%{tarversion}/util/grub-setpassword.in.orig \
-    grub-%{tarversion}/util/grub-setpassword.in
-rm -f grub-%{tarversion}/util/grub-setpassword.in.orig
-
 %if 0%{with_efi_arch}
 %do_efi_install %{grubefiarch} %{grubefiname} %{grubeficdname}
 %endif
@@ -344,15 +328,6 @@ fi
 %{_datadir}/man/man1/%{name}-editenv*
 %{_datadir}/man/man1/%{name}-mkpasswd-*
 
-%ifarch x86_64 %{ix86}
-%files tools-efi
-%defattr(-,root,root,-)
-%{_sbindir}/%{name}-macbless
-%{_bindir}/%{name}-render-label
-%{_datadir}/man/man8/%{name}-macbless*
-%{_datadir}/man/man1/%{name}-render-label*
-%endif
-
 %files tools
 %defattr(-,root,root,-)
 %attr(0644,root,root) %ghost %config(noreplace) %{_sysconfdir}/default/grub
@@ -394,8 +369,18 @@ fi
 %exclude %{_datadir}/man/man8/%{name}-setpassword*
 %exclude %{_datadir}/man/man1/%{name}-editenv*
 %exclude %{_datadir}/man/man1/%{name}-mkpasswd-*
+
+%ifarch x86_64 %{ix86}
+%{_sbindir}/%{name}-macbless
+%{_bindir}/%{name}-render-label
+%{_datadir}/man/man8/%{name}-macbless*
+%{_datadir}/man/man1/%{name}-render-label*
+%else
+%exclude %{_sbindir}/%{name}-macbless
+%exclude %{_bindir}/%{name}-render-label
 %exclude %{_datadir}/man/man8/%{name}-macbless*
 %exclude %{_datadir}/man/man1/%{name}-render-label*
+%endif
 
 %if %{with_legacy_arch}
 %{_sbindir}/%{name}-install
@@ -461,8 +446,18 @@ fi
 %endif
 
 %changelog
-* Wed Aug  9 2017 Johnny Hughes <johnny@centos.org> - 2.02-0.64
-- Manual Debranding after auto debranding failed
+* Mon Oct 09 2017 Peter Jones <pjones@redhat.com> - 2.02-0.65.el7_4.2
+- Fix an incorrect man page exclusion on x86_64.
+  Related: rhbz#1499669
+
+* Fri Oct 06 2017 Peter Jones <pjones@redhat.com> - 2.02-0.65.1
+- More precise requires and obsoletes on the -tools* subpackages to avoid
+  issues with mixing and matching repos the subpackages are split between.
+  Resolves: rhbz#1499669
+
+* Tue Oct 03 2017 Peter Jones <pjones@redhat.com> - 2.02-0.65
+- Fix spurious : at the end of the mac address netboot paths.
+  Resolves: rhbz#1497323
 
 * Wed May 31 2017 Peter Jones <pjones@redhat.com> - 2.02-0.64
 - Revert pkglibdir usage; we have to coordinate this with Lorax.

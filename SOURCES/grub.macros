@@ -1,4 +1,7 @@
 # vim:filetype=spec
+
+%global flagday 1:2.02-0.65.el7_4
+
 # Modules always contain just 32-bit code
 %global _libdir %{_exec_prefix}/lib
 %global _binaries_in_noarch_packages_terminate_build 0
@@ -205,7 +208,7 @@ Requires:	%{name}-tools-minimal >= %{evr}				\
 Requires:	%{name}-tools-extra = %{evr}				\
 Requires:	%{name}-tools = %{evr}					\
 %{-p:Provides:	%{name}-efi = %{evr}}					\
-%{-p:Obsoletes:	%{name}-efi < %{evr}}					\
+%{-p:Obsoletes:	%{name}-efi <= %{flagday}}				\
 									\
 %{expand:%%description %{1}}						\
 %{desc}									\
@@ -218,7 +221,7 @@ Group:		System Environment/Base					\
 BuildArch:	noarch							\
 Requires:	%{name}-common = %{evr}					\
 %{-p:Provides:	%{name}-efi-modules = %{evr}}				\
-%{-p:Obsoletes:	%{name}-efi-modules < %{evr}}				\
+%{-p:Obsoletes:	%{name}-efi-modules <= %{flagday}}			\
 %{expand:%%description %{1}-modules}					\
 %{desc}									\
 This subpackage provides support for rebuilding your own grub.efi.	\

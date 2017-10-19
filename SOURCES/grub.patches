@@ -257,3 +257,4 @@ Patch0256: 0256-efinet-Setting-DNS-server-from-UEFI-protocol.patch
 Patch0257: 0257-set-rootpath.patch
 Patch0258: 0258-Fix-one-more-coverity-complaint.patch
 Patch0260: 0260-Fix-up-linux-params-usage.patch
+Patch0261: 0261-Fix-grub_net_hwaddr_to_str.patch
