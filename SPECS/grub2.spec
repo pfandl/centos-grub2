@@ -58,9 +58,6 @@ BuildRequires:	pesign >= 0.99-8
 %if %{?_with_ccache: 1}%{?!_with_ccache: 0}
 BuildRequires:  ccache
 %endif
-%if 0%{?centos}
-%global efidir centos
-%endif
 
 ExcludeArch:	s390 s390x %{arm} %{?ix86}
 Obsoletes:	%{name} <= %{flagday}
@@ -143,6 +140,13 @@ This subpackage provides tools for support of all platforms.
 %prep
 %setup -T -c -n grub-%{tarversion}
 %do_common_setup
+# Fix for hardcoded efidir
+sed -i.orig -e 's@/efi/EFI/redhat/@/efi/EFI/%{efidir}/@' \
+    grub-%{tarversion}/util/grub-setpassword.in
+touch --reference=grub-%{tarversion}/util/grub-setpassword.in.orig \
+    grub-%{tarversion}/util/grub-setpassword.in
+rm -f grub-%{tarversion}/util/grub-setpassword.in.orig
+
 %if 0%{with_efi_arch}
 %do_setup %{grubefiarch}
 %endif
@@ -170,13 +174,6 @@ set -e
 rm -fr $RPM_BUILD_ROOT
 
 %do_common_install
-+# Fix for hardcoded efidir
-sed -i.orig -e 's@/efi/EFI/redhat/@/efi/EFI/%{efidir}/@' \
-    grub-%{tarversion}/util/grub-setpassword.in
-touch --reference=grub-%{tarversion}/util/grub-setpassword.in.orig \
-    grub-%{tarversion}/util/grub-setpassword.in
-rm -f grub-%{tarversion}/util/grub-setpassword.in.orig
-
 %if 0%{with_efi_arch}
 %do_efi_install %{grubefiarch} %{grubefiname} %{grubeficdname}
 %endif

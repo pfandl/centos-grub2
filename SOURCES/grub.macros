@@ -1,6 +1,6 @@
 # vim:filetype=spec
 
-%global flagday 1:2.02-0.65.el7_4
+%global flagday 1:2.02-0.65.el7.centos
 
 # Modules always contain just 32-bit code
 %global _libdir %{_exec_prefix}/lib
