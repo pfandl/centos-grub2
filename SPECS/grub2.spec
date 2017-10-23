@@ -3,6 +3,16 @@
 %global tarversion 2.02~beta2
 %undefine _missing_build_ids_terminate_build
 
+%ifarch i686
+%define platform pc
+%define legacy_package_arch i386
+%define legacy_target_cpu_name i386
+%define target_cpu_name i386
+%endif
+%ifarch x86_64
+%define mock 1
+%endif
+
 Name:           grub2
 Epoch:          1
 Version:        2.02
@@ -59,7 +69,7 @@ BuildRequires:	pesign >= 0.99-8
 BuildRequires:  ccache
 %endif
 
-ExcludeArch:	s390 s390x %{arm} %{?ix86}
+ExcludeArch:	s390 s390x %{arm}
 Obsoletes:	%{name} <= %{flagday}
 
 %if 0%{with_legacy_arch}
@@ -453,6 +463,9 @@ fi
 %endif
 
 %changelog
+* Mon Oct 23 2017 Johnny Hughes <johnny@centos.org> - 2.02-0.65.el7.centos.2.i386
+- Roll in i686 mods
+
 * Thu Oct 19 2017 CentOS Sources <bugs@centos.org> - 2.02-0.65.el7.centos.2
 - Roll in CentOS Secureboot keys
 - Move the edidir to be CentOS, so people can co-install fedora, rhel and centos
