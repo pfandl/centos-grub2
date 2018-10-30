@@ -15,8 +15,8 @@ Source0:        ftp://alpha.gnu.org/gnu/grub/grub-%{tarversion}.tar.xz
 #Source0:	ftp://ftp.gnu.org/gnu/grub/grub-%%{tarversion}.tar.xz
 Source1:	grub.macros
 Source2:	grub.patches
-Source3:	securebootca.cer
-Source4:	secureboot.cer
+Source3:	centos.cer
+#(source removed)
 Source5:	http://unifoundry.com/unifont-5.1.20080820.pcf.gz
 Source6:	gitignore
 
@@ -57,6 +57,9 @@ BuildRequires:	pesign >= 0.99-8
 %endif
 %if %{?_with_ccache: 1}%{?!_with_ccache: 0}
 BuildRequires:  ccache
+%endif
+%if 0%{?centos}
+%global efidir centos
 %endif
 
 ExcludeArch:	s390 s390x %{arm} %{?ix86}
@@ -469,6 +472,10 @@ fi
 %endif
 
 %changelog
+* Tue Oct 30 2018 CentOS Sources <bugs@centos.org> - 2.02-0.76.el7.centos
+- Roll in CentOS Secureboot keys
+- Move the edidir to be CentOS, so people can co-install fedora, rhel and centos
+
 * Mon Jul 30 2018 pjones <pjones@redhat.com> - 2.02.0.76
 - Fix PCIe probing in EFI UGA driver.
   Resolves: rhbz#1583708
