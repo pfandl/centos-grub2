@@ -1,0 +1,24 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Andrei Borzenkov <arvidjaar@gmail.com>
+Date: Sat, 9 Jan 2016 21:05:44 +0300
+Subject: [PATCH] mkimage: fix unintended sign extension
+
+Found by: Coverity scan.
+CID: 73691, 73717
+---
+ util/grub-mkimagexx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/util/grub-mkimagexx.c b/util/grub-mkimagexx.c
+index 0a1ac9e517c..66e8576411e 100644
+--- a/util/grub-mkimagexx.c
++++ b/util/grub-mkimagexx.c
+@@ -1465,7 +1465,7 @@ SUFFIX (load_image) (const char *kernel_path, size_t *exec_size,
+   section_entsize = grub_target_to_host16 (e->e_shentsize);
+   num_sections = grub_target_to_host16 (e->e_shnum);
+ 
+-  if (kernel_size < section_offset + section_entsize * num_sections)
++  if (kernel_size < section_offset + (grub_uint32_t) section_entsize * num_sections)
+     grub_util_error (_("premature end of file %s"), kernel_path);
+ 
+   sections = (Elf_Shdr *) (kernel_img + section_offset);

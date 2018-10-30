@@ -1,7 +1,7 @@
-From f9187f5eef9776ba51dca88e347bfd6675787cb6 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Jan Kara <jack@suse.cz>
 Date: Mon, 1 Jun 2015 14:28:46 +0200
-Subject: [PATCH 170/260] xfs: V5 filesystem format support
+Subject: [PATCH] xfs: V5 filesystem format support
 
 Add support for new XFS on disk format. We have to handle optional
 filetype fields in directory entries, additional CRC, LSN, UUID entries
@@ -13,7 +13,7 @@ Signed-off-by: Jan Kara <jack@suse.cz>
  1 file changed, 252 insertions(+), 80 deletions(-)
 
 diff --git a/grub-core/fs/xfs.c b/grub-core/fs/xfs.c
-index 26d8147a9..f00e43e7d 100644
+index 26d8147a92e..f00e43e7dc3 100644
 --- a/grub-core/fs/xfs.c
 +++ b/grub-core/fs/xfs.c
 @@ -34,6 +34,50 @@ GRUB_MOD_LICENSE ("GPLv3+");
@@ -574,6 +574,3 @@ index 26d8147a9..f00e43e7d 100644
  
    grub_xfs_read_inode (data, data->diropen.ino, &data->diropen.inode);
  
--- 
-2.13.0
-

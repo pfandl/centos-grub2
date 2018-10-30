@@ -6,7 +6,7 @@
 Name:           grub2
 Epoch:          1
 Version:        2.02
-Release:        0.65%{?dist}%{?buildid}.2
+Release:        0.76%{?dist}%{?buildid}
 Summary:        Bootloader with support for Linux, Multiboot and more
 Group:          System Environment/Base
 License:        GPLv3+
@@ -15,8 +15,8 @@ Source0:        ftp://alpha.gnu.org/gnu/grub/grub-%{tarversion}.tar.xz
 #Source0:	ftp://ftp.gnu.org/gnu/grub/grub-%%{tarversion}.tar.xz
 Source1:	grub.macros
 Source2:	grub.patches
-Source3:	centos.cer
-#(source removed)
+Source3:	securebootca.cer
+Source4:	secureboot.cer
 Source5:	http://unifoundry.com/unifont-5.1.20080820.pcf.gz
 Source6:	gitignore
 
@@ -78,6 +78,7 @@ hardware devices.\
 %description
 %{desc}
 
+%ifarch x86_64
 %package common
 Summary:	grub2 common layout
 Group:		System Environment/Base
@@ -86,6 +87,7 @@ BuildArch:	noarch
 %description common
 This package provides some directories which are required by various grub2
 subpackages.
+%endif
 
 %package tools
 Summary:	Support tools for GRUB.
@@ -140,31 +142,24 @@ This subpackage provides tools for support of all platforms.
 %prep
 %setup -T -c -n grub-%{tarversion}
 %do_common_setup
-# Fix for hardcoded efidir
-sed -i.orig -e 's@/efi/EFI/redhat/@/efi/EFI/%{efidir}/@' \
-    grub-%{tarversion}/util/grub-setpassword.in
-touch --reference=grub-%{tarversion}/util/grub-setpassword.in.orig \
-    grub-%{tarversion}/util/grub-setpassword.in
-rm -f grub-%{tarversion}/util/grub-setpassword.in.orig
-
 %if 0%{with_efi_arch}
 %do_setup %{grubefiarch}
 %endif
 %if 0%{with_alt_efi_arch}
 %do_setup %{grubaltefiarch}
 %endif
-%if 0%{with_legacy_arch}
+%if 0%{with_legacy_arch}%{with_legacy_utils}
 %do_setup %{grublegacyarch}
 %endif
 
 %build
 %if 0%{with_efi_arch}
-%do_primary_efi_build %{grubefiarch} %{grubefiname} %{grubeficdname} %{_target_platform} "'%{efi_cflags}'" %{SOURCE3} %{SOURCE3} redhatsecureboot301
+%do_primary_efi_build %{grubefiarch} %{grubefiname} %{grubeficdname} %{_target_platform} "'%{efi_cflags}'" %{SOURCE3} %{SOURCE4} redhatsecureboot301
 %endif
 %if 0%{with_alt_efi_arch}
-%do_alt_efi_build %{grubaltefiarch} %{grubaltefiname} %{grubalteficdname} %{_alt_target_platform} "'%{alt_efi_cflags}'" %{SOURCE3} %{SOURCE3} redhatsecureboot301
+%do_alt_efi_build %{grubaltefiarch} %{grubaltefiname} %{grubalteficdname} %{_alt_target_platform} "'%{alt_efi_cflags}'" %{SOURCE3} %{SOURCE4} redhatsecureboot301
 %endif
-%if 0%{with_legacy_arch}
+%if 0%{with_legacy_arch}%{with_legacy_utils}
 %do_legacy_build %{grublegacyarch}
 %endif
 %do_common_build
@@ -180,9 +175,10 @@ rm -fr $RPM_BUILD_ROOT
 %if 0%{with_alt_efi_arch}
 %do_alt_efi_install %{grubaltefiarch} %{grubaltefiname} %{grubalteficdname}
 %endif
-%if 0%{with_legacy_arch}
+%if 0%{with_legacy_arch}%{with_legacy_utils}
 %do_legacy_install %{grublegacyarch} %{alt_grub_target_name}
 %endif
+${RPM_BUILD_ROOT}/%{_bindir}/%{name}-editenv ${RPM_BUILD_ROOT}/boot/efi/EFI/%{efidir}/grubenv create
 rm -f $RPM_BUILD_ROOT%{_infodir}/dir
 
 %find_lang grub
@@ -248,6 +244,13 @@ elif [ -f /etc/grub.d/01_users ] && \
 	    > /boot/grub2/user.cfg
     fi
 fi
+if [ -f /boot/grub2/grubenv ] && ! [ -f /boot/efi/EFI/%{efidir}/grubenv ] ; then
+	if [ -e /boot/efi/EFI/%{efidir}/grubenv ] ; then
+		rm /boot/efi/EFI/%{efidir}/grubenv
+		mv /boot/grub2/grubenv /boot/efi/EFI/%{efidir}/grubenv
+		ln -sf ../efi/EFI/%{efidir}/grubenv /boot/grub2/grubenv
+	fi
+fi
 
 %post tools
 if [ "$1" = 1 ]; then
@@ -287,7 +290,18 @@ if [ "$1" = 0 ]; then
 fi
 
 %files
+%ifnarch x86_64 %{ix86}
+%exclude %{_bindir}/%{name}-render-label
+%exclude %{_sbindir}/%{name}-bios-setup
+%exclude %{_sbindir}/%{name}-macbless
+%endif
+%ifnarch x86_64
+%exclude /boot/grub2/grubenv
+%exclude /boot/efi/EFI/*/grubenv
+%exclude %{_datadir}/locale
+%endif
 
+%ifarch x86_64
 %files common -f grub.lang
 %dir %{_libdir}/grub/
 %dir %{_datarootdir}/grub/
@@ -302,7 +316,7 @@ fi
 %exclude /boot/%{name}/themes/system/*
 %attr(0700,root,root) %dir /boot/grub2
 %exclude /boot/grub2/*
-%dir %attr(0755,root,root)/boot/efi/EFI/%{efidir}
+%dir %attr(0700,root,root)/boot/efi/EFI/%{efidir}
 %exclude /boot/efi/EFI/%{efidir}/*
 %license %{common_srcdir}/COPYING
 %ghost %config(noreplace) /boot/grub2/grubenv
@@ -314,10 +328,6 @@ fi
 %doc %{common_srcdir}/docs/grub.html
 %doc %{common_srcdir}/docs/grub-dev.html
 %doc %{common_srcdir}/docs/font_char_metrics.png
-%ifnarch x86_64 %{ix86}
-%exclude %{_bindir}/%{name}-render-label
-%exclude %{_sbindir}/%{name}-bios-setup
-%exclude %{_sbindir}/%{name}-macbless
 %endif
 
 %files tools-minimal
@@ -377,7 +387,7 @@ fi
 %exclude %{_datadir}/man/man1/%{name}-editenv*
 %exclude %{_datadir}/man/man1/%{name}-mkpasswd-*
 
-%ifarch x86_64 %{ix86}
+%ifarch x86_64 %{?ix86}
 %{_sbindir}/%{name}-macbless
 %{_bindir}/%{name}-render-label
 %{_datadir}/man/man8/%{name}-macbless*
@@ -389,7 +399,7 @@ fi
 %exclude %{_datadir}/man/man1/%{name}-render-label*
 %endif
 
-%if %{with_legacy_arch}
+%if %{with_legacy_utils}
 %{_sbindir}/%{name}-install
 %ifarch %{ix86} x86_64
 %{_sbindir}/%{name}-bios-setup
@@ -450,25 +460,79 @@ fi
 %endif
 %if 0%{with_legacy_arch}
 %define_legacy_variant_files %{legacy_package_arch} %{grublegacyarch}
+%else
+%if 0%{with_legacy_utils}
+%exclude %{_sysconfdir}/%{name}.cfg
+%exclude %{_libdir}/grub/%{grublegacyarch}/*
+%exclude %{_libdir}/grub/%{grublegacyarch}/
+%endif
 %endif
 
 %changelog
-* Thu Oct 19 2017 CentOS Sources <bugs@centos.org> - 2.02-0.65.el7.centos.2
-- Roll in CentOS Secureboot keys
-- Move the edidir to be CentOS, so people can co-install fedora, rhel and centos
+* Mon Jul 30 2018 pjones <pjones@redhat.com> - 2.02.0.76
+- Fix PCIe probing in EFI UGA driver.
+  Resolves: rhbz#1583708
+
+* Wed Jul 18 2018 Peter Jones <pjones@redhat.com> - 2.02-0.74
+- Fix symlink issues with grubenv
+  Resolves: rhbz#1602773
+  Related: rhbz#1497918
+- Make the common subpackage only build on x86_64 to avoid timestamp
+  mismatches.
+  Related: rhbz#1602773
+  Related: rhbz#1497918
+
+* Fri Jun 29 2018 Peter Jones <pjones@redhat.com> - 2.02-0.73
+- Fix loading grub modules with no symbols defined.
+  Related: rhbz#1490981
+
+* Thu Jun 28 2018 Peter Jones <pjones@redhat.com> - 2.02-0.72
+- Revert module dir fix; it still doesn't work.
+  Resolves: rhbz#1594703
+
+* Mon Jun 25 2018 Peter Jones <pjones@redhat.com> - 2.02-0.71
+- The change from 2.02-0.65.el7_4.2 never made it onto the main branch,
+  so one more build to avoid the regression.
+  Related: rhbz#1340893
+
+* Mon Jun 25 2018 Peter Jones <pjones@redhat.com> 2.02-0.70
+- ... and once more, because I built for the wrong target.
+  Related: rhbz#1340893
+
+* Mon Jun 25 2018 Peter Jones <pjones@redhat.com> - 2.02-0.69
+- Build utilities on i686 as well, so grubby can build-dep it there.
+  Related: rhbz#1340893
+
+* Fri Jun 22 2018 Peter Jones <pjones@redhat.com> - 2.02-0.68
+- More work on /boot/efi/... permissions
+  Resolves: rhbz#1496952
+- Rework grubenv symlinks and handle them on upgrades
+  Resolves: rhbz#1497918
+- Make grub2-setpassword -o work
+  Resolves: rhbz#1512749
+
+* Thu Jun 21 2018 Peter Jones <pjones@redhat.com> - 2.02-0.67
+- Make the permissions on /boot/efi/... match the filesystem's requirements.
+  Resolves: rhbz#1496952
+
+* Thu Jun 21 2018 Peter Jones <pjones@redhat.com> - 2.02-0.66
+- Fix EFI UGA driver when the framebuffer is above 4G
+  Resolves: rhbz#1457988
+- Handle XFS filesystems with sparse inodes
+  Resolves: rhbz#1402716
+- Support HTTP booting
+  Resolves: rhbz#1490981
 
 * Mon Oct 09 2017 Peter Jones <pjones@redhat.com> - 2.02-0.65.el7_4.2
 - Fix an incorrect man page exclusion on x86_64.
-  Related: rhbz#1499669
 
 * Fri Oct 06 2017 Peter Jones <pjones@redhat.com> - 2.02-0.65.1
 - More precise requires and obsoletes on the -tools* subpackages to avoid
   issues with mixing and matching repos the subpackages are split between.
-  Resolves: rhbz#1499669
 
-* Tue Oct 03 2017 Peter Jones <pjones@redhat.com> - 2.02-0.65
+* Fri Sep 22 2017 Peter Jones <pjones@redhat.com> - 2.02-0.65
 - Fix spurious : at the end of the mac address netboot paths.
-  Resolves: rhbz#1497323
+  Resolves: rhbz#1483740
 
 * Wed May 31 2017 Peter Jones <pjones@redhat.com> - 2.02-0.64
 - Revert pkglibdir usage; we have to coordinate this with Lorax.

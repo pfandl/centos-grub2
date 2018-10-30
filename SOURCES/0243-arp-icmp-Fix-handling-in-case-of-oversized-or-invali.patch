@@ -1,21 +1,21 @@
-From 7fb95722428db023ea5fb0a29c7711f13db90822 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Vladimir Serbinenko <phcoder@gmail.com>
 Date: Fri, 20 Mar 2015 21:14:23 +0100
-Subject: [PATCH 243/260] arp, icmp: Fix handling in case of oversized or
- invalid packets.
+Subject: [PATCH] arp, icmp: Fix handling in case of oversized or invalid
+ packets.
 
 This restrict ARP handling to MAC and IP addresses but in practice we need
 only this case anyway and other cases are very rar if exist at all. It makes
 code much simpler and less error-prone.
 ---
- grub-core/net/arp.c        | 143 ++++++++++++++++++++++-----------------------
+ grub-core/net/arp.c        | 139 ++++++++++++++++++++++-----------------------
  grub-core/net/icmp.c       |  14 +----
  grub-core/net/netbuff.c    |  20 +++++++
  include/grub/net/netbuff.h |   1 +
- 4 files changed, 92 insertions(+), 86 deletions(-)
+ 4 files changed, 90 insertions(+), 84 deletions(-)
 
 diff --git a/grub-core/net/arp.c b/grub-core/net/arp.c
-index 8cc390b0e..6cc580d6f 100644
+index 8cc390b0e28..6cc580d6f85 100644
 --- a/grub-core/net/arp.c
 +++ b/grub-core/net/arp.c
 @@ -37,12 +37,16 @@ enum
@@ -132,7 +132,7 @@ index 8cc390b0e..6cc580d6f 100644
 +  grub_net_link_level_address_t sender_mac_addr;
    struct grub_net_network_level_interface *inf;
 -  grub_uint8_t *sender_protocol_address, *target_protocol_address;
--
+ 
 -  sender_hardware_address =
 -    (grub_uint8_t *) arp_header + sizeof (*arp_header);
 -  sender_protocol_address = sender_hardware_address + arp_header->hln;
@@ -149,7 +149,6 @@ index 8cc390b0e..6cc580d6f 100644
 -	have_pending = 1;
 -    }
 -  else
-+
 +  if (arp_packet->pro != grub_cpu_to_be16_compile_time (GRUB_NET_ETHERTYPE_IP)
 +      || arp_packet->pln != 4 || arp_packet->hln != 6
 +      || nb->tail - nb->data < (int) sizeof (*arp_packet))
@@ -182,14 +181,13 @@ index 8cc390b0e..6cc580d6f 100644
 -	/* We've already checked that pln is either 4 or 16.  */
 -	char tmp[16];
 -	grub_size_t pln = arp_header->pln;
--
--	if (pln > 16)
--	  pln = 16;
 +	struct grub_net_buff nb_reply;
 +	struct arppkt *arp_reply;
 +	grub_uint8_t arp_data[128];
 +	grub_err_t err;
-+
+ 
+-	if (pln > 16)
+-	  pln = 16;
 +	nb_reply.head = arp_data;
 +	nb_reply.end = arp_data + sizeof (arp_data);
 +	grub_netbuff_clear (&nb_reply);
@@ -230,7 +228,7 @@ index 8cc390b0e..6cc580d6f 100644
    }
    return GRUB_ERR_NONE;
 diff --git a/grub-core/net/icmp.c b/grub-core/net/icmp.c
-index 28d825ba0..b1eef114e 100644
+index 28d825ba04c..b1eef114e03 100644
 --- a/grub-core/net/icmp.c
 +++ b/grub-core/net/icmp.c
 @@ -85,22 +85,13 @@ grub_net_recv_icmp_packet (struct grub_net_buff *nb,
@@ -267,7 +265,7 @@ index 28d825ba0..b1eef114e 100644
  	grub_netbuff_free (nb_reply);
  	return err;
 diff --git a/grub-core/net/netbuff.c b/grub-core/net/netbuff.c
-index e97ecd23e..dbeeefe47 100644
+index e97ecd23e9c..dbeeefe4783 100644
 --- a/grub-core/net/netbuff.c
 +++ b/grub-core/net/netbuff.c
 @@ -97,6 +97,26 @@ grub_netbuff_alloc (grub_size_t len)
@@ -298,7 +296,7 @@ index e97ecd23e..dbeeefe47 100644
  grub_netbuff_free (struct grub_net_buff *nb)
  {
 diff --git a/include/grub/net/netbuff.h b/include/grub/net/netbuff.h
-index 9ac168c89..1177c1220 100644
+index 9ac168c897c..1177c122051 100644
 --- a/include/grub/net/netbuff.h
 +++ b/include/grub/net/netbuff.h
 @@ -25,6 +25,7 @@ grub_err_t grub_netbuff_pull (struct grub_net_buff *net_buff, grub_size_t len);
@@ -309,6 +307,3 @@ index 9ac168c89..1177c1220 100644
  void grub_netbuff_free (struct grub_net_buff *net_buff);
  
  #endif
--- 
-2.13.0
-

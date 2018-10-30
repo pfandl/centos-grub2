@@ -1,7 +1,7 @@
-From 81bf71f61f9cbcc1c2244788cbe5002a54be65db Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Mon, 9 May 2016 14:15:17 -0400
-Subject: [PATCH 229/260] Add some grub_dprintf() in the linuxefi path.
+Subject: [PATCH] Add some grub_dprintf() in the linuxefi path.
 
 Signed-off-by: Peter Jones <pjones@redhat.com>
 ---
@@ -10,7 +10,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  2 files changed, 22 insertions(+), 4 deletions(-)
 
 diff --git a/grub-core/loader/efi/linux.c b/grub-core/loader/efi/linux.c
-index 8890bdf05..dbf63e20e 100644
+index 8890bdf059a..dbf63e20ed8 100644
 --- a/grub-core/loader/efi/linux.c
 +++ b/grub-core/loader/efi/linux.c
 @@ -43,12 +43,22 @@ grub_linuxefi_secure_validate (void *data, grub_uint32_t size)
@@ -40,7 +40,7 @@ index 8890bdf05..dbf63e20e 100644
    return -1;
  }
 diff --git a/grub-core/loader/i386/efi/linux.c b/grub-core/loader/i386/efi/linux.c
-index 010bf982d..a95e29700 100644
+index 010bf982d80..a95e29700c5 100644
 --- a/grub-core/loader/i386/efi/linux.c
 +++ b/grub-core/loader/i386/efi/linux.c
 @@ -114,6 +114,8 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
@@ -83,6 +83,3 @@ index 010bf982d..a95e29700 100644
    if (file)
      grub_file_close (file);
  
--- 
-2.13.0
-

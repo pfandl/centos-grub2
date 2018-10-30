@@ -1,7 +1,7 @@
-From 74b69fc18796030dc99ef0a8e55aa8560e431001 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Paulo Flabiano Smorigo <pfsmorigo@br.ibm.com>
 Date: Wed, 29 Jan 2014 13:26:00 -0200
-Subject: [PATCH 049/260] .gitignore: add missing files and .exe variants.
+Subject: [PATCH] .gitignore: add missing files and .exe variants.
 
 ---
  .gitignore | 7 +++++++
@@ -9,7 +9,7 @@ Subject: [PATCH 049/260] .gitignore: add missing files and .exe variants.
  2 files changed, 12 insertions(+), 1 deletion(-)
 
 diff --git a/.gitignore b/.gitignore
-index 2b0156acd..18ab8e812 100644
+index 2b0156acd7c..18ab8e81278 100644
 --- a/.gitignore
 +++ b/.gitignore
 @@ -58,6 +58,8 @@ grub-emu.exe
@@ -48,7 +48,7 @@ index 2b0156acd..18ab8e812 100644
  grub-core/gnulib/alloca.h
  grub-core/gnulib/arg-nonnull.h
 diff --git a/ChangeLog b/ChangeLog
-index d37d4a6fc..a49f5f1f4 100644
+index d37d4a6fc16..a49f5f1f48f 100644
 --- a/ChangeLog
 +++ b/ChangeLog
 @@ -1,3 +1,7 @@
@@ -68,6 +68,3 @@ index d37d4a6fc..a49f5f1f4 100644
  	entries.
  
  2013-12-14  Vladimir Serbinenko  <phcoder@gmail.com>
--- 
-2.13.0
-

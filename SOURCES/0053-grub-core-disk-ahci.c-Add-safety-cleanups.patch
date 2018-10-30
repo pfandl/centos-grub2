@@ -1,29 +1,15 @@
-From cbe41438563125a6f5aa4225c987b70abda81753 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Vladimir Serbinenko <phcoder@gmail.com>
 Date: Wed, 29 Jan 2014 23:46:17 +0100
-Subject: [PATCH 053/260] * grub-core/disk/ahci.c: Add safety cleanups.
+Subject: [PATCH] * grub-core/disk/ahci.c: Add safety cleanups.
 
 ---
- ChangeLog             |  4 ++++
  grub-core/disk/ahci.c | 10 ++++++++++
+ ChangeLog             |  4 ++++
  2 files changed, 14 insertions(+)
 
-diff --git a/ChangeLog b/ChangeLog
-index 9bb181777..15300b020 100644
---- a/ChangeLog
-+++ b/ChangeLog
-@@ -1,5 +1,9 @@
- 2014-01-29  Vladimir Serbinenko  <phcoder@gmail.com>
- 
-+	* grub-core/disk/ahci.c: Add safety cleanups.
-+
-+2014-01-29  Vladimir Serbinenko  <phcoder@gmail.com>
-+
- 	* grub-core/disk/ahci.c: Allocate and clean space for all possible 32
- 	slots to avoid pointing to uninited area.
- 
 diff --git a/grub-core/disk/ahci.c b/grub-core/disk/ahci.c
-index d63fd09fd..643e691ef 100644
+index d63fd09fdc6..643e691ef80 100644
 --- a/grub-core/disk/ahci.c
 +++ b/grub-core/disk/ahci.c
 @@ -454,6 +454,7 @@ grub_ahci_pciinit (grub_pci_device_t dev,
@@ -57,6 +43,15 @@ index d63fd09fd..643e691ef 100644
        endtime = grub_get_time_ms () + 1000;
        while ((dev->hba->ports[dev->port].command & GRUB_AHCI_HBA_PORT_CMD_CR))
  	if (grub_get_time_ms () > endtime)
--- 
-2.13.0
-
+diff --git a/ChangeLog b/ChangeLog
+index 9bb18177793..15300b020c6 100644
+--- a/ChangeLog
++++ b/ChangeLog
+@@ -1,3 +1,7 @@
++2014-01-29  Vladimir Serbinenko  <phcoder@gmail.com>
++
++	* grub-core/disk/ahci.c: Add safety cleanups.
++
+ 2014-01-29  Vladimir Serbinenko  <phcoder@gmail.com>
+ 
+ 	* grub-core/disk/ahci.c: Allocate and clean space for all possible 32

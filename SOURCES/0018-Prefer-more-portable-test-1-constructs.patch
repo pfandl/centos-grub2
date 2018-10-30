@@ -1,7 +1,7 @@
-From 14ef7cf251a04dc21aaf27cc4c0b6bc5e965262e Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Colin Watson <cjwatson@ubuntu.com>
 Date: Fri, 17 Jan 2014 15:24:50 +0000
-Subject: [PATCH 018/260] Prefer more portable test(1) constructs
+Subject: [PATCH] Prefer more portable test(1) constructs
 
 * util/grub.d/00_header.in (make_timeout): Use && rather than test
 -a.
@@ -19,7 +19,7 @@ rather than test -o.
  5 files changed, 17 insertions(+), 7 deletions(-)
 
 diff --git a/ChangeLog b/ChangeLog
-index 6613b4ee5..c8e95a6b9 100644
+index 6613b4ee52b..c8e95a6b98d 100644
 --- a/ChangeLog
 +++ b/ChangeLog
 @@ -1,4 +1,14 @@
@@ -39,7 +39,7 @@ index 6613b4ee5..c8e95a6b9 100644
  	* grub-core/osdep/freebsd/hostdisk.c (grub_util_fd_open): Remove
  	redundant preprocessor conditional.
 diff --git a/util/grub.d/00_header.in b/util/grub.d/00_header.in
-index 0c82f2315..ce2ec819d 100644
+index 0c82f231574..ce2ec819d8c 100644
 --- a/util/grub.d/00_header.in
 +++ b/util/grub.d/00_header.in
 @@ -285,7 +285,7 @@ make_timeout ()
@@ -52,7 +52,7 @@ index 0c82f2315..ce2ec819d 100644
  	timeout="${1}"
  	if [ "x${2}" != "x0" ] ; then
 diff --git a/util/grub.d/10_netbsd.in b/util/grub.d/10_netbsd.in
-index 29a0e41a9..9988a42bc 100644
+index 29a0e41a9a5..9988a42bc50 100644
 --- a/util/grub.d/10_netbsd.in
 +++ b/util/grub.d/10_netbsd.in
 @@ -69,7 +69,7 @@ netbsd_load_fs_module ()
@@ -65,7 +65,7 @@ index 29a0e41a9..9988a42bc 100644
    fi
  
 diff --git a/util/grub.d/10_windows.in b/util/grub.d/10_windows.in
-index 9025914f6..48bd95546 100644
+index 9025914f6cf..48bd955464b 100644
 --- a/util/grub.d/10_windows.in
 +++ b/util/grub.d/10_windows.in
 @@ -66,11 +66,11 @@ for drv in $drives ; do
@@ -83,7 +83,7 @@ index 9025914f6..48bd95546 100644
      osid=ntldr
      needmap=t
 diff --git a/util/grub.d/30_os-prober.in b/util/grub.d/30_os-prober.in
-index 0470e6685..7cf8487d6 100644
+index 0470e66853d..7cf8487d63a 100644
 --- a/util/grub.d/30_os-prober.in
 +++ b/util/grub.d/30_os-prober.in
 @@ -30,7 +30,7 @@ if [ "x${GRUB_DISABLE_OS_PROBER}" = "xtrue" ]; then
@@ -104,6 +104,3 @@ index 0470e6685..7cf8487d6 100644
      echo "Skipped ${LONGNAME} on ${DEVICE} by user request." >&2
      continue
    fi
--- 
-2.13.0
-

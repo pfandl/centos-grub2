@@ -1,8 +1,7 @@
-From 57df7233ae3789f525b8d7e910bf1e3ffe50ac87 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Robert Marshall <rmarshall@redhat.com>
 Date: Mon, 16 Mar 2015 14:14:19 -0400
-Subject: [PATCH 156/260] Use Distribution Package Sort for grub2-mkconfig
- (#1124074)
+Subject: [PATCH] Use Distribution Package Sort for grub2-mkconfig (#1124074)
 
 Users reported that newly installed kernels on their systems installed
 with grub-mkconfig would not appear on the grub boot list in order
@@ -11,57 +10,18 @@ use the rpm-sort library to sort kernels instead.
 
 Resolves rhbz#1124074
 ---
- .gitignore                |   1 +
- Makefile.util.def         |  16 +++
  configure.ac              |  29 +++++
+ Makefile.util.def         |  16 +++
+ util/grub-rpm-sort.c      | 281 ++++++++++++++++++++++++++++++++++++++++++++++
+ .gitignore                |   1 +
  util/grub-mkconfig_lib.in |   8 +-
  util/grub-rpm-sort.8      |  12 ++
- util/grub-rpm-sort.c      | 281 ++++++++++++++++++++++++++++++++++++++++++++++
  6 files changed, 346 insertions(+), 1 deletion(-)
- create mode 100644 util/grub-rpm-sort.8
  create mode 100644 util/grub-rpm-sort.c
+ create mode 100644 util/grub-rpm-sort.8
 
-diff --git a/.gitignore b/.gitignore
-index 18ab8e812..b6c45776a 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -237,6 +237,7 @@ po/POTFILES.in
- po/POTFILES-shell.in
- /grub-glue-efi
- /grub-render-label
-+grub-rpm-sort
- /grub-glue-efi.exe
- /grub-render-label.exe
- grub-core/gnulib/locale.h
-diff --git a/Makefile.util.def b/Makefile.util.def
-index 87029a10d..3ac757204 100644
---- a/Makefile.util.def
-+++ b/Makefile.util.def
-@@ -675,6 +675,22 @@ program = {
-   ldadd = '$(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM)';
- };
- 
-+program = {
-+  name = grub-rpm-sort;
-+  mansection = 8;
-+  installdir = sbin;
-+
-+  common = grub-core/kern/emu/misc.c;
-+  common = grub-core/kern/emu/argp_common.c;
-+  common = grub-core/osdep/init.c;
-+  common = util/misc.c;
-+  common = util/grub-rpm-sort.c;
-+
-+  ldadd = grub-core/gnulib/libgnu.a;
-+  ldadd = libgrubkern.a;
-+  ldadd = '$(LIBDEVMAPPER) $(LIBRPM)';
-+};
-+
- script = {
-   name = grub-mkconfig;
-   common = util/grub-mkconfig.in;
 diff --git a/configure.ac b/configure.ac
-index 048ce7c89..de17e65c4 100644
+index 048ce7c89fa..de17e65c4b7 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -65,6 +65,7 @@ grub_TRANSFORM([grub-mkrelpath])
@@ -114,53 +74,36 @@ index 048ce7c89..de17e65c4 100644
  LIBGEOM=
  if test x$host_kernel = xkfreebsd; then
    AC_CHECK_LIB([geom], [geom_gettree], [],
-diff --git a/util/grub-mkconfig_lib.in b/util/grub-mkconfig_lib.in
-index 5c9ed84a5..e85b60c32 100644
---- a/util/grub-mkconfig_lib.in
-+++ b/util/grub-mkconfig_lib.in
-@@ -213,6 +213,12 @@ version_sort ()
-    esac
- }
+diff --git a/Makefile.util.def b/Makefile.util.def
+index 87029a10dfb..3ac75720466 100644
+--- a/Makefile.util.def
++++ b/Makefile.util.def
+@@ -675,6 +675,22 @@ program = {
+   ldadd = '$(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM)';
+ };
  
-+if [ "x$RPMLIB" = x ]; then
-+  kernel_sort=version_sort
-+else
-+  kernel_sort="${sbindir}/grub-rpm-sort"
-+fi
++program = {
++  name = grub-rpm-sort;
++  mansection = 8;
++  installdir = sbin;
 +
- version_test_numeric ()
- {
-   version_test_numeric_a="$1"
-@@ -229,7 +235,7 @@ version_test_numeric ()
-     version_test_numeric_a="$version_test_numeric_b"
-     version_test_numeric_b="$version_test_numeric_c"
-   fi
--  if (echo "$version_test_numeric_a" ; echo "$version_test_numeric_b") | version_sort | head -n 1 | grep -qx "$version_test_numeric_b" ; then
-+  if (echo "$version_test_numeric_a" ; echo "$version_test_numeric_b") | "$kernel_sort" | head -n 1 | grep -qx "$version_test_numeric_b" ; then
-     return 0
-   else
-     return 1
-diff --git a/util/grub-rpm-sort.8 b/util/grub-rpm-sort.8
-new file mode 100644
-index 000000000..8ce214884
---- /dev/null
-+++ b/util/grub-rpm-sort.8
-@@ -0,0 +1,12 @@
-+.TH GRUB-RPM-SORT 8 "Wed Feb 26 2014"
-+.SH NAME
-+\fBgrub-rpm-sort\fR \(em Sort input according to RPM version compare.
++  common = grub-core/kern/emu/misc.c;
++  common = grub-core/kern/emu/argp_common.c;
++  common = grub-core/osdep/init.c;
++  common = util/misc.c;
++  common = util/grub-rpm-sort.c;
 +
-+.SH SYNOPSIS
-+\fBgrub-rpm-sort\fR [OPTIONS].
++  ldadd = grub-core/gnulib/libgnu.a;
++  ldadd = libgrubkern.a;
++  ldadd = '$(LIBDEVMAPPER) $(LIBRPM)';
++};
 +
-+.SH DESCRIPTION
-+You should not normally run this program directly.  Use grub-mkconfig instead.
-+
-+.SH SEE ALSO
-+.BR "info grub"
+ script = {
+   name = grub-mkconfig;
+   common = util/grub-mkconfig.in;
 diff --git a/util/grub-rpm-sort.c b/util/grub-rpm-sort.c
 new file mode 100644
-index 000000000..f33bd1ed5
+index 00000000000..f33bd1ed568
 --- /dev/null
 +++ b/util/grub-rpm-sort.c
 @@ -0,0 +1,281 @@
@@ -445,6 +388,59 @@ index 000000000..f33bd1ed5
 +
 +  return 0;
 +}
--- 
-2.13.0
-
+diff --git a/.gitignore b/.gitignore
+index 18ab8e81278..b6c45776a4d 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -237,6 +237,7 @@ po/POTFILES.in
+ po/POTFILES-shell.in
+ /grub-glue-efi
+ /grub-render-label
++grub-rpm-sort
+ /grub-glue-efi.exe
+ /grub-render-label.exe
+ grub-core/gnulib/locale.h
+diff --git a/util/grub-mkconfig_lib.in b/util/grub-mkconfig_lib.in
+index 5c9ed84a5e7..e85b60c322a 100644
+--- a/util/grub-mkconfig_lib.in
++++ b/util/grub-mkconfig_lib.in
+@@ -213,6 +213,12 @@ version_sort ()
+    esac
+ }
+ 
++if [ "x$RPMLIB" = x ]; then
++  kernel_sort=version_sort
++else
++  kernel_sort="${sbindir}/grub-rpm-sort"
++fi
++
+ version_test_numeric ()
+ {
+   version_test_numeric_a="$1"
+@@ -229,7 +235,7 @@ version_test_numeric ()
+     version_test_numeric_a="$version_test_numeric_b"
+     version_test_numeric_b="$version_test_numeric_c"
+   fi
+-  if (echo "$version_test_numeric_a" ; echo "$version_test_numeric_b") | version_sort | head -n 1 | grep -qx "$version_test_numeric_b" ; then
++  if (echo "$version_test_numeric_a" ; echo "$version_test_numeric_b") | "$kernel_sort" | head -n 1 | grep -qx "$version_test_numeric_b" ; then
+     return 0
+   else
+     return 1
+diff --git a/util/grub-rpm-sort.8 b/util/grub-rpm-sort.8
+new file mode 100644
+index 00000000000..8ce21488448
+--- /dev/null
++++ b/util/grub-rpm-sort.8
+@@ -0,0 +1,12 @@
++.TH GRUB-RPM-SORT 8 "Wed Feb 26 2014"
++.SH NAME
++\fBgrub-rpm-sort\fR \(em Sort input according to RPM version compare.
++
++.SH SYNOPSIS
++\fBgrub-rpm-sort\fR [OPTIONS].
++
++.SH DESCRIPTION
++You should not normally run this program directly.  Use grub-mkconfig instead.
++
++.SH SEE ALSO
++.BR "info grub"

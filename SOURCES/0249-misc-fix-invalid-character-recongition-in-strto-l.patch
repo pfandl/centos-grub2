@@ -1,7 +1,7 @@
-From 86004f0ab4bfcbc578274fc153da1280a3ac04e6 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Aaron Miller <aaronmiller@fb.com>
 Date: Fri, 29 Jul 2016 17:41:27 +0800
-Subject: [PATCH 249/260] misc: fix invalid character recongition in strto*l
+Subject: [PATCH] misc: fix invalid character recongition in strto*l
 
 Would previously allow digits larger than the base and didn't check that
 subtracting the difference from 0-9 to lowercase letters for characters
@@ -12,7 +12,7 @@ parses: ` = 9, _ = 8, ^ = 7, ] = 6, \ = 5, and [ = 4
  1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/grub-core/kern/misc.c b/grub-core/kern/misc.c
-index 240396c55..d0ca2ee60 100644
+index 240396c55f3..d0ca2ee603b 100644
 --- a/grub-core/kern/misc.c
 +++ b/grub-core/kern/misc.c
 @@ -436,9 +436,13 @@ grub_strtoull (const char *str, char **end, int base)
@@ -30,6 +30,3 @@ index 240396c55..d0ca2ee60 100644
  
        found = 1;
  
--- 
-2.13.0
-

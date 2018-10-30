@@ -1,7 +1,7 @@
-From 9bd2624ad05dc1a78a094d48f78e7a8a07deec24 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Mon, 11 Jul 2016 15:57:28 -0400
-Subject: [PATCH 207/260] efinet: fix some coverity gripes.
+Subject: [PATCH] efinet: fix some coverity gripes.
 
 Related: rhbz#1154226
 
@@ -12,7 +12,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  2 files changed, 12 insertions(+), 8 deletions(-)
 
 diff --git a/grub-core/net/bootp.c b/grub-core/net/bootp.c
-index 4793ebc43..46ce8135a 100644
+index 4793ebc434e..46ce8135ac5 100644
 --- a/grub-core/net/bootp.c
 +++ b/grub-core/net/bootp.c
 @@ -349,10 +349,11 @@ grub_net_configure_by_dhcpv6_ack (const char *name,
@@ -32,7 +32,7 @@ index 4793ebc43..46ce8135a 100644
    grub_dprintf ("net", "mac address is %02x:%02x:%02x:%02x:%02x:%02x\n",
  		hwaddr->mac[0], hwaddr->mac[1], hwaddr->mac[2],
 diff --git a/grub-core/net/drivers/efi/efinet.c b/grub-core/net/drivers/efi/efinet.c
-index ed103df7a..2244f1403 100644
+index ed103df7a80..2244f14030f 100644
 --- a/grub-core/net/drivers/efi/efinet.c
 +++ b/grub-core/net/drivers/efi/efinet.c
 @@ -401,6 +401,7 @@ grub_efi_net_config_real (grub_efi_handle_t hnd, char **device,
@@ -60,6 +60,3 @@ index ed103df7a..2244f1403 100644
        }
      else
        {
--- 
-2.13.0
-

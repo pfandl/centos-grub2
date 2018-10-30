@@ -1,7 +1,7 @@
-From 034afc94f6126bd352587265f03fa383f998f0fc Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Paulo Flabiano Smorigo <pfsmorigo@linux.vnet.ibm.com>
 Date: Wed, 13 Aug 2014 19:00:19 +0000
-Subject: [PATCH 142/260] Files reorganization and include some libgcc fuctions
+Subject: [PATCH] Files reorganization and include some libgcc fuctions
 
 As we avoid libgcc dependency for powerpc64el, we moved some functions
 to other files and add the necessary ones.
@@ -17,14 +17,14 @@ Also-By: Vladimir 'phcoder' Serbinenko <phcoder@gmail.com>
 ---
  grub-core/Makefile.core.def          |   1 +
  grub-core/kern/misc.c                | 107 ++++++++++++++++++++++++++++
- grub-core/kern/powerpc/compiler-rt.S | 130 +++++++++++++++++++++++++++++++++++
  include/grub/compiler.h              |  61 ++++++++++++++++
  include/grub/libgcc.h                |  67 ------------------
+ grub-core/kern/powerpc/compiler-rt.S | 130 +++++++++++++++++++++++++++++++++++
  5 files changed, 299 insertions(+), 67 deletions(-)
  create mode 100644 grub-core/kern/powerpc/compiler-rt.S
 
 diff --git a/grub-core/Makefile.core.def b/grub-core/Makefile.core.def
-index 7bf1c8a58..9ff9ae5a3 100644
+index 7bf1c8a5880..9ff9ae5a311 100644
 --- a/grub-core/Makefile.core.def
 +++ b/grub-core/Makefile.core.def
 @@ -252,6 +252,7 @@ kernel = {
@@ -36,7 +36,7 @@ index 7bf1c8a58..9ff9ae5a3 100644
    sparc64_ieee1275 = kern/sparc64/cache.S;
    sparc64_ieee1275 = kern/sparc64/dl.c;
 diff --git a/grub-core/kern/misc.c b/grub-core/kern/misc.c
-index a56cfe789..a3e5056db 100644
+index a56cfe78994..a3e5056db3f 100644
 --- a/grub-core/kern/misc.c
 +++ b/grub-core/kern/misc.c
 @@ -1345,3 +1345,110 @@ grub_real_boot_time (const char *file,
@@ -150,9 +150,157 @@ index a56cfe789..a3e5056db 100644
 +}
 +
 +#endif
+diff --git a/include/grub/compiler.h b/include/grub/compiler.h
+index c9e1d7a73dc..a9a684ccba6 100644
+--- a/include/grub/compiler.h
++++ b/include/grub/compiler.h
+@@ -48,4 +48,65 @@
+ #  define WARN_UNUSED_RESULT
+ #endif
+ 
++#include "types.h"
++
++union component64
++{
++  grub_uint64_t full;
++  struct
++  {
++#ifdef GRUB_CPU_WORDS_BIGENDIAN
++    grub_uint32_t high;
++    grub_uint32_t low;
++#else
++    grub_uint32_t low;
++    grub_uint32_t high;
++#endif
++  };
++};
++
++#if defined (__powerpc__)
++grub_uint64_t EXPORT_FUNC (__lshrdi3) (grub_uint64_t u, int b);
++grub_uint64_t EXPORT_FUNC (__ashrdi3) (grub_uint64_t u, int b);
++grub_uint64_t EXPORT_FUNC (__ashldi3) (grub_uint64_t u, int b);
++int EXPORT_FUNC(__ucmpdi2) (grub_uint64_t a, grub_uint64_t b);
++void EXPORT_FUNC (_restgpr_14_x) (void);
++void EXPORT_FUNC (_restgpr_15_x) (void);
++void EXPORT_FUNC (_restgpr_16_x) (void);
++void EXPORT_FUNC (_restgpr_17_x) (void);
++void EXPORT_FUNC (_restgpr_18_x) (void);
++void EXPORT_FUNC (_restgpr_19_x) (void);
++void EXPORT_FUNC (_restgpr_20_x) (void);
++void EXPORT_FUNC (_restgpr_21_x) (void);
++void EXPORT_FUNC (_restgpr_22_x) (void);
++void EXPORT_FUNC (_restgpr_23_x) (void);
++void EXPORT_FUNC (_restgpr_24_x) (void);
++void EXPORT_FUNC (_restgpr_25_x) (void);
++void EXPORT_FUNC (_restgpr_26_x) (void);
++void EXPORT_FUNC (_restgpr_27_x) (void);
++void EXPORT_FUNC (_restgpr_28_x) (void);
++void EXPORT_FUNC (_restgpr_29_x) (void);
++void EXPORT_FUNC (_restgpr_30_x) (void);
++void EXPORT_FUNC (_restgpr_31_x) (void);
++void EXPORT_FUNC (_savegpr_14) (void);
++void EXPORT_FUNC (_savegpr_15) (void);
++void EXPORT_FUNC (_savegpr_16) (void);
++void EXPORT_FUNC (_savegpr_17) (void);
++void EXPORT_FUNC (_savegpr_18) (void);
++void EXPORT_FUNC (_savegpr_19) (void);
++void EXPORT_FUNC (_savegpr_20) (void);
++void EXPORT_FUNC (_savegpr_21) (void);
++void EXPORT_FUNC (_savegpr_22) (void);
++void EXPORT_FUNC (_savegpr_23) (void);
++void EXPORT_FUNC (_savegpr_24) (void);
++void EXPORT_FUNC (_savegpr_25) (void);
++void EXPORT_FUNC (_savegpr_26) (void);
++void EXPORT_FUNC (_savegpr_27) (void);
++void EXPORT_FUNC (_savegpr_28) (void);
++void EXPORT_FUNC (_savegpr_29) (void);
++void EXPORT_FUNC (_savegpr_30) (void);
++void EXPORT_FUNC (_savegpr_31) (void);
++
++#endif
++
+ #endif /* ! GRUB_COMPILER_HEADER */
+diff --git a/include/grub/libgcc.h b/include/grub/libgcc.h
+index 8e93b6792d9..5bdb8fb5cb9 100644
+--- a/include/grub/libgcc.h
++++ b/include/grub/libgcc.h
+@@ -16,73 +16,6 @@
+  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
+  */
+ 
+-/* We need to include config-util.h.in for HAVE_*.  */
+-#ifndef __STDC_VERSION__
+-#define __STDC_VERSION__ 0
+-#endif
+-#include <config-util.h>
+-
+-/* On x86 these functions aren't really needed. Save some space.  */
+-#if !defined (__i386__) && !defined (__x86_64__)
+-# ifdef HAVE___ASHLDI3
+-void EXPORT_FUNC (__ashldi3) (void);
+-# endif
+-# ifdef HAVE___ASHRDI3
+-void EXPORT_FUNC (__ashrdi3) (void);
+-# endif
+-# ifdef HAVE___LSHRDI3
+-void EXPORT_FUNC (__lshrdi3) (void);
+-# endif
+-# ifdef HAVE___UCMPDI2
+-void EXPORT_FUNC (__ucmpdi2) (void);
+-# endif
+-# ifdef HAVE___BSWAPSI2
+-void EXPORT_FUNC (__bswapsi2) (void);
+-# endif
+-# ifdef HAVE___BSWAPDI2
+-void EXPORT_FUNC (__bswapdi2) (void);
+-# endif
+-#endif
+-
+-#ifdef HAVE__RESTGPR_14_X
+-void EXPORT_FUNC (_restgpr_14_x) (void);
+-void EXPORT_FUNC (_restgpr_15_x) (void);
+-void EXPORT_FUNC (_restgpr_16_x) (void);
+-void EXPORT_FUNC (_restgpr_17_x) (void);
+-void EXPORT_FUNC (_restgpr_18_x) (void);
+-void EXPORT_FUNC (_restgpr_19_x) (void);
+-void EXPORT_FUNC (_restgpr_20_x) (void);
+-void EXPORT_FUNC (_restgpr_21_x) (void);
+-void EXPORT_FUNC (_restgpr_22_x) (void);
+-void EXPORT_FUNC (_restgpr_23_x) (void);
+-void EXPORT_FUNC (_restgpr_24_x) (void);
+-void EXPORT_FUNC (_restgpr_25_x) (void);
+-void EXPORT_FUNC (_restgpr_26_x) (void);
+-void EXPORT_FUNC (_restgpr_27_x) (void);
+-void EXPORT_FUNC (_restgpr_28_x) (void);
+-void EXPORT_FUNC (_restgpr_29_x) (void);
+-void EXPORT_FUNC (_restgpr_30_x) (void);
+-void EXPORT_FUNC (_restgpr_31_x) (void);
+-void EXPORT_FUNC (_savegpr_14) (void);
+-void EXPORT_FUNC (_savegpr_15) (void);
+-void EXPORT_FUNC (_savegpr_16) (void);
+-void EXPORT_FUNC (_savegpr_17) (void);
+-void EXPORT_FUNC (_savegpr_18) (void);
+-void EXPORT_FUNC (_savegpr_19) (void);
+-void EXPORT_FUNC (_savegpr_20) (void);
+-void EXPORT_FUNC (_savegpr_21) (void);
+-void EXPORT_FUNC (_savegpr_22) (void);
+-void EXPORT_FUNC (_savegpr_23) (void);
+-void EXPORT_FUNC (_savegpr_24) (void);
+-void EXPORT_FUNC (_savegpr_25) (void);
+-void EXPORT_FUNC (_savegpr_26) (void);
+-void EXPORT_FUNC (_savegpr_27) (void);
+-void EXPORT_FUNC (_savegpr_28) (void);
+-void EXPORT_FUNC (_savegpr_29) (void);
+-void EXPORT_FUNC (_savegpr_30) (void);
+-void EXPORT_FUNC (_savegpr_31) (void);
+-#endif
+-
+ #if defined (__arm__)
+ void EXPORT_FUNC (__aeabi_lasr) (void);
+ void EXPORT_FUNC (__aeabi_llsl) (void);
 diff --git a/grub-core/kern/powerpc/compiler-rt.S b/grub-core/kern/powerpc/compiler-rt.S
 new file mode 100644
-index 000000000..63e3a0d4e
+index 00000000000..63e3a0d4e89
 --- /dev/null
 +++ b/grub-core/kern/powerpc/compiler-rt.S
 @@ -0,0 +1,130 @@
@@ -286,154 +434,3 @@ index 000000000..63e3a0d4e
 +FUNCTION(_savegpr_31)	stw	31,-4(11)
 +			blr
 +CFI_ENDPROC
-diff --git a/include/grub/compiler.h b/include/grub/compiler.h
-index c9e1d7a73..a9a684ccb 100644
---- a/include/grub/compiler.h
-+++ b/include/grub/compiler.h
-@@ -48,4 +48,65 @@
- #  define WARN_UNUSED_RESULT
- #endif
- 
-+#include "types.h"
-+
-+union component64
-+{
-+  grub_uint64_t full;
-+  struct
-+  {
-+#ifdef GRUB_CPU_WORDS_BIGENDIAN
-+    grub_uint32_t high;
-+    grub_uint32_t low;
-+#else
-+    grub_uint32_t low;
-+    grub_uint32_t high;
-+#endif
-+  };
-+};
-+
-+#if defined (__powerpc__)
-+grub_uint64_t EXPORT_FUNC (__lshrdi3) (grub_uint64_t u, int b);
-+grub_uint64_t EXPORT_FUNC (__ashrdi3) (grub_uint64_t u, int b);
-+grub_uint64_t EXPORT_FUNC (__ashldi3) (grub_uint64_t u, int b);
-+int EXPORT_FUNC(__ucmpdi2) (grub_uint64_t a, grub_uint64_t b);
-+void EXPORT_FUNC (_restgpr_14_x) (void);
-+void EXPORT_FUNC (_restgpr_15_x) (void);
-+void EXPORT_FUNC (_restgpr_16_x) (void);
-+void EXPORT_FUNC (_restgpr_17_x) (void);
-+void EXPORT_FUNC (_restgpr_18_x) (void);
-+void EXPORT_FUNC (_restgpr_19_x) (void);
-+void EXPORT_FUNC (_restgpr_20_x) (void);
-+void EXPORT_FUNC (_restgpr_21_x) (void);
-+void EXPORT_FUNC (_restgpr_22_x) (void);
-+void EXPORT_FUNC (_restgpr_23_x) (void);
-+void EXPORT_FUNC (_restgpr_24_x) (void);
-+void EXPORT_FUNC (_restgpr_25_x) (void);
-+void EXPORT_FUNC (_restgpr_26_x) (void);
-+void EXPORT_FUNC (_restgpr_27_x) (void);
-+void EXPORT_FUNC (_restgpr_28_x) (void);
-+void EXPORT_FUNC (_restgpr_29_x) (void);
-+void EXPORT_FUNC (_restgpr_30_x) (void);
-+void EXPORT_FUNC (_restgpr_31_x) (void);
-+void EXPORT_FUNC (_savegpr_14) (void);
-+void EXPORT_FUNC (_savegpr_15) (void);
-+void EXPORT_FUNC (_savegpr_16) (void);
-+void EXPORT_FUNC (_savegpr_17) (void);
-+void EXPORT_FUNC (_savegpr_18) (void);
-+void EXPORT_FUNC (_savegpr_19) (void);
-+void EXPORT_FUNC (_savegpr_20) (void);
-+void EXPORT_FUNC (_savegpr_21) (void);
-+void EXPORT_FUNC (_savegpr_22) (void);
-+void EXPORT_FUNC (_savegpr_23) (void);
-+void EXPORT_FUNC (_savegpr_24) (void);
-+void EXPORT_FUNC (_savegpr_25) (void);
-+void EXPORT_FUNC (_savegpr_26) (void);
-+void EXPORT_FUNC (_savegpr_27) (void);
-+void EXPORT_FUNC (_savegpr_28) (void);
-+void EXPORT_FUNC (_savegpr_29) (void);
-+void EXPORT_FUNC (_savegpr_30) (void);
-+void EXPORT_FUNC (_savegpr_31) (void);
-+
-+#endif
-+
- #endif /* ! GRUB_COMPILER_HEADER */
-diff --git a/include/grub/libgcc.h b/include/grub/libgcc.h
-index 8e93b6792..5bdb8fb5c 100644
---- a/include/grub/libgcc.h
-+++ b/include/grub/libgcc.h
-@@ -16,73 +16,6 @@
-  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
-  */
- 
--/* We need to include config-util.h.in for HAVE_*.  */
--#ifndef __STDC_VERSION__
--#define __STDC_VERSION__ 0
--#endif
--#include <config-util.h>
--
--/* On x86 these functions aren't really needed. Save some space.  */
--#if !defined (__i386__) && !defined (__x86_64__)
--# ifdef HAVE___ASHLDI3
--void EXPORT_FUNC (__ashldi3) (void);
--# endif
--# ifdef HAVE___ASHRDI3
--void EXPORT_FUNC (__ashrdi3) (void);
--# endif
--# ifdef HAVE___LSHRDI3
--void EXPORT_FUNC (__lshrdi3) (void);
--# endif
--# ifdef HAVE___UCMPDI2
--void EXPORT_FUNC (__ucmpdi2) (void);
--# endif
--# ifdef HAVE___BSWAPSI2
--void EXPORT_FUNC (__bswapsi2) (void);
--# endif
--# ifdef HAVE___BSWAPDI2
--void EXPORT_FUNC (__bswapdi2) (void);
--# endif
--#endif
--
--#ifdef HAVE__RESTGPR_14_X
--void EXPORT_FUNC (_restgpr_14_x) (void);
--void EXPORT_FUNC (_restgpr_15_x) (void);
--void EXPORT_FUNC (_restgpr_16_x) (void);
--void EXPORT_FUNC (_restgpr_17_x) (void);
--void EXPORT_FUNC (_restgpr_18_x) (void);
--void EXPORT_FUNC (_restgpr_19_x) (void);
--void EXPORT_FUNC (_restgpr_20_x) (void);
--void EXPORT_FUNC (_restgpr_21_x) (void);
--void EXPORT_FUNC (_restgpr_22_x) (void);
--void EXPORT_FUNC (_restgpr_23_x) (void);
--void EXPORT_FUNC (_restgpr_24_x) (void);
--void EXPORT_FUNC (_restgpr_25_x) (void);
--void EXPORT_FUNC (_restgpr_26_x) (void);
--void EXPORT_FUNC (_restgpr_27_x) (void);
--void EXPORT_FUNC (_restgpr_28_x) (void);
--void EXPORT_FUNC (_restgpr_29_x) (void);
--void EXPORT_FUNC (_restgpr_30_x) (void);
--void EXPORT_FUNC (_restgpr_31_x) (void);
--void EXPORT_FUNC (_savegpr_14) (void);
--void EXPORT_FUNC (_savegpr_15) (void);
--void EXPORT_FUNC (_savegpr_16) (void);
--void EXPORT_FUNC (_savegpr_17) (void);
--void EXPORT_FUNC (_savegpr_18) (void);
--void EXPORT_FUNC (_savegpr_19) (void);
--void EXPORT_FUNC (_savegpr_20) (void);
--void EXPORT_FUNC (_savegpr_21) (void);
--void EXPORT_FUNC (_savegpr_22) (void);
--void EXPORT_FUNC (_savegpr_23) (void);
--void EXPORT_FUNC (_savegpr_24) (void);
--void EXPORT_FUNC (_savegpr_25) (void);
--void EXPORT_FUNC (_savegpr_26) (void);
--void EXPORT_FUNC (_savegpr_27) (void);
--void EXPORT_FUNC (_savegpr_28) (void);
--void EXPORT_FUNC (_savegpr_29) (void);
--void EXPORT_FUNC (_savegpr_30) (void);
--void EXPORT_FUNC (_savegpr_31) (void);
--#endif
--
- #if defined (__arm__)
- void EXPORT_FUNC (__aeabi_lasr) (void);
- void EXPORT_FUNC (__aeabi_llsl) (void);
--- 
-2.13.0
-

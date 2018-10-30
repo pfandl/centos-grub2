@@ -1,8 +1,7 @@
-From cab5d30d4cb182ee9dfd03079b415e1e0285de99 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Bernhard=20=C3=9Cbelacker?= <bernhardu@vr-web.de>
 Date: Mon, 20 Jul 2015 14:06:45 +0200
-Subject: [PATCH 233/260] loader/linux: Make trailer initrd entry aligned
- again.
+Subject: [PATCH] loader/linux: Make trailer initrd entry aligned again.
 
 Regression from commit:
   loader/linux: do not pad initrd with zeroes at the end
@@ -17,7 +16,7 @@ entry has a not aligned size.
  1 file changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/grub-core/loader/linux.c b/grub-core/loader/linux.c
-index d2cd591f6..be6fa0f4d 100644
+index d2cd591f604..be6fa0f4d45 100644
 --- a/grub-core/loader/linux.c
 +++ b/grub-core/loader/linux.c
 @@ -213,6 +213,7 @@ grub_initrd_init (int argc, char *argv[],
@@ -41,6 +40,3 @@ index d2cd591f6..be6fa0f4d 100644
    free_dir (root);
    root = 0;
    return GRUB_ERR_NONE;
--- 
-2.13.0
-

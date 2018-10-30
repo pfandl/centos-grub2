@@ -1,15 +1,14 @@
-From 3f83a59f17fef591cf5e4804f6b26ca9a9c1fe35 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: RHEL Ninjas <example@example.com>
 Date: Fri, 25 Sep 2015 16:24:23 +0900
-Subject: [PATCH 184/260] efinet: add filter for the first exclusive reopen of
- SNP
+Subject: [PATCH] efinet: add filter for the first exclusive reopen of SNP
 
 ---
  grub-core/net/drivers/efi/efinet.c | 24 ++++++++++++++++++++++++
  1 file changed, 24 insertions(+)
 
 diff --git a/grub-core/net/drivers/efi/efinet.c b/grub-core/net/drivers/efi/efinet.c
-index c3a128cd1..d8099a598 100644
+index c3a128cd1dc..d8099a59855 100644
 --- a/grub-core/net/drivers/efi/efinet.c
 +++ b/grub-core/net/drivers/efi/efinet.c
 @@ -407,6 +407,30 @@ grub_efi_net_config_real (grub_efi_handle_t hnd, char **device,
@@ -43,6 +42,3 @@ index c3a128cd1..d8099a598 100644
        card->efi_net = net;
      }
      return;
--- 
-2.13.0
-

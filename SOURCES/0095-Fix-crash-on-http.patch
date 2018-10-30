@@ -1,7 +1,7 @@
-From b01ecf0925ea952e2febb4a50f84f45c7b60ada3 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Gustavo Luiz Duarte <gustavold@linux.vnet.ibm.com>
 Date: Tue, 25 Sep 2012 18:40:55 -0400
-Subject: [PATCH 095/260] Fix crash on http
+Subject: [PATCH] Fix crash on http
 
 Don't free file->data on receiving FIN flag since it is used all over without
 checking. http_close() will be called later to free that memory.
@@ -11,7 +11,7 @@ https://bugzilla.redhat.com/show_bug.cgi?id=860834
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/grub-core/net/http.c b/grub-core/net/http.c
-index 4684f8b33..ef9538c53 100644
+index 4684f8b333c..ef9538c539c 100644
 --- a/grub-core/net/http.c
 +++ b/grub-core/net/http.c
 @@ -393,7 +393,7 @@ http_establish (struct grub_file *file, grub_off_t offset, int initial)
@@ -23,6 +23,3 @@ index 4684f8b33..ef9538c53 100644
  				  file);
    if (!data->sock)
      {
--- 
-2.13.0
-

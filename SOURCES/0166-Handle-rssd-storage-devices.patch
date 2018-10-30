@@ -1,7 +1,7 @@
-From 1ab087435c259702c62fdfe85e28f3e3f2459266 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Tue, 30 Jun 2015 15:50:41 -0400
-Subject: [PATCH 166/260] Handle rssd storage devices.
+Subject: [PATCH] Handle rssd storage devices.
 
 Resolves: rhbz#1087962
 
@@ -11,7 +11,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  1 file changed, 13 insertions(+)
 
 diff --git a/grub-core/osdep/linux/getroot.c b/grub-core/osdep/linux/getroot.c
-index 7007193d9..5987d078a 100644
+index 7007193d9c7..5987d078a2f 100644
 --- a/grub-core/osdep/linux/getroot.c
 +++ b/grub-core/osdep/linux/getroot.c
 @@ -884,6 +884,19 @@ grub_util_part_to_disk (const char *os_dev, struct stat *st,
@@ -34,6 +34,3 @@ index 7007193d9..5987d078a 100644
        /* If this is a loop device */
        if ((strncmp ("loop", p, 4) == 0) && p[4] >= '0' && p[4] <= '9')
  	{
--- 
-2.13.0
-

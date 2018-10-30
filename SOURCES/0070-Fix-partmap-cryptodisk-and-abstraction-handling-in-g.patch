@@ -1,7 +1,7 @@
-From 0ec41b585c1cc4dfa79f880d3a62c72bc5f24d22 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Colin Watson <cjwatson@ubuntu.com>
 Date: Mon, 31 Mar 2014 14:48:33 +0100
-Subject: [PATCH 070/260] Fix partmap, cryptodisk, and abstraction handling in
+Subject: [PATCH] Fix partmap, cryptodisk, and abstraction handling in
  grub-mkconfig.
 
 Commit 588744d0dc655177d5883bdcb8f72ff5160109ed caused grub-mkconfig
@@ -25,52 +25,17 @@ probe_mods): Adjust for extra user-data arguments.
 * util/grub-probe.c (do_print, probe_partmap, probe_cryptodisk_uuid,
 probe_abstraction): Use configured delimiter.  Update callers.
 ---
- ChangeLog                   | 25 ++++++++++++++++++++++++
  grub-core/disk/cryptodisk.c | 19 ++++++++++---------
  grub-core/disk/diskfilter.c |  5 +++--
- include/grub/cryptodisk.h   |  3 ++-
- include/grub/diskfilter.h   |  3 ++-
  util/grub-install.c         | 14 ++++++++++----
  util/grub-probe.c           | 46 ++++++++++++++++++++++-----------------------
+ include/grub/cryptodisk.h   |  3 ++-
+ include/grub/diskfilter.h   |  3 ++-
+ ChangeLog                   | 25 ++++++++++++++++++++++++
  7 files changed, 74 insertions(+), 41 deletions(-)
 
-diff --git a/ChangeLog b/ChangeLog
-index efbed8ccb..1cb3b683f 100644
---- a/ChangeLog
-+++ b/ChangeLog
-@@ -1,5 +1,30 @@
- 2014-03-31  Colin Watson  <cjwatson@ubuntu.com>
- 
-+	Fix partmap, cryptodisk, and abstraction handling in grub-mkconfig.
-+
-+	Commit 588744d0dc655177d5883bdcb8f72ff5160109ed caused grub-mkconfig
-+	no longer to be forgiving of trailing spaces on grub-probe output
-+	lines, which among other things means that util/grub.d/10_linux.in
-+	no longer detects LVM.  To fix this, make grub-probe's output
-+	delimiting more consistent.  As a bonus, this improves the coverage
-+	of the -0 option.
-+
-+	Fixes Debian bug #735935.
-+
-+	* grub-core/disk/cryptodisk.c
-+	(grub_util_cryptodisk_get_abstraction): Add a user-data argument.
-+	* grub-core/disk/diskfilter.c (grub_diskfilter_get_partmap):
-+	Likewise.
-+	* include/grub/cryptodisk.h (grub_util_cryptodisk_get_abstraction):
-+	Update prototype.
-+	* include/grub/diskfilter.h (grub_diskfilter_get_partmap): Likewise.
-+	* util/grub-install.c (push_partmap_module, push_cryptodisk_module,
-+	probe_mods): Adjust for extra user-data arguments.
-+	* util/grub-probe.c (do_print, probe_partmap, probe_cryptodisk_uuid,
-+	probe_abstraction): Use configured delimiter.  Update callers.
-+
-+2014-03-31  Colin Watson  <cjwatson@ubuntu.com>
-+
- 	* util/grub-probe,c (options): Make -0 work again (broken by
- 	conversion to argp).
- 	(main): Simplify logic.
 diff --git a/grub-core/disk/cryptodisk.c b/grub-core/disk/cryptodisk.c
-index 75c6e1f91..f0e3a900a 100644
+index 75c6e1f91ac..f0e3a900ae3 100644
 --- a/grub-core/disk/cryptodisk.c
 +++ b/grub-core/disk/cryptodisk.c
 @@ -762,25 +762,26 @@ grub_cryptodisk_cheat_insert (grub_cryptodisk_t newdev, const char *name,
@@ -110,7 +75,7 @@ index 75c6e1f91..f0e3a900a 100644
  
  const char *
 diff --git a/grub-core/disk/diskfilter.c b/grub-core/disk/diskfilter.c
-index 28b70c666..e8a3bcbd1 100644
+index 28b70c666d4..e8a3bcbd138 100644
 --- a/grub-core/disk/diskfilter.c
 +++ b/grub-core/disk/diskfilter.c
 @@ -354,7 +354,8 @@ grub_diskfilter_memberlist (grub_disk_t disk)
@@ -132,36 +97,8 @@ index 28b70c666..e8a3bcbd1 100644
        }
  }
  
-diff --git a/include/grub/cryptodisk.h b/include/grub/cryptodisk.h
-index 66f3e1e22..f2ad2a79a 100644
---- a/include/grub/cryptodisk.h
-+++ b/include/grub/cryptodisk.h
-@@ -145,7 +145,8 @@ grub_cryptodisk_cheat_insert (grub_cryptodisk_t newdev, const char *name,
- 			      grub_disk_t source, const char *cheat);
- void
- grub_util_cryptodisk_get_abstraction (grub_disk_t disk,
--				      void (*cb) (const char *val));
-+				      void (*cb) (const char *val, void *data),
-+				      void *data);
- 
- char *
- grub_util_get_geli_uuid (const char *dev);
-diff --git a/include/grub/diskfilter.h b/include/grub/diskfilter.h
-index 042fe04a5..1aedcd3df 100644
---- a/include/grub/diskfilter.h
-+++ b/include/grub/diskfilter.h
-@@ -202,7 +202,8 @@ grub_diskfilter_get_pv_from_disk (grub_disk_t disk,
- 				  struct grub_diskfilter_vg **vg);
- void
- grub_diskfilter_get_partmap (grub_disk_t disk,
--			     void (*cb) (const char *val));
-+			     void (*cb) (const char *val, void *data),
-+			     void *data);
- #endif
- 
- #endif /* ! GRUB_RAID_H */
 diff --git a/util/grub-install.c b/util/grub-install.c
-index 2e6226a37..e9c6a4656 100644
+index 2e6226a3716..e9c6a4656ef 100644
 --- a/util/grub-install.c
 +++ b/util/grub-install.c
 @@ -387,7 +387,7 @@ probe_raid_level (grub_disk_t disk)
@@ -173,19 +110,19 @@ index 2e6226a37..e9c6a4656 100644
  {
    char buf[50];
  
-@@ -402,6 +402,12 @@ push_partmap_module (const char *map)
+@@ -401,6 +401,12 @@ push_partmap_module (const char *map)
+   grub_install_push_module (buf);
  }
  
- static void
++static void
 +push_cryptodisk_module (const char *mod, void *data __attribute__ ((unused)))
 +{
 +  grub_install_push_module (mod);
 +}
 +
-+static void
+ static void
  probe_mods (grub_disk_t disk)
  {
-   grub_partition_t part;
 @@ -412,11 +418,11 @@ probe_mods (grub_disk_t disk)
      grub_util_info ("no partition map found for %s", disk->name);
  
@@ -210,7 +147,7 @@ index 2e6226a37..e9c6a4656 100644
        have_cryptodisk = 1;
      }
 diff --git a/util/grub-probe.c b/util/grub-probe.c
-index 80509be8a..ecb7b6bbd 100644
+index 80509be8aa7..ecb7b6bbdf2 100644
 --- a/util/grub-probe.c
 +++ b/util/grub-probe.c
 @@ -130,13 +130,14 @@ get_targets_string (void)
@@ -361,6 +298,64 @@ index 80509be8a..ecb7b6bbd 100644
  	  grub_device_close (dev);
  	  continue;
  	}
--- 
-2.13.0
-
+diff --git a/include/grub/cryptodisk.h b/include/grub/cryptodisk.h
+index 66f3e1e221b..f2ad2a79ab2 100644
+--- a/include/grub/cryptodisk.h
++++ b/include/grub/cryptodisk.h
+@@ -145,7 +145,8 @@ grub_cryptodisk_cheat_insert (grub_cryptodisk_t newdev, const char *name,
+ 			      grub_disk_t source, const char *cheat);
+ void
+ grub_util_cryptodisk_get_abstraction (grub_disk_t disk,
+-				      void (*cb) (const char *val));
++				      void (*cb) (const char *val, void *data),
++				      void *data);
+ 
+ char *
+ grub_util_get_geli_uuid (const char *dev);
+diff --git a/include/grub/diskfilter.h b/include/grub/diskfilter.h
+index 042fe04a5a4..1aedcd3dffb 100644
+--- a/include/grub/diskfilter.h
++++ b/include/grub/diskfilter.h
+@@ -202,7 +202,8 @@ grub_diskfilter_get_pv_from_disk (grub_disk_t disk,
+ 				  struct grub_diskfilter_vg **vg);
+ void
+ grub_diskfilter_get_partmap (grub_disk_t disk,
+-			     void (*cb) (const char *val));
++			     void (*cb) (const char *val, void *data),
++			     void *data);
+ #endif
+ 
+ #endif /* ! GRUB_RAID_H */
+diff --git a/ChangeLog b/ChangeLog
+index efbed8ccbf6..1cb3b683fcf 100644
+--- a/ChangeLog
++++ b/ChangeLog
+@@ -1,3 +1,28 @@
++2014-03-31  Colin Watson  <cjwatson@ubuntu.com>
++
++	Fix partmap, cryptodisk, and abstraction handling in grub-mkconfig.
++
++	Commit 588744d0dc655177d5883bdcb8f72ff5160109ed caused grub-mkconfig
++	no longer to be forgiving of trailing spaces on grub-probe output
++	lines, which among other things means that util/grub.d/10_linux.in
++	no longer detects LVM.  To fix this, make grub-probe's output
++	delimiting more consistent.  As a bonus, this improves the coverage
++	of the -0 option.
++
++	Fixes Debian bug #735935.
++
++	* grub-core/disk/cryptodisk.c
++	(grub_util_cryptodisk_get_abstraction): Add a user-data argument.
++	* grub-core/disk/diskfilter.c (grub_diskfilter_get_partmap):
++	Likewise.
++	* include/grub/cryptodisk.h (grub_util_cryptodisk_get_abstraction):
++	Update prototype.
++	* include/grub/diskfilter.h (grub_diskfilter_get_partmap): Likewise.
++	* util/grub-install.c (push_partmap_module, push_cryptodisk_module,
++	probe_mods): Adjust for extra user-data arguments.
++	* util/grub-probe.c (do_print, probe_partmap, probe_cryptodisk_uuid,
++	probe_abstraction): Use configured delimiter.  Update callers.
++
+ 2014-03-31  Colin Watson  <cjwatson@ubuntu.com>
+ 
+ 	* util/grub-probe,c (options): Make -0 work again (broken by

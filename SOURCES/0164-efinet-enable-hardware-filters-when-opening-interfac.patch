@@ -1,8 +1,7 @@
-From 2c38daa48daebd9b5ebfbb94a9c451b00c9f251c Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Andrei Borzenkov <arvidjaar@gmail.com>
 Date: Tue, 16 Jun 2015 19:52:45 +0300
-Subject: [PATCH 164/260] efinet: enable hardware filters when opening
- interface
+Subject: [PATCH] efinet: enable hardware filters when opening interface
 
 Exclusive open on SNP will close all existing protocol instances which
 may disable all receive filters on interface. Reinstall them after we
@@ -22,7 +21,7 @@ Closes: 45204
  2 files changed, 42 insertions(+), 3 deletions(-)
 
 diff --git a/grub-core/net/drivers/efi/efinet.c b/grub-core/net/drivers/efi/efinet.c
-index 6a1dd1f9d..7b8c4a59d 100644
+index 6a1dd1f9dff..7b8c4a59d10 100644
 --- a/grub-core/net/drivers/efi/efinet.c
 +++ b/grub-core/net/drivers/efi/efinet.c
 @@ -168,6 +168,29 @@ open_card (struct grub_net_card *dev)
@@ -65,7 +64,7 @@ index 6a1dd1f9d..7b8c4a59d 100644
  	      dev->efi_net, &net_io_guid,
  	      grub_efi_image_handle, dev->efi_handle);
 diff --git a/include/grub/efi/api.h b/include/grub/efi/api.h
-index 142340372..029ee92f5 100644
+index 142340372e1..029ee92f5d0 100644
 --- a/include/grub/efi/api.h
 +++ b/include/grub/efi/api.h
 @@ -1564,17 +1564,31 @@ enum
@@ -103,6 +102,3 @@ index 142340372..029ee92f5 100644
    void (*station_address) (void);
    void (*statistics) (void);
    void (*mcastiptomac) (void);
--- 
-2.13.0
-

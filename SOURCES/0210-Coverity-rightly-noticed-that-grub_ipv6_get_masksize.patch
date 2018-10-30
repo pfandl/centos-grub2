@@ -1,8 +1,8 @@
-From d9431a66b312084644186f16ba9ca2f9f21b64dd Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Tue, 12 Jul 2016 11:59:39 -0400
-Subject: [PATCH 210/260] Coverity rightly noticed that
- grub_ipv6_get_masksize() was broken.
+Subject: [PATCH] Coverity rightly noticed that grub_ipv6_get_masksize() was
+ broken.
 
 This fixes it with a version that even seems to work.
 
@@ -15,7 +15,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  2 files changed, 17 insertions(+), 12 deletions(-)
 
 diff --git a/grub-core/net/net.c b/grub-core/net/net.c
-index 19a81bc9e..36fc0d8b2 100644
+index 19a81bc9e78..36fc0d8b2e8 100644
 --- a/grub-core/net/net.c
 +++ b/grub-core/net/net.c
 @@ -970,29 +970,34 @@ grub_net_network_level_interface_register (struct grub_net_network_level_interfa
@@ -73,7 +73,7 @@ index 19a81bc9e..36fc0d8b2 100644
    if (mask == -1)
      return 0;
 diff --git a/include/grub/net.h b/include/grub/net.h
-index c7b8e2ac8..bd930f4dd 100644
+index c7b8e2ac885..bd930f4dd8c 100644
 --- a/include/grub/net.h
 +++ b/include/grub/net.h
 @@ -500,7 +500,7 @@ grub_net_configure_by_dhcpv6_ack (const char *name,
@@ -85,6 +85,3 @@ index c7b8e2ac8..bd930f4dd 100644
  
  grub_err_t
  grub_net_add_ipv6_local (struct grub_net_network_level_interface *inf,
--- 
-2.13.0
-

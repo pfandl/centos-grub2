@@ -1,7 +1,7 @@
-From e4a3de3ef6a122504b5fb47de1f4a1bd6295d49a Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Andrey Borzenkov <arvidjaar@gmail.com>
 Date: Tue, 7 Jan 2014 10:38:54 +0400
-Subject: [PATCH 011/260] use {grub,boot}aa64.efi for boot images on AArch64
+Subject: [PATCH] use {grub,boot}aa64.efi for boot images on AArch64
 
 According to UEFI 2.4 specification, default boot file name on AArch64
 is BOOTAA64.EFI (3.4.1.1 Removable Media Boot Behavior). Also set default
@@ -11,7 +11,7 @@ GRUB image name to grubaa64.efi to match it.
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/util/grub-install.c b/util/grub-install.c
-index 8cfe0eaa2..4608b80fe 100644
+index 8cfe0eaa2ef..4608b80fe05 100644
 --- a/util/grub-install.c
 +++ b/util/grub-install.c
 @@ -1091,7 +1091,7 @@ main (int argc, char *argv[])
@@ -32,6 +32,3 @@ index 8cfe0eaa2..4608b80fe 100644
  	      break;
  	    default:
  	      efi_file = "grub.efi";
--- 
-2.13.0
-

@@ -1,19 +1,19 @@
-From 6d94c560ac4fa7bf0b8db3a37b414cc188fe4376 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Fri, 3 Oct 2014 11:08:03 -0400
-Subject: [PATCH 154/260] Try $prefix if $fw_path doesn't work.
+Subject: [PATCH] Try $prefix if $fw_path doesn't work.
 
 Related: rhbz#1148652
 
 Signed-off-by: Peter Jones <pjones@redhat.com>
 ---
- grub-core/kern/ieee1275/init.c |  30 ++++++-----
+ grub-core/kern/ieee1275/init.c |  28 +++++-----
  grub-core/net/net.c            |   2 +-
- grub-core/normal/main.c        | 118 ++++++++++++++++++++---------------------
+ grub-core/normal/main.c        | 120 ++++++++++++++++++++---------------------
  3 files changed, 75 insertions(+), 75 deletions(-)
 
 diff --git a/grub-core/kern/ieee1275/init.c b/grub-core/kern/ieee1275/init.c
-index 8191f8cd6..8ca4bf79f 100644
+index 8191f8cd658..8ca4bf79f09 100644
 --- a/grub-core/kern/ieee1275/init.c
 +++ b/grub-core/kern/ieee1275/init.c
 @@ -131,23 +131,25 @@ grub_machine_get_bootlocation (char **device, char **path)
@@ -35,11 +35,10 @@ index 8191f8cd6..8ca4bf79f 100644
          {
 -	  *lastslash = '\0';
 -	  grub_translate_ieee1275_path (filename);
--
++          char *lastslash = grub_strrchr (filename, '\\');
+ 
 -	  *path = filename;
 -	}
-+          char *lastslash = grub_strrchr (filename, '\\');
-+
 +          /* Truncate at last directory.  */
 +          if (lastslash)
 +            {
@@ -57,7 +56,7 @@ index 8191f8cd6..8ca4bf79f 100644
  }
  
 diff --git a/grub-core/net/net.c b/grub-core/net/net.c
-index 578e057e1..10bfed31b 100644
+index 578e057e18f..10bfed31b2b 100644
 --- a/grub-core/net/net.c
 +++ b/grub-core/net/net.c
 @@ -1817,7 +1817,7 @@ grub_net_search_configfile (char *config)
@@ -70,7 +69,7 @@ index 578e057e1..10bfed31b 100644
  
  static struct grub_preboot *fini_hnd;
 diff --git a/grub-core/normal/main.c b/grub-core/normal/main.c
-index 4190985ad..aa1449999 100644
+index 4190985ad37..aa14499996b 100644
 --- a/grub-core/normal/main.c
 +++ b/grub-core/normal/main.c
 @@ -331,74 +331,72 @@ grub_enter_normal_mode (const char *config)
@@ -131,10 +130,7 @@ index 4190985ad..aa1449999 100644
  		 int argc, char *argv[])
  {
 -  if (argc == 0)
-+  if (argc)
-+    grub_enter_normal_mode (argv[0]);
-+  else
-     {
+-    {
 -      /* Guess the config filename. It is necessary to make CONFIG static,
 -	 so that it won't get broken by longjmp.  */
 -      char *config;
@@ -191,6 +187,12 @@ index 4190985ad..aa1449999 100644
 -	{
 -	  grub_enter_normal_mode (0);
 -	}
+-    }
+-  else
++  if (argc)
+     grub_enter_normal_mode (argv[0]);
++  else
++    {
 +      /* Guess the config filename. */
 +      grub_err_t err;
 +      err = grub_try_normal ("fw_path");
@@ -198,14 +200,9 @@ index 4190985ad..aa1449999 100644
 +        err = grub_try_normal ("prefix");
 +      if (err == GRUB_ERR_FILE_NOT_FOUND)
 +        grub_enter_normal_mode (0);
-     }
--  else
--    grub_enter_normal_mode (argv[0]);
++    }
  
 -quit:
    return 0;
  }
  
--- 
-2.13.0
-

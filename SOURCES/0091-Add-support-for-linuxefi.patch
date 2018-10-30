@@ -1,7 +1,7 @@
-From cb8ffd0f744e6ed0f5ba50d5bb7c7b2795ce9a8f Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <mjg@redhat.com>
 Date: Tue, 10 Jul 2012 11:58:52 -0400
-Subject: [PATCH 091/260] Add support for linuxefi
+Subject: [PATCH] Add support for linuxefi
 
 ---
  grub-core/Makefile.core.def       |   8 +
@@ -13,13 +13,14 @@ Subject: [PATCH 091/260] Add support for linuxefi
  create mode 100644 grub-core/loader/i386/efi/linux.c
 
 diff --git a/grub-core/Makefile.core.def b/grub-core/Makefile.core.def
-index 42443bc00..ec46506e3 100644
+index 42443bc00b9..ec46506e39e 100644
 --- a/grub-core/Makefile.core.def
 +++ b/grub-core/Makefile.core.def
-@@ -1706,6 +1706,14 @@ module = {
+@@ -1705,6 +1705,14 @@ module = {
+   enable = x86_64_efi;
  };
  
- module = {
++module = {
 +  name = linuxefi;
 +  efi = loader/i386/efi/linux.c;
 +  efi = lib/cmdline.c;
@@ -27,12 +28,11 @@ index 42443bc00..ec46506e3 100644
 +  enable = x86_64_efi;
 +};
 +
-+module = {
+ module = {
    name = chain;
    efi = loader/efi/chainloader.c;
-   i386_pc = loader/i386/pc/chainloader.c;
 diff --git a/grub-core/kern/efi/mm.c b/grub-core/kern/efi/mm.c
-index be37afd9d..ddeca6073 100644
+index be37afd9dc4..ddeca6073f6 100644
 --- a/grub-core/kern/efi/mm.c
 +++ b/grub-core/kern/efi/mm.c
 @@ -49,6 +49,38 @@ static grub_efi_uintn_t finish_desc_size;
@@ -76,7 +76,7 @@ index be37afd9d..ddeca6073 100644
  grub_efi_allocate_pages (grub_efi_physical_address_t address,
 diff --git a/grub-core/loader/i386/efi/linux.c b/grub-core/loader/i386/efi/linux.c
 new file mode 100644
-index 000000000..b79e6320b
+index 00000000000..b79e6320ba9
 --- /dev/null
 +++ b/grub-core/loader/i386/efi/linux.c
 @@ -0,0 +1,371 @@
@@ -452,7 +452,7 @@ index 000000000..b79e6320b
 +  grub_unregister_command (cmd_initrd);
 +}
 diff --git a/include/grub/efi/efi.h b/include/grub/efi/efi.h
-index 489cf9e6d..9370fd530 100644
+index 489cf9e6da7..9370fd53096 100644
 --- a/include/grub/efi/efi.h
 +++ b/include/grub/efi/efi.h
 @@ -40,6 +40,9 @@ void EXPORT_FUNC(grub_efi_stall) (grub_efi_uintn_t microseconds);
@@ -466,7 +466,7 @@ index 489cf9e6d..9370fd530 100644
  				       grub_efi_uintn_t pages);
  int
 diff --git a/include/grub/i386/linux.h b/include/grub/i386/linux.h
-index da0ca3b83..fc36bdaf3 100644
+index da0ca3b83cd..fc36bdaf367 100644
 --- a/include/grub/i386/linux.h
 +++ b/include/grub/i386/linux.h
 @@ -139,6 +139,7 @@ struct linux_kernel_header
@@ -477,6 +477,3 @@ index da0ca3b83..fc36bdaf3 100644
  } GRUB_PACKED;
  
  /* Boot parameters for Linux based on 2.6.12. This is used by the setup
--- 
-2.13.0
-

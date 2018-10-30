@@ -1,37 +1,21 @@
-From f39c9cfa5cb967d6176ee0d1988c2f1d754e7fec Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Vladimir Serbinenko <phcoder@gmail.com>
 Date: Fri, 24 Jan 2014 18:20:27 +0100
-Subject: [PATCH 043/260] Fix several translatable strings.
+Subject: [PATCH] Fix several translatable strings.
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 	Suggested by: D. Prévot.
 ---
- ChangeLog                        | 6 ++++++
  grub-core/commands/syslinuxcfg.c | 2 +-
  grub-core/loader/arm64/linux.c   | 2 +-
  util/grub-syslinux2cfg.c         | 4 ++--
+ ChangeLog                        | 6 ++++++
  4 files changed, 10 insertions(+), 4 deletions(-)
 
-diff --git a/ChangeLog b/ChangeLog
-index 20e8baaa2..e149d8ef3 100644
---- a/ChangeLog
-+++ b/ChangeLog
-@@ -1,5 +1,11 @@
- 2014-01-24  Vladimir Serbinenko  <phcoder@gmail.com>
- 
-+	Fix several translatable strings.
-+
-+	Suggested by: D. Prévot.
-+
-+2014-01-24  Vladimir Serbinenko  <phcoder@gmail.com>
-+
- 	* util/grub-install.c: List available targets.
- 
- 2014-01-23  Colin Watson  <cjwatson@ubuntu.com>
 diff --git a/grub-core/commands/syslinuxcfg.c b/grub-core/commands/syslinuxcfg.c
-index a4bfc40b6..00ae113c5 100644
+index a4bfc40b6d2..00ae113c5a7 100644
 --- a/grub-core/commands/syslinuxcfg.c
 +++ b/grub-core/commands/syslinuxcfg.c
 @@ -50,7 +50,7 @@ static const struct grub_arg_option options[] =
@@ -44,7 +28,7 @@ index a4bfc40b6..00ae113c5 100644
      {"isolinux",     'i',  0, N_("assume input is an isolinux configuration file."), 0, 0},
      {"pxelinux",     'p',  0, N_("assume input is a pxelinux configuration file."), 0, 0},
 diff --git a/grub-core/loader/arm64/linux.c b/grub-core/loader/arm64/linux.c
-index 75ad871a8..65129c21a 100644
+index 75ad871a81c..65129c21a8d 100644
 --- a/grub-core/loader/arm64/linux.c
 +++ b/grub-core/loader/arm64/linux.c
 @@ -120,7 +120,7 @@ check_kernel (struct grub_arm64_linux_kernel_header *lh)
@@ -57,7 +41,7 @@ index 75ad871a8..65129c21a 100644
    grub_dprintf ("linux", "UEFI stub kernel:\n");
    grub_dprintf ("linux", "text_offset = 0x%012llx\n",
 diff --git a/util/grub-syslinux2cfg.c b/util/grub-syslinux2cfg.c
-index 5e944c20a..f4fda6db9 100644
+index 5e944c20a83..f4fda6db9bb 100644
 --- a/util/grub-syslinux2cfg.c
 +++ b/util/grub-syslinux2cfg.c
 @@ -66,10 +66,10 @@ static struct argp_option options[] = {
@@ -73,6 +57,17 @@ index 5e944c20a..f4fda6db9 100644
  
    {"output",  'o', N_("FILE"), 0, N_("write output to FILE [default=stdout]."), 0},
    {"isolinux",     'i', 0,      0, N_("assume input is an isolinux configuration file."), 0},
--- 
-2.13.0
-
+diff --git a/ChangeLog b/ChangeLog
+index 20e8baaa23e..e149d8ef33d 100644
+--- a/ChangeLog
++++ b/ChangeLog
+@@ -1,3 +1,9 @@
++2014-01-24  Vladimir Serbinenko  <phcoder@gmail.com>
++
++	Fix several translatable strings.
++
++	Suggested by: D. Prévot.
++
+ 2014-01-24  Vladimir Serbinenko  <phcoder@gmail.com>
+ 
+ 	* util/grub-install.c: List available targets.

@@ -1,7 +1,7 @@
-From f7fe0f689b527ee9d44a00d81eaa941cbf9fab86 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Michael Chang <mchang@suse.com>
 Date: Thu, 14 Jul 2016 18:45:14 +0800
-Subject: [PATCH 254/260] bootp: Add processing DHCPACK packet from HTTP Boot
+Subject: [PATCH] bootp: Add processing DHCPACK packet from HTTP Boot
 
 The vendor class identifier with the string "HTTPClient" is used to denote the
 packet as responding to HTTP boot request. In DHCP4 config, the filename for
@@ -22,7 +22,7 @@ Signed-off-by: Ken Lin <ken.lin@hpe.com>
  2 files changed, 67 insertions(+), 2 deletions(-)
 
 diff --git a/grub-core/net/bootp.c b/grub-core/net/bootp.c
-index 26b3d83d0..fa7eefe51 100644
+index dd4660601e2..d47ad80a2ad 100644
 --- a/grub-core/net/bootp.c
 +++ b/grub-core/net/bootp.c
 @@ -20,6 +20,7 @@
@@ -122,7 +122,7 @@ index 26b3d83d0..fa7eefe51 100644
    
    inter->dhcp_ack = grub_malloc (size);
 diff --git a/include/grub/net.h b/include/grub/net.h
-index 8ecfbb492..1ec827b9b 100644
+index 8ecfbb49221..1ec827b9bf3 100644
 --- a/include/grub/net.h
 +++ b/include/grub/net.h
 @@ -498,6 +498,7 @@ enum
@@ -133,6 +133,3 @@ index 8ecfbb492..1ec827b9b 100644
      GRUB_NET_BOOTP_CLIENT_ID = 0x3d,
      GRUB_NET_BOOTP_CLIENT_UUID = 0x61,
      GRUB_NET_BOOTP_END = 0xff
--- 
-2.13.0
-

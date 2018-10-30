@@ -1,7 +1,7 @@
-From c06aa36fd08d398a4ee2c05f0a8da8ee85f70e56 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Leif Lindholm <leif.lindholm@linaro.org>
 Date: Sat, 27 Feb 2016 13:44:59 +0100
-Subject: [PATCH 232/260] efidisk: Respect block_io_protocol buffer alignment
+Subject: [PATCH] efidisk: Respect block_io_protocol buffer alignment
 
 Returned from the OpenProtocol operation, the grub_efi_block_io_media
 structure contains the io_align field, specifying the minimum alignment
@@ -21,7 +21,7 @@ Resolves: rhbz#1300009
  1 file changed, 41 insertions(+), 7 deletions(-)
 
 diff --git a/grub-core/disk/efi/efidisk.c b/grub-core/disk/efi/efidisk.c
-index 845c66fa9..f04f20b84 100644
+index 845c66fa9ab..f04f20b84ff 100644
 --- a/grub-core/disk/efi/efidisk.c
 +++ b/grub-core/disk/efi/efidisk.c
 @@ -487,8 +487,15 @@ grub_efidisk_open (const char *name, struct grub_disk *disk)
@@ -90,6 +90,3 @@ index 845c66fa9..f04f20b84 100644
  }
  
  static grub_err_t
--- 
-2.13.0
-

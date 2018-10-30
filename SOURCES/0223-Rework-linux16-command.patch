@@ -1,7 +1,7 @@
-From 704890aaa1d5ba485f538cdf20b1030798253c87 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <mjg59@coreos.com>
 Date: Sun, 9 Aug 2015 16:20:58 -0700
-Subject: [PATCH 223/260] Rework linux16 command
+Subject: [PATCH] Rework linux16 command
 
 We want a single buffer that contains the entire kernel image in order to
 perform a TPM measurement. Allocate one and copy the entire kernel int it
@@ -11,7 +11,7 @@ before pulling out the individual blocks later on.
  1 file changed, 31 insertions(+), 23 deletions(-)
 
 diff --git a/grub-core/loader/i386/pc/linux.c b/grub-core/loader/i386/pc/linux.c
-index b19527e8e..60bb31fbf 100644
+index b19527e8e17..60bb31fbf0d 100644
 --- a/grub-core/loader/i386/pc/linux.c
 +++ b/grub-core/loader/i386/pc/linux.c
 @@ -124,13 +124,14 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
@@ -151,6 +151,3 @@ index b19527e8e..60bb31fbf 100644
  	&& grub_le_to_cpu16 (lh->version) >= 0x0200))
      {
        grub_error (GRUB_ERR_BAD_OS, "the kernel is too old for initrd");
--- 
-2.13.0
-

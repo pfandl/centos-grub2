@@ -1,14 +1,14 @@
-From f38d60a9c4bf9b695f40376d16b14da11456f59b Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Vladimir Serbinenko <phcoder@gmail.com>
 Date: Thu, 7 May 2015 16:23:39 +0200
-Subject: [PATCH 237/260] linux.c: Ensure that initrd is page-aligned.
+Subject: [PATCH] linux.c: Ensure that initrd is page-aligned.
 
 ---
  grub-core/loader/i386/linux.c | 11 +++++------
  1 file changed, 5 insertions(+), 6 deletions(-)
 
 diff --git a/grub-core/loader/i386/linux.c b/grub-core/loader/i386/linux.c
-index 53f74ae06..764cde203 100644
+index 53f74ae0685..764cde20318 100644
 --- a/grub-core/loader/i386/linux.c
 +++ b/grub-core/loader/i386/linux.c
 @@ -70,7 +70,6 @@ static grub_addr_t prot_mode_target;
@@ -57,6 +57,3 @@ index 53f74ae06..764cde203 100644
  					    GRUB_RELOCATOR_PREFERENCE_HIGH,
  					    1);
      if (err)
--- 
-2.13.0
-

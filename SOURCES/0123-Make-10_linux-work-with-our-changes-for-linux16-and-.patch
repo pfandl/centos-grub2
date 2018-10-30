@@ -1,8 +1,8 @@
-From b437c2152d9b21a519fa7354f11618c65e6088e8 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Tue, 14 Jan 2014 13:12:23 -0500
-Subject: [PATCH 123/260] Make 10_linux work with our changes for linux16 and
- linuxefi on aarch64
+Subject: [PATCH] Make 10_linux work with our changes for linux16 and linuxefi
+ on aarch64
 
 Signed-off-by: Peter Jones <pjones@redhat.com>
 ---
@@ -10,7 +10,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  1 file changed, 28 insertions(+), 3 deletions(-)
 
 diff --git a/util/grub.d/10_linux.in b/util/grub.d/10_linux.in
-index c943a1e40..2b8c561ff 100644
+index c943a1e403e..2b8c561ff7b 100644
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
 @@ -75,8 +75,18 @@ linux_entry ()
@@ -80,6 +80,3 @@ index c943a1e40..2b8c561ff 100644
    config=
    for i in "${dirname}/config-${version}" "${dirname}/config-${alt_version}" "/etc/kernels/kernel-config-${version}" ; do
      if test -e "${i}" ; then
--- 
-2.13.0
-

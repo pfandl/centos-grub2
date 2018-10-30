@@ -1,7 +1,7 @@
-From d4c213d4c71336cefdc0419de510ac19665b5d32 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Fedora Ninjas <grub2-owner@fedoraproject.org>
 Date: Fri, 15 Aug 2014 11:29:22 -0400
-Subject: [PATCH 144/260] Fix exit back to EFI firmware
+Subject: [PATCH] Fix exit back to EFI firmware
 
 Arm/AArch64 machines set up a timer event which is not getting
 canceled when returning to firmware. This is because grub_exit()
@@ -14,7 +14,7 @@ well as make the call to grub_efi_fini().
  2 files changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/grub-core/kern/arm/efi/init.c b/grub-core/kern/arm/efi/init.c
-index 0c17d8390..06df60e2f 100644
+index 0c17d8390fa..06df60e2f0e 100644
 --- a/grub-core/kern/arm/efi/init.c
 +++ b/grub-core/kern/arm/efi/init.c
 @@ -67,7 +67,7 @@ grub_machine_fini (int flags)
@@ -27,7 +27,7 @@ index 0c17d8390..06df60e2f 100644
  
    grub_efi_fini ();
 diff --git a/grub-core/kern/efi/efi.c b/grub-core/kern/efi/efi.c
-index 1a8dba531..d99a6fbdf 100644
+index 1a8dba531b6..d99a6fbdf0d 100644
 --- a/grub-core/kern/efi/efi.c
 +++ b/grub-core/kern/efi/efi.c
 @@ -27,6 +27,7 @@
@@ -47,6 +47,3 @@ index 1a8dba531..d99a6fbdf 100644
    efi_call_4 (grub_efi_system_table->boot_services->exit,
                grub_efi_image_handle, GRUB_EFI_LOAD_ERROR, 0, 0);
    for (;;) ;
--- 
-2.13.0
-

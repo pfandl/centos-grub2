@@ -1,7 +1,7 @@
-From 763eff26748ca3d2ae8b178aef15da54a70527a5 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Martin Wilck <martin.wilck@ts.fujitsu.com>
 Date: Fri, 27 Mar 2015 14:27:56 +0100
-Subject: [PATCH 158/260] efinet: Check for immediate completition.
+Subject: [PATCH] efinet: Check for immediate completition.
 
 This both speeds GRUB up and workarounds unexpected EFI behaviour.
 ---
@@ -9,7 +9,7 @@ This both speeds GRUB up and workarounds unexpected EFI behaviour.
  1 file changed, 14 insertions(+), 2 deletions(-)
 
 diff --git a/grub-core/net/drivers/efi/efinet.c b/grub-core/net/drivers/efi/efinet.c
-index a6e4c7992..78df215be 100644
+index a6e4c7992f7..78df215be12 100644
 --- a/grub-core/net/drivers/efi/efinet.c
 +++ b/grub-core/net/drivers/efi/efinet.c
 @@ -37,11 +37,12 @@ send_card_buffer (struct grub_net_card *dev,
@@ -46,6 +46,3 @@ index a6e4c7992..78df215be 100644
    return GRUB_ERR_NONE;
  }
  
--- 
-2.13.0
-

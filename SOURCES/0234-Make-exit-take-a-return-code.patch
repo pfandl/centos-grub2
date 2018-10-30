@@ -1,7 +1,7 @@
-From 2dfde7888d4bcd31b3c88680a96e1e935f01cec6 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Wed, 26 Feb 2014 21:49:12 -0500
-Subject: [PATCH 234/260] Make "exit" take a return code.
+Subject: [PATCH] Make "exit" take a return code.
 
 This adds "exit" with a return code.  With this patch, any "exit"
 command /may/ include a return code, and on platforms that support
@@ -27,7 +27,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  14 files changed, 44 insertions(+), 20 deletions(-)
 
 diff --git a/grub-core/commands/minicmd.c b/grub-core/commands/minicmd.c
-index a3a118241..b25ca4b9f 100644
+index a3a11824172..b25ca4b9f17 100644
 --- a/grub-core/commands/minicmd.c
 +++ b/grub-core/commands/minicmd.c
 @@ -176,12 +176,24 @@ grub_mini_cmd_lsmod (struct grub_command *cmd __attribute__ ((unused)),
@@ -60,7 +60,7 @@ index a3a118241..b25ca4b9f 100644
  }
  
 diff --git a/grub-core/kern/efi/efi.c b/grub-core/kern/efi/efi.c
-index 7dfe2ef14..453f97a75 100644
+index 7dfe2ef1455..453f97a7595 100644
 --- a/grub-core/kern/efi/efi.c
 +++ b/grub-core/kern/efi/efi.c
 @@ -155,11 +155,16 @@ grub_efi_get_loaded_image (grub_efi_handle_t image_handle)
@@ -83,24 +83,24 @@ index 7dfe2ef14..453f97a75 100644
  }
  
 diff --git a/grub-core/kern/emu/main.c b/grub-core/kern/emu/main.c
-index 4b509139c..d7c880c0c 100644
+index 4b509139c4a..d7c880c0c1f 100644
 --- a/grub-core/kern/emu/main.c
 +++ b/grub-core/kern/emu/main.c
-@@ -66,6 +66,12 @@ grub_reboot (void)
+@@ -65,6 +65,12 @@ grub_reboot (void)
+   longjmp (main_env, 1);
  }
  
- void
++void
 +grub_exit (int retval __attribute__((unused)))
 +{
 +  grub_reboot ();
 +}
 +
-+void
+ void
  grub_machine_init (void)
  {
- }
 diff --git a/grub-core/kern/emu/misc.c b/grub-core/kern/emu/misc.c
-index bb606da28..258a5649e 100644
+index bb606da2803..258a5649e2d 100644
 --- a/grub-core/kern/emu/misc.c
 +++ b/grub-core/kern/emu/misc.c
 @@ -135,9 +135,10 @@ xasprintf (const char *fmt, ...)
@@ -117,7 +117,7 @@ index bb606da28..258a5649e 100644
  
  grub_uint64_t
 diff --git a/grub-core/kern/i386/coreboot/init.c b/grub-core/kern/i386/coreboot/init.c
-index 3314f027f..36f9134b7 100644
+index 3314f027fec..36f9134b7b7 100644
 --- a/grub-core/kern/i386/coreboot/init.c
 +++ b/grub-core/kern/i386/coreboot/init.c
 @@ -41,7 +41,7 @@ extern grub_uint8_t _end[];
@@ -130,7 +130,7 @@ index 3314f027f..36f9134b7 100644
    /* We can't use grub_fatal() in this function.  This would create an infinite
       loop, since grub_fatal() calls grub_abort() which in turn calls grub_exit().  */
 diff --git a/grub-core/kern/i386/qemu/init.c b/grub-core/kern/i386/qemu/init.c
-index 271b6fbfa..9fafe98f0 100644
+index 271b6fbfabd..9fafe98f015 100644
 --- a/grub-core/kern/i386/qemu/init.c
 +++ b/grub-core/kern/i386/qemu/init.c
 @@ -42,7 +42,7 @@ extern grub_uint8_t _end[];
@@ -143,7 +143,7 @@ index 271b6fbfa..9fafe98f0 100644
    /* We can't use grub_fatal() in this function.  This would create an infinite
       loop, since grub_fatal() calls grub_abort() which in turn calls grub_exit().  */
 diff --git a/grub-core/kern/ieee1275/init.c b/grub-core/kern/ieee1275/init.c
-index 8ca4bf79f..e2540bc41 100644
+index 8ca4bf79f09..e2540bc41ce 100644
 --- a/grub-core/kern/ieee1275/init.c
 +++ b/grub-core/kern/ieee1275/init.c
 @@ -60,7 +60,7 @@ grub_addr_t grub_ieee1275_original_stack;
@@ -156,7 +156,7 @@ index 8ca4bf79f..e2540bc41 100644
    grub_ieee1275_exit ();
  }
 diff --git a/grub-core/kern/mips/arc/init.c b/grub-core/kern/mips/arc/init.c
-index b4f50e496..90049cb53 100644
+index b4f50e49642..90049cb53ce 100644
 --- a/grub-core/kern/mips/arc/init.c
 +++ b/grub-core/kern/mips/arc/init.c
 @@ -276,7 +276,7 @@ grub_halt (void)
@@ -169,7 +169,7 @@ index b4f50e496..90049cb53 100644
    GRUB_ARC_FIRMWARE_VECTOR->exit ();
  
 diff --git a/grub-core/kern/mips/loongson/init.c b/grub-core/kern/mips/loongson/init.c
-index 7b96531b9..dff598ca7 100644
+index 7b96531b983..dff598ca7b0 100644
 --- a/grub-core/kern/mips/loongson/init.c
 +++ b/grub-core/kern/mips/loongson/init.c
 @@ -304,7 +304,7 @@ grub_halt (void)
@@ -182,7 +182,7 @@ index 7b96531b9..dff598ca7 100644
    grub_halt ();
  }
 diff --git a/grub-core/kern/mips/qemu_mips/init.c b/grub-core/kern/mips/qemu_mips/init.c
-index be88b77d2..8b6c55ffc 100644
+index be88b77d22d..8b6c55ffc01 100644
 --- a/grub-core/kern/mips/qemu_mips/init.c
 +++ b/grub-core/kern/mips/qemu_mips/init.c
 @@ -75,7 +75,7 @@ grub_machine_fini (int flags __attribute__ ((unused)))
@@ -195,7 +195,7 @@ index be88b77d2..8b6c55ffc 100644
    grub_halt ();
  }
 diff --git a/grub-core/kern/misc.c b/grub-core/kern/misc.c
-index 392c697db..240396c55 100644
+index 392c697db03..240396c55f3 100644
 --- a/grub-core/kern/misc.c
 +++ b/grub-core/kern/misc.c
 @@ -1278,7 +1278,7 @@ grub_abort (void)
@@ -208,7 +208,7 @@ index 392c697db..240396c55 100644
  
  #if defined (__clang__) && !defined (GRUB_UTIL)
 diff --git a/grub-core/kern/uboot/init.c b/grub-core/kern/uboot/init.c
-index 5dcc106ed..430c62b66 100644
+index 5dcc106ed9b..430c62b66e0 100644
 --- a/grub-core/kern/uboot/init.c
 +++ b/grub-core/kern/uboot/init.c
 @@ -43,9 +43,9 @@ extern grub_uint32_t grub_uboot_machine_type;
@@ -233,7 +233,7 @@ index 5dcc106ed..430c62b66 100644
    else if (ver > API_SIG_VERSION)
      {
 diff --git a/grub-core/kern/xen/init.c b/grub-core/kern/xen/init.c
-index 0559c033c..fce526d41 100644
+index 0559c033c3d..fce526d417b 100644
 --- a/grub-core/kern/xen/init.c
 +++ b/grub-core/kern/xen/init.c
 @@ -549,7 +549,7 @@ grub_machine_init (void)
@@ -246,7 +246,7 @@ index 0559c033c..fce526d41 100644
    struct sched_shutdown arg;
  
 diff --git a/include/grub/misc.h b/include/grub/misc.h
-index 342502919..c6851fb9d 100644
+index 34250291908..c6851fb9dcf 100644
 --- a/include/grub/misc.h
 +++ b/include/grub/misc.h
 @@ -398,7 +398,7 @@ int EXPORT_FUNC(grub_vsnprintf) (char *str, grub_size_t n, const char *fmt,
@@ -258,6 +258,3 @@ index 342502919..c6851fb9d 100644
  grub_uint64_t EXPORT_FUNC(grub_divmod64) (grub_uint64_t n,
  					  grub_uint64_t d,
  					  grub_uint64_t *r);
--- 
-2.13.0
-

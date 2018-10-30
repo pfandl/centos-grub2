@@ -1,14 +1,14 @@
-From b2df313847417e1f9593cdcdccba488393feeff2 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Ignat Korchagin <ignat@cloudflare.com>
 Date: Thu, 23 Jul 2015 21:13:09 +0300
-Subject: [PATCH 235/260] efi: fix memory leak in variable handling
+Subject: [PATCH] efi: fix memory leak in variable handling
 
 ---
  grub-core/kern/efi/efi.c | 8 ++++++--
  1 file changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/grub-core/kern/efi/efi.c b/grub-core/kern/efi/efi.c
-index 453f97a75..0cd64cdb5 100644
+index 453f97a7595..0cd64cdb59e 100644
 --- a/grub-core/kern/efi/efi.c
 +++ b/grub-core/kern/efi/efi.c
 @@ -211,6 +211,7 @@ grub_efi_set_variable(const char *var, const grub_efi_guid_t *guid,
@@ -33,6 +33,3 @@ index 453f97a75..0cd64cdb5 100644
  
    data = grub_malloc (datasize);
    if (!data)
--- 
-2.13.0
-

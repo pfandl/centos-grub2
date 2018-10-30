@@ -1,31 +1,16 @@
-From dd0a4f1120118f08a4d760ceec511238321779f8 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Vladimir Serbinenko <phcoder@gmail.com>
 Date: Fri, 28 Feb 2014 10:07:11 +0100
-Subject: [PATCH 064/260] * grub-core/kern/i386/pc/mmap.c: Fallback to EISA
- memory map if E820 failed to return any regions.
+Subject: [PATCH] * grub-core/kern/i386/pc/mmap.c: Fallback to EISA memory map
+ if E820 failed to return any regions.
 
 ---
- ChangeLog                     |  5 +++++
  grub-core/kern/i386/pc/mmap.c | 40 +++++++++++++++++++++-------------------
+ ChangeLog                     |  5 +++++
  2 files changed, 26 insertions(+), 19 deletions(-)
 
-diff --git a/ChangeLog b/ChangeLog
-index 6ed6cf4ec..97cf57e25 100644
---- a/ChangeLog
-+++ b/ChangeLog
-@@ -1,5 +1,10 @@
- 2014-02-28  Vladimir Serbinenko  <phcoder@gmail.com>
- 
-+	* grub-core/kern/i386/pc/mmap.c: Fallback to EISA memory map
-+	if E820 failed to return any regions.
-+
-+2014-02-28  Vladimir Serbinenko  <phcoder@gmail.com>
-+
- 	* grub-core/mmap/i386/uppermem.c (lower_hook) [COREBOOT]: Ignore low
- 	tables for low memory calculations.
- 
 diff --git a/grub-core/kern/i386/pc/mmap.c b/grub-core/kern/i386/pc/mmap.c
-index 8009e833c..f1375f3e1 100644
+index 8009e833c1a..f1375f3e12d 100644
 --- a/grub-core/kern/i386/pc/mmap.c
 +++ b/grub-core/kern/i386/pc/mmap.c
 @@ -141,33 +141,35 @@ grub_get_mmap_entry (struct grub_machine_mmap_entry *entry,
@@ -83,6 +68,16 @@ index 8009e833c..f1375f3e1 100644
      {
        grub_uint32_t eisa_mmap = grub_get_eisa_mmap ();
  
--- 
-2.13.0
-
+diff --git a/ChangeLog b/ChangeLog
+index 6ed6cf4ec2b..97cf57e253d 100644
+--- a/ChangeLog
++++ b/ChangeLog
+@@ -1,3 +1,8 @@
++2014-02-28  Vladimir Serbinenko  <phcoder@gmail.com>
++
++	* grub-core/kern/i386/pc/mmap.c: Fallback to EISA memory map
++	if E820 failed to return any regions.
++
+ 2014-02-28  Vladimir Serbinenko  <phcoder@gmail.com>
+ 
+ 	* grub-core/mmap/i386/uppermem.c (lower_hook) [COREBOOT]: Ignore low

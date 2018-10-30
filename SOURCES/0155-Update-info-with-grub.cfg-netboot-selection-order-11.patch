@@ -1,8 +1,7 @@
-From 24f034631df06b2f33d0721b8cd5126906aa7b34 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Robert Marshall <rmarshall@redhat.com>
 Date: Mon, 16 Mar 2015 16:34:51 -0400
-Subject: [PATCH 155/260] Update info with grub.cfg netboot selection order
- (#1148650)
+Subject: [PATCH] Update info with grub.cfg netboot selection order (#1148650)
 
 Added documentation to the grub info page that specifies the order
 netboot clients will use to select a grub configuration file.
@@ -13,7 +12,7 @@ Resolves rhbz#1148650
  1 file changed, 42 insertions(+)
 
 diff --git a/docs/grub.texi b/docs/grub.texi
-index 6b112c188..ef09c8324 100644
+index 6b112c18804..ef09c832482 100644
 --- a/docs/grub.texi
 +++ b/docs/grub.texi
 @@ -2414,6 +2414,48 @@ grub-mknetdir --net-directory=/srv/tftp --subdir=/boot/grub -d /usr/lib/grub/i38
@@ -65,6 +64,3 @@ index 6b112c188..ef09c8324 100644
  After GRUB has started, files on the TFTP server will be accessible via the
  @samp{(tftp)} device.
  
--- 
-2.13.0
-

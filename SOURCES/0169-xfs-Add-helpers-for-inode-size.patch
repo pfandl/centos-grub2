@@ -1,7 +1,7 @@
-From bc7e3f1e508c91b9ad7d3459998c5cd31d1caca0 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Jan Kara <jack@suse.cz>
 Date: Mon, 1 Jun 2015 14:28:45 +0200
-Subject: [PATCH 169/260] xfs: Add helpers for inode size
+Subject: [PATCH] xfs: Add helpers for inode size
 
 Add helpers to return size of XFS inode on disk and when loaded in
 memory.
@@ -12,7 +12,7 @@ Signed-off-by: Jan Kara <jack@suse.cz>
  1 file changed, 24 insertions(+), 11 deletions(-)
 
 diff --git a/grub-core/fs/xfs.c b/grub-core/fs/xfs.c
-index 0d704e9a4..26d8147a9 100644
+index 0d704e9a4d4..26d8147a92e 100644
 --- a/grub-core/fs/xfs.c
 +++ b/grub-core/fs/xfs.c
 @@ -255,6 +255,24 @@ grub_xfs_inode_offset (struct grub_xfs_data *data,
@@ -92,6 +92,3 @@ index 0d704e9a4..26d8147a9 100644
        grub_free (fdiro);
      }
  
--- 
-2.13.0
-

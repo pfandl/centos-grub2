@@ -1,28 +1,16 @@
-From 002c7908388cea822217b6a907de419676d6e4b8 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Trevor Woerner <trevor.woerner@linaro.org>
 Date: Sat, 21 Jun 2014 20:26:47 +0200
-Subject: [PATCH 083/260] * util/grub-gen-asciih.c (add_glyph): Fix
- uninitialised variable.
+Subject: [PATCH] * util/grub-gen-asciih.c (add_glyph): Fix uninitialised
+ variable.
 
 ---
- ChangeLog              |  4 ++++
  util/grub-gen-asciih.c | 15 +++++++++------
+ ChangeLog              |  4 ++++
  2 files changed, 13 insertions(+), 6 deletions(-)
 
-diff --git a/ChangeLog b/ChangeLog
-index 2a94ad979..b55211308 100644
---- a/ChangeLog
-+++ b/ChangeLog
-@@ -1,3 +1,7 @@
-+2014-06-21  Trevor Woerner <trevor.woerner@linaro.org>
-+
-+	* util/grub-gen-asciih.c (add_glyph): Fix uninitialised variable.
-+
- 2014-06-21  Vladimir Serbinenko  <phcoder@gmail.com>
- 
- 	* grub-core/commands/verify.c (grub_pubkey_open): Trust procfs.
 diff --git a/util/grub-gen-asciih.c b/util/grub-gen-asciih.c
-index e01447ae9..e35dcb78f 100644
+index e01447ae94f..e35dcb78fe6 100644
 --- a/util/grub-gen-asciih.c
 +++ b/util/grub-gen-asciih.c
 @@ -81,14 +81,14 @@ add_glyph (FT_UInt glyph_idx, FT_Face face,
@@ -68,6 +56,15 @@ index e01447ae9..e35dcb78f 100644
        add_glyph (glyph_idx, face, char_code, &glyph);
  
        if (glyph.width == 8 && glyph.height == 16
--- 
-2.13.0
-
+diff --git a/ChangeLog b/ChangeLog
+index 2a94ad979b3..b5521130874 100644
+--- a/ChangeLog
++++ b/ChangeLog
+@@ -1,3 +1,7 @@
++2014-06-21  Trevor Woerner <trevor.woerner@linaro.org>
++
++	* util/grub-gen-asciih.c (add_glyph): Fix uninitialised variable.
++
+ 2014-06-21  Vladimir Serbinenko  <phcoder@gmail.com>
+ 
+ 	* grub-core/commands/verify.c (grub_pubkey_open): Trust procfs.

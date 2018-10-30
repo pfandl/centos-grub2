@@ -1,8 +1,7 @@
-From 17bd27e298d2b27859c8c6ee2e654d8f03988c42 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Josef Bacik <jbacik@fb.com>
 Date: Thu, 6 Aug 2015 10:49:46 -0700
-Subject: [PATCH 165/260] efinet: handle get_status() on buggy firmware
- properly
+Subject: [PATCH] efinet: handle get_status() on buggy firmware properly
 
 The EFI spec indicates that get_status() should return the address of the buffer
 we passed into transmit to indicate the the buffer was transmitted.  However we
@@ -19,7 +18,7 @@ Signed-off-by: Josef Bacik <jbacik@fb.com>
  1 file changed, 11 insertions(+), 10 deletions(-)
 
 diff --git a/grub-core/net/drivers/efi/efinet.c b/grub-core/net/drivers/efi/efinet.c
-index 7b8c4a59d..ea0e0ca36 100644
+index 7b8c4a59d10..ea0e0ca360e 100644
 --- a/grub-core/net/drivers/efi/efinet.c
 +++ b/grub-core/net/drivers/efi/efinet.c
 @@ -47,19 +47,19 @@ send_card_buffer (struct grub_net_card *dev,
@@ -62,6 +61,3 @@ index 7b8c4a59d..ea0e0ca36 100644
  
    return GRUB_ERR_NONE;
  }
--- 
-2.13.0
-

@@ -1,7 +1,7 @@
-From a0b4722de7e1eaaf80a0bcd3f45515cc95b2aec8 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Wed, 3 Apr 2013 14:35:34 -0400
-Subject: [PATCH 102/260] Move bash completion script (#922997)
+Subject: [PATCH] Move bash completion script (#922997)
 
 Apparently these go in a new place now.
 ---
@@ -9,7 +9,7 @@ Apparently these go in a new place now.
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/util/bash-completion.d/Makefile.am b/util/bash-completion.d/Makefile.am
-index 136287cf1..0bcdb060e 100644
+index 136287cf1bf..0bcdb060e84 100644
 --- a/util/bash-completion.d/Makefile.am
 +++ b/util/bash-completion.d/Makefile.am
 @@ -6,7 +6,7 @@ EXTRA_DIST = $(bash_completion_source)
@@ -21,6 +21,3 @@ index 136287cf1..0bcdb060e 100644
  bashcompletion_DATA = $(bash_completion_script)
  
  $(bash_completion_script): $(bash_completion_source) $(top_builddir)/config.status
--- 
-2.13.0
-

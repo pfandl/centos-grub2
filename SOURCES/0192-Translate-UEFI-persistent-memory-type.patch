@@ -1,7 +1,7 @@
-From 378daa8a4be1f8789d53a0656e511f72df01a423 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Robert Elliott <elliott@hpe.com>
 Date: Thu, 3 Dec 2015 11:38:36 -0600
-Subject: [PATCH 192/260] Translate UEFI persistent memory type
+Subject: [PATCH] Translate UEFI persistent memory type
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -31,7 +31,7 @@ Resolves: rhbz#1288608
  4 files changed, 17 insertions(+)
 
 diff --git a/grub-core/commands/lsmmap.c b/grub-core/commands/lsmmap.c
-index 4b504fd28..816ee47d1 100644
+index 4b504fd28f8..816ee47d1ed 100644
 --- a/grub-core/commands/lsmmap.c
 +++ b/grub-core/commands/lsmmap.c
 @@ -37,6 +37,8 @@ static const char *names[] =
@@ -44,7 +44,7 @@ index 4b504fd28..816ee47d1 100644
      [GRUB_MEMORY_CODE] = N_("RAM holding firmware code")
    };
 diff --git a/grub-core/mmap/efi/mmap.c b/grub-core/mmap/efi/mmap.c
-index 900a4d659..bd495a184 100644
+index 900a4d6598c..bd495a18481 100644
 --- a/grub-core/mmap/efi/mmap.c
 +++ b/grub-core/mmap/efi/mmap.c
 @@ -118,6 +118,11 @@ grub_efi_mmap_iterate (grub_memory_hook_t hook, void *hook_data,
@@ -74,7 +74,7 @@ index 900a4d659..bd495a184 100644
        return GRUB_EFI_UNUSABLE_MEMORY;
  
 diff --git a/include/grub/efi/api.h b/include/grub/efi/api.h
-index 029ee92f5..551d93e50 100644
+index 029ee92f5d0..551d93e50a3 100644
 --- a/include/grub/efi/api.h
 +++ b/include/grub/efi/api.h
 @@ -431,6 +431,7 @@ enum grub_efi_memory_type
@@ -86,7 +86,7 @@ index 029ee92f5..551d93e50 100644
    };
  typedef enum grub_efi_memory_type grub_efi_memory_type_t;
 diff --git a/include/grub/memory.h b/include/grub/memory.h
-index 083cfb680..6da114a1b 100644
+index 083cfb6802e..6da114a1bdc 100644
 --- a/include/grub/memory.h
 +++ b/include/grub/memory.h
 @@ -30,6 +30,8 @@ typedef enum grub_memory_type
@@ -98,6 +98,3 @@ index 083cfb680..6da114a1b 100644
      GRUB_MEMORY_COREBOOT_TABLES = 16,
      GRUB_MEMORY_CODE = 20,
      /* This one is special: it's used internally but is never reported
--- 
-2.13.0
-

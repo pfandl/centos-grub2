@@ -1,0 +1,39 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Andrey Borzenkov <arvidjaar@gmail.com>
+Date: Thu, 31 Dec 2015 23:00:25 +0300
+Subject: [PATCH] remove temporary .bin files (kernel and modules)
+
+---
+ gentpl.py              | 2 ++
+ grub-core/genmod.sh.in | 2 +-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/gentpl.py b/gentpl.py
+index 58430fcd236..c17a18b0ea0 100644
+--- a/gentpl.py
++++ b/gentpl.py
+@@ -723,9 +723,11 @@ def kernel(defn, platform):
+ """if test x$(TARGET_APPLE_LINKER) = x1; then \
+   $(TARGET_STRIP) -S -x $(""" + cname(defn) + """) -o $@.bin $<; \
+   $(TARGET_OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -ed2022 -ed2016 -wd1106 -nu -nd $@.bin $@; \
++  rm -f $@.bin; \
+    elif test ! -z '$(TARGET_OBJ2ELF)'; then \
+      """  + "$(TARGET_STRIP) $(" + cname(defn) + "_STRIPFLAGS) -o $@.bin $< && \
+      $(TARGET_OBJ2ELF) $@.bin $@ || (rm -f $@; rm -f $@.bin; exit 1); \
++     rm -f $@.bin; \
+ else """  + "$(TARGET_STRIP) $(" + cname(defn) + "_STRIPFLAGS) -o $@ $<; \
+ fi"""))
+ 
+diff --git a/grub-core/genmod.sh.in b/grub-core/genmod.sh.in
+index f74edd55181..ca2e59d5c42 100644
+--- a/grub-core/genmod.sh.in
++++ b/grub-core/genmod.sh.in
+@@ -91,7 +91,7 @@ else
+ 	    -nr:_grub_mod_init:grub_mod_init \
+ 	    -nr:_grub_mod_fini:grub_mod_fini \
+ 	    -wd1106 -nu -nd $tmpfile.bin $tmpfile || exit 1
+-	rm -f $name.bin
++	rm -f $tmpfile.bin
+ fi
+ if test x@platform@ != xemu; then
+     ./build-grub-module-verifier $tmpfile @target_cpu@

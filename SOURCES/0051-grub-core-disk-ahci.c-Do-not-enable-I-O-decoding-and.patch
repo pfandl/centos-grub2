@@ -1,31 +1,16 @@
-From 6ff67fe45fcb69a278f5aaeeb5eebff3b7bb6dc2 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Vladimir Serbinenko <phcoder@gmail.com>
 Date: Wed, 29 Jan 2014 23:43:25 +0100
-Subject: [PATCH 051/260] * grub-core/disk/ahci.c: Do not enable I/O decoding
- and keep enabling busmaster for the end.
+Subject: [PATCH] * grub-core/disk/ahci.c: Do not enable I/O decoding and keep
+ enabling busmaster for the end.
 
 ---
- ChangeLog             |  5 +++++
  grub-core/disk/ahci.c | 10 ++++++----
+ ChangeLog             |  5 +++++
  2 files changed, 11 insertions(+), 4 deletions(-)
 
-diff --git a/ChangeLog b/ChangeLog
-index 9837c7f8d..51eba95f3 100644
---- a/ChangeLog
-+++ b/ChangeLog
-@@ -1,5 +1,10 @@
- 2014-01-29  Vladimir Serbinenko  <phcoder@gmail.com>
- 
-+	* grub-core/disk/ahci.c: Do not enable I/O decoding and keep
-+	enabling busmaster for the end.
-+
-+2014-01-29  Vladimir Serbinenko  <phcoder@gmail.com>
-+
- 	* util/grub-mkfont.c: Downgrade warnings about unhandled features
- 	to debug.
- 
 diff --git a/grub-core/disk/ahci.c b/grub-core/disk/ahci.c
-index 0b13fb8eb..18c13270c 100644
+index 0b13fb8ebed..18c13270c65 100644
 --- a/grub-core/disk/ahci.c
 +++ b/grub-core/disk/ahci.c
 @@ -194,10 +194,8 @@ grub_ahci_pciinit (grub_pci_device_t dev,
@@ -52,6 +37,16 @@ index 0b13fb8eb..18c13270c 100644
    for (i = 0; i < nports; i++)
      if (adevs[i])
        {
--- 
-2.13.0
-
+diff --git a/ChangeLog b/ChangeLog
+index 9837c7f8d38..51eba95f36f 100644
+--- a/ChangeLog
++++ b/ChangeLog
+@@ -1,3 +1,8 @@
++2014-01-29  Vladimir Serbinenko  <phcoder@gmail.com>
++
++	* grub-core/disk/ahci.c: Do not enable I/O decoding and keep
++	enabling busmaster for the end.
++
+ 2014-01-29  Vladimir Serbinenko  <phcoder@gmail.com>
+ 
+ 	* util/grub-mkfont.c: Downgrade warnings about unhandled features

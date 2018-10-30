@@ -1,14 +1,14 @@
-From 7e496ebf185783ac12c0d85af7a734222ba98a65 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Mon, 16 Jul 2012 18:57:11 -0400
-Subject: [PATCH 092/260] Use "linuxefi" and "initrdefi" where appropriate.
+Subject: [PATCH] Use "linuxefi" and "initrdefi" where appropriate.
 
 ---
  util/grub.d/10_linux.in | 18 ++++++++++++++++--
  1 file changed, 16 insertions(+), 2 deletions(-)
 
 diff --git a/util/grub.d/10_linux.in b/util/grub.d/10_linux.in
-index 00d193159..ad34cc02d 100644
+index 00d193159e9..ad34cc02d36 100644
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
 @@ -127,17 +127,31 @@ linux_entry ()
@@ -45,6 +45,3 @@ index 00d193159..ad34cc02d 100644
    fi
    sed "s/^/$submenu_indentation/" << EOF
  }
--- 
-2.13.0
-

@@ -1,7 +1,7 @@
-From 735117103884aaa27fe4875ef556b2d17cfe107e Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Nikunj A Dadhania <nikunj@linux.vnet.ibm.com>
 Date: Thu, 20 Mar 2014 16:57:12 +0530
-Subject: [PATCH 066/260] ieee1275: check for IBM pseries emulated machine
+Subject: [PATCH] ieee1275: check for IBM pseries emulated machine
 
 is_qemu is not being set lead to disabling of feature like
 GRUB_IEEE1275_FLAG_HAS_CURSORONOFF. This resulted in cursor not being
@@ -13,7 +13,7 @@ Signed-off-by: Nikunj A Dadhania <nikunj@linux.vnet.ibm.com>
  1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/grub-core/kern/ieee1275/cmain.c b/grub-core/kern/ieee1275/cmain.c
-index d92ae14f5..3e12e6b24 100644
+index d92ae14f53e..3e12e6b24e1 100644
 --- a/grub-core/kern/ieee1275/cmain.c
 +++ b/grub-core/kern/ieee1275/cmain.c
 @@ -84,8 +84,10 @@ grub_ieee1275_find_options (void)
@@ -28,6 +28,3 @@ index d92ae14f5..3e12e6b24 100644
  
    if (rc >= 0 && grub_strncmp (tmp, "IBM", 3) == 0)
      grub_ieee1275_set_flag (GRUB_IEEE1275_FLAG_NO_TREE_SCANNING_FOR_DISKS);
--- 
-2.13.0
-

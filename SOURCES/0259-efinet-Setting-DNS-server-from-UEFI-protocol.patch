@@ -1,7 +1,7 @@
-From b756c43bdb1219e3eaa6ea487a0faaa022bcfe28 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Michael Chang <mchang@suse.com>
 Date: Thu, 14 Jul 2016 17:48:45 +0800
-Subject: [PATCH 256/260] efinet: Setting DNS server from UEFI protocol
+Subject: [PATCH] efinet: Setting DNS server from UEFI protocol
 
 In the URI device path node, any name rahter than address can be used for
 looking up the resources so that DNS service become needed to get answer of the
@@ -28,12 +28,12 @@ it used to be.
 Signed-off-by: Michael Chang <mchang@suse.com>
 Signed-off-by: Ken Lin <ken.lin@hpe.com>
 ---
- grub-core/net/drivers/efi/efinet.c | 165 +++++++++++++++++++++++++++++++++++++
+ grub-core/net/drivers/efi/efinet.c | 163 +++++++++++++++++++++++++++++++++++++
  include/grub/efi/api.h             |  76 +++++++++++++++++
- 2 files changed, 241 insertions(+)
+ 2 files changed, 239 insertions(+)
 
 diff --git a/grub-core/net/drivers/efi/efinet.c b/grub-core/net/drivers/efi/efinet.c
-index 08e9d7aa3..36958a5a7 100644
+index 6f75ff1f9d1..25616a9c6c8 100644
 --- a/grub-core/net/drivers/efi/efinet.c
 +++ b/grub-core/net/drivers/efi/efinet.c
 @@ -34,6 +34,8 @@ GRUB_MOD_LICENSE ("GPLv3+");
@@ -171,7 +171,7 @@ index 08e9d7aa3..36958a5a7 100644
  static struct grub_net_buff *
  grub_efinet_create_dhcp_ack_from_device_path (grub_efi_device_path_t *dp, int *use_ipv6)
  {
-@@ -405,6 +526,8 @@ grub_efinet_create_dhcp_ack_from_device_path (grub_efi_device_path_t *dp, int *u
+@@ -401,6 +522,8 @@ grub_efinet_create_dhcp_ack_from_device_path (grub_efi_device_path_t *dp, int *u
        grub_efi_ipv4_device_path_t *ipv4 = (grub_efi_ipv4_device_path_t *) ldp;
        struct grub_net_bootp_packet *bp;
        grub_uint8_t *ptr;
@@ -180,7 +180,7 @@ index 08e9d7aa3..36958a5a7 100644
  
        bp = (struct grub_net_bootp_packet *) nb->tail;
        err = grub_netbuff_put (nb, sizeof (*bp) + 4);
-@@ -471,6 +594,26 @@ grub_efinet_create_dhcp_ack_from_device_path (grub_efi_device_path_t *dp, int *u
+@@ -462,6 +585,25 @@ grub_efinet_create_dhcp_ack_from_device_path (grub_efi_device_path_t *dp, int *u
        *ptr++ = sizeof ("HTTPClient") - 1;
        grub_memcpy (ptr, "HTTPClient", sizeof ("HTTPClient") - 1);
  
@@ -194,7 +194,6 @@ index 08e9d7aa3..36958a5a7 100644
 +	  if (err)
 +	    {
 +	      grub_free (ddp);
-+	      grub_free (ldp);
 +	      grub_netbuff_free (nb);
 +	      return NULL;
 +	    }
@@ -207,7 +206,7 @@ index 08e9d7aa3..36958a5a7 100644
        ptr = nb->tail;
        err = grub_netbuff_put (nb, 1);
        if (err)
-@@ -504,6 +647,8 @@ grub_efinet_create_dhcp_ack_from_device_path (grub_efi_device_path_t *dp, int *u
+@@ -494,6 +636,8 @@ grub_efinet_create_dhcp_ack_from_device_path (grub_efi_device_path_t *dp, int *u
        struct grub_net_dhcp6_option *opt;
        struct grub_net_dhcp6_option_iana *iana;
        struct grub_net_dhcp6_option_iaaddr *iaaddr;
@@ -216,7 +215,7 @@ index 08e9d7aa3..36958a5a7 100644
  
        d6p = (struct grub_net_dhcp6_packet *)nb->tail;
        err = grub_netbuff_put (nb, sizeof(*d6p));
-@@ -573,6 +718,26 @@ grub_efinet_create_dhcp_ack_from_device_path (grub_efi_device_path_t *dp, int *u
+@@ -557,6 +701,25 @@ grub_efinet_create_dhcp_ack_from_device_path (grub_efi_device_path_t *dp, int *u
        opt->len = grub_cpu_to_be16 (uri_len);
        grub_memcpy (opt->data, uri_dp->uri, uri_len);
  
@@ -230,7 +229,6 @@ index 08e9d7aa3..36958a5a7 100644
 +	  if (err)
 +	  {
 +	    grub_free (ddp);
-+	    grub_free (ldp);
 +	    grub_netbuff_free (nb);
 +	    return NULL;
 +	  }
@@ -244,7 +242,7 @@ index 08e9d7aa3..36958a5a7 100644
      }
  
 diff --git a/include/grub/efi/api.h b/include/grub/efi/api.h
-index a37fb50de..4edbeef9f 100644
+index 76ad56aa2b0..852daddfb0f 100644
 --- a/include/grub/efi/api.h
 +++ b/include/grub/efi/api.h
 @@ -289,6 +289,16 @@
@@ -264,7 +262,7 @@ index a37fb50de..4edbeef9f 100644
  struct grub_efi_sal_system_table
  {
    grub_uint32_t signature;
-@@ -1784,6 +1794,72 @@ struct grub_efi_block_io
+@@ -1785,6 +1795,72 @@ struct grub_efi_block_io
  };
  typedef struct grub_efi_block_io grub_efi_block_io_t;
  
@@ -337,6 +335,3 @@ index a37fb50de..4edbeef9f 100644
  #if (GRUB_TARGET_SIZEOF_VOID_P == 4) || defined (__ia64__) \
    || defined (__aarch64__) || defined (__MINGW64__) || defined (__CYGWIN__)
  
--- 
-2.13.0
-

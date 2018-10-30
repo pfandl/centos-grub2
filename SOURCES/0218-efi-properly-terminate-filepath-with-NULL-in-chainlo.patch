@@ -1,8 +1,7 @@
-From 3b6450b338cdc9f58c74f164e9bf0a7d55d6c9a5 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Andrei Borzenkov <arvidjaar@gmail.com>
 Date: Thu, 15 Dec 2016 16:07:00 +0300
-Subject: [PATCH 218/260] efi: properly terminate filepath with NULL in
- chainloader
+Subject: [PATCH] efi: properly terminate filepath with NULL in chainloader
 
 EFI File Path Media Device Path is defined as NULL terminated string;
 but chainloader built file paths without final NULL. This caused error
@@ -16,7 +15,7 @@ Reported and tested by Giovanni Santini <itachi.sama.amaterasu@gmail.com>
  1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/grub-core/loader/efi/chainloader.c b/grub-core/loader/efi/chainloader.c
-index 522a716e3..adc856366 100644
+index 522a716e37d..adc85636633 100644
 --- a/grub-core/loader/efi/chainloader.c
 +++ b/grub-core/loader/efi/chainloader.c
 @@ -122,6 +122,8 @@ copy_file_path (grub_efi_file_path_device_path_t *fp,
@@ -40,6 +39,3 @@ index 522a716e3..adc856366 100644
  			      * GRUB_MAX_UTF16_PER_UTF8
  			      * sizeof (grub_efi_char16_t))
  			   + sizeof (grub_efi_file_path_device_path_t) * 2);
--- 
-2.13.0
-

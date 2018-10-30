@@ -1,7 +1,7 @@
-From 6eb6afd8f913c6e2da737d42c6561aacc3873c84 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Colin Watson <cjwatson@ubuntu.com>
 Date: Thu, 10 Apr 2014 16:54:33 +0100
-Subject: [PATCH 078/260] Tolerate devices with no filesystem UUID returned by
+Subject: [PATCH] Tolerate devices with no filesystem UUID returned by
  os-prober
 
 * util/grub.d/30_os-prober.in: Tolerate devices with no filesystem
@@ -16,12 +16,12 @@ Fixes Ubuntu bug #1287436.
  2 files changed, 22 insertions(+), 10 deletions(-)
 
 diff --git a/ChangeLog b/ChangeLog
-index 7f0c57dc0..35564681a 100644
+index 7f0c57dc0ae..35564681a4d 100644
 --- a/ChangeLog
 +++ b/ChangeLog
-@@ -1,5 +1,14 @@
- 2014-04-10  Colin Watson  <cjwatson@ubuntu.com>
- 
+@@ -1,3 +1,12 @@
++2014-04-10  Colin Watson  <cjwatson@ubuntu.com>
++
 +	* util/grub.d/30_os-prober.in: Tolerate devices with no filesystem
 +	UUID.  Other parts of grub-mkconfig tolerate these, they were
 +	previously allowed here up to commit
@@ -29,13 +29,11 @@ index 7f0c57dc0..35564681a 100644
 +	practice when the system has active LVM snapshots.
 +	Fixes Ubuntu bug #1287436.
 +
-+2014-04-10  Colin Watson  <cjwatson@ubuntu.com>
-+
- 	* grub-core/disk/lvm.c (grub_lvm_detect): Search for
- 	"logical_volumes" block a little more accurately.
+ 2014-04-10  Colin Watson  <cjwatson@ubuntu.com>
  
+ 	* grub-core/disk/lvm.c (grub_lvm_detect): Search for
 diff --git a/util/grub.d/30_os-prober.in b/util/grub.d/30_os-prober.in
-index 7cf8487d6..6f38c82a5 100644
+index 7cf8487d63a..6f38c82a554 100644
 --- a/util/grub.d/30_os-prober.in
 +++ b/util/grub.d/30_os-prober.in
 @@ -112,16 +112,17 @@ for OS in ${OSPROBED} ; do
@@ -78,6 +76,3 @@ index 7cf8487d6..6f38c82a5 100644
      ;;
      hurd)
        onstr="$(gettext_printf "(on %s)" "${DEVICE}")"
--- 
-2.13.0
-

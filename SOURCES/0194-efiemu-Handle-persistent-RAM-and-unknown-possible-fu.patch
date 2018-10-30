@@ -1,8 +1,8 @@
-From 178c4edc23c209630f22fbd3c6397c49284b4bad Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Robert Elliott <elliott@hpe.com>
 Date: Fri, 22 Jan 2016 13:32:30 +0100
-Subject: [PATCH 194/260] efiemu: Handle persistent RAM and unknown possible
- future additions.
+Subject: [PATCH] efiemu: Handle persistent RAM and unknown possible future
+ additions.
 
 (cherry picked from commit ae3b83a4d4df75a01198a2fed7542391e7c449e0)
 
@@ -12,7 +12,7 @@ Resolves: rhbz#1288608
  1 file changed, 22 insertions(+), 3 deletions(-)
 
 diff --git a/grub-core/efiemu/mm.c b/grub-core/efiemu/mm.c
-index d4a4f3aad..13af4ad0d 100644
+index d4a4f3aad6d..13af4ad0dd8 100644
 --- a/grub-core/efiemu/mm.c
 +++ b/grub-core/efiemu/mm.c
 @@ -99,7 +99,8 @@ grub_efiemu_request_memalign (grub_size_t align, grub_size_t size,
@@ -82,6 +82,3 @@ index d4a4f3aad..13af4ad0d 100644
      };
  
    int i, j, k, done;
--- 
-2.13.0
-

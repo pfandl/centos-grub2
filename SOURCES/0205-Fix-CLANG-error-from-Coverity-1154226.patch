@@ -1,7 +1,7 @@
-From 3305aab87c435486dd9f83364c145577cf80e49b Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Robert Marshall <rmarshall@redhat.com>
 Date: Mon, 11 Jul 2016 10:59:48 -0400
-Subject: [PATCH 205/260] Fix CLANG error from Coverity (#1154226)
+Subject: [PATCH] Fix CLANG error from Coverity (#1154226)
 
 Resolved a null pointer deference warning from coverity.
 
@@ -11,7 +11,7 @@ Related: rhbz#1154226
  1 file changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/grub-core/net/url.c b/grub-core/net/url.c
-index 537019f2c..146858284 100644
+index 537019f2c78..146858284cd 100644
 --- a/grub-core/net/url.c
 +++ b/grub-core/net/url.c
 @@ -267,7 +267,12 @@ extract_http_url_info (char *url, int ssl,
@@ -28,6 +28,3 @@ index 537019f2c..146858284 100644
    *host_end = '\0';
    *host = grub_strndup (host_off, l);
    *host_end = c;
--- 
-2.13.0
-

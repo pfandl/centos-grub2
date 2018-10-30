@@ -1,7 +1,7 @@
-From 8831a9810ef95acb596f7096b9325e1db9b08cce Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: William Jon McCann <william.jon.mccann@gmail.com>
 Date: Wed, 15 May 2013 13:53:48 -0400
-Subject: [PATCH 105/260] Don't print GNU GRUB header
+Subject: [PATCH] Don't print GNU GRUB header
 
 No one cares.
 ---
@@ -9,7 +9,7 @@ No one cares.
  1 file changed, 2 insertions(+)
 
 diff --git a/grub-core/normal/main.c b/grub-core/normal/main.c
-index 85d2a2862..3777cd22c 100644
+index 85d2a2862d4..3777cd22ce3 100644
 --- a/grub-core/normal/main.c
 +++ b/grub-core/normal/main.c
 @@ -212,6 +212,7 @@ grub_normal_init_page (struct grub_term_output *term,
@@ -28,6 +28,3 @@ index 85d2a2862..3777cd22c 100644
  }
  
  static void
--- 
-2.13.0
-

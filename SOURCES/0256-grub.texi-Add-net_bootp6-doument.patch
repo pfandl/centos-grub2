@@ -1,7 +1,7 @@
-From bf9c2c12aebec23c3e65fdba63aad67712df5f41 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Michael Chang <mchang@suse.com>
 Date: Tue, 5 May 2015 14:19:24 +0800
-Subject: [PATCH 253/260] grub.texi: Add net_bootp6 doument
+Subject: [PATCH] grub.texi: Add net_bootp6 doument
 
 Update grub documentation for net_bootp6 command.
 
@@ -12,7 +12,7 @@ Signed-off-by: Ken Lin <ken.lin@hpe.com>
  1 file changed, 17 insertions(+)
 
 diff --git a/docs/grub.texi b/docs/grub.texi
-index 98138e04d..bd3457af9 100644
+index 98138e04d5b..bd3457af9a9 100644
 --- a/docs/grub.texi
 +++ b/docs/grub.texi
 @@ -5159,6 +5159,7 @@ List available video modes. If resolution is given, show only matching modes.
@@ -46,6 +46,3 @@ index 98138e04d..bd3457af9 100644
  
  @node net_del_addr
  @subsection net_del_addr
--- 
-2.13.0
-

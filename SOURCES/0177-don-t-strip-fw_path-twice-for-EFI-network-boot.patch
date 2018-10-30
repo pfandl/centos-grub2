@@ -1,14 +1,14 @@
-From 224bdbee2e9cc9a9aaa198cec9b984bb1fa0ee73 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: RHEL Ninjas <example@example.com>
 Date: Mon, 13 Apr 2015 12:42:53 +1000
-Subject: [PATCH 177/260] don't strip fw_path twice for EFI network boot
+Subject: [PATCH] don't strip fw_path twice for EFI network boot
 
 ---
  grub-core/kern/efi/init.c | 7 ++++++-
  1 file changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/grub-core/kern/efi/init.c b/grub-core/kern/efi/init.c
-index 942ab0256..c391df482 100644
+index 942ab0256b9..c391df48236 100644
 --- a/grub-core/kern/efi/init.c
 +++ b/grub-core/kern/efi/init.c
 @@ -61,7 +61,12 @@ grub_machine_get_bootlocation (char **device, char **path)
@@ -25,6 +25,3 @@ index 942ab0256..c391df482 100644
  
    /* Get the directory.  */
    p = grub_strrchr (*path, '/');
--- 
-2.13.0
-

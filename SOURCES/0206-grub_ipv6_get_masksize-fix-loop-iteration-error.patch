@@ -1,7 +1,7 @@
-From eeccd94f448dda6996ff4b494557c4ad5fc716c5 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Mon, 11 Jul 2016 15:43:01 -0400
-Subject: [PATCH 206/260] grub_ipv6_get_masksize: fix loop iteration error
+Subject: [PATCH] grub_ipv6_get_masksize: fix loop iteration error
 
 Related: rhbz#1154226
 
@@ -11,7 +11,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/grub-core/net/net.c b/grub-core/net/net.c
-index 81d3b6208..19a81bc9e 100644
+index 81d3b6208cb..19a81bc9e78 100644
 --- a/grub-core/net/net.c
 +++ b/grub-core/net/net.c
 @@ -983,7 +983,7 @@ grub_ipv6_get_masksize(grub_uint8_t *be_mask)
@@ -23,6 +23,3 @@ index 81d3b6208..19a81bc9e 100644
      {
        grub_uint8_t octet = mask[x];
        while (octet & 0x80)
--- 
-2.13.0
-

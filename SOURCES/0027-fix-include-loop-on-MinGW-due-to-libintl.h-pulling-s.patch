@@ -1,8 +1,7 @@
-From 903a7b030c82d7e23acf89e2cd25ecd2138397bd Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Andrey Borzenkov <arvidjaar@gmail.com>
 Date: Sat, 18 Jan 2014 21:22:57 +0400
-Subject: [PATCH 027/260] fix include loop on MinGW due to libintl.h pulling
- stdio.h
+Subject: [PATCH] fix include loop on MinGW due to libintl.h pulling stdio.h
 
 In file included from ./include/grub/dl.h:23:0,
                  from grub-core/lib/libgcrypt-grub/cipher/rfc2268.c:3:
@@ -29,7 +28,6 @@ ist_push' was here
 list.h needs just ATTRIBUTE_ERROR from misc.h; split compiler features
 into separate file grub/compiler.h and include it instead.
 ---
- ChangeLog                          | 14 +++++++++++
  grub-core/commands/fileXX.c        |  1 +
  grub-core/efiemu/prepare.c         |  1 +
  grub-core/loader/i386/xen_file.c   |  1 +
@@ -41,35 +39,12 @@ into separate file grub/compiler.h and include it instead.
  include/grub/list.h                |  4 +--
  include/grub/misc.h                | 29 +---------------------
  include/grub/procfs.h              |  1 +
+ ChangeLog                          | 14 +++++++++++
  12 files changed, 76 insertions(+), 30 deletions(-)
  create mode 100644 include/grub/compiler.h
 
-diff --git a/ChangeLog b/ChangeLog
-index dad2da2fa..dad469b43 100644
---- a/ChangeLog
-+++ b/ChangeLog
-@@ -1,5 +1,19 @@
- 2014-01-18  Andrey Borzenkov <arvidjaar@gmail.com>
- 
-+	* include/grub/misc.h: Move macros for compiler features to ...
-+	* include/grub/compiler.h: ... new file.
-+	* include/grub/list.h: Include <grub/compiler.h> instead of <grub/misc.h>.
-+	* grub-core/commands/fileXX.c: Include <grub/misc.h>.
-+	* grub-core/efiemu/prepare.c: Include <grub/misc.h>.
-+	* grub-core/loader/i386/xen_file.c: Include <grub/misc.h>.
-+	* grub-core/loader/i386/xen_fileXX.c: Include <grub/misc.h>.
-+	* grub-core/video/capture.c: Include <grub/misc.h>.
-+	* include/grub/command.h: Include <grub/misc.h>.
-+	* include/grub/dl.h: Include <grub/misc.h>.
-+	* include/grub/procfs.h: Include <grub/misc.h>.
-+
-+2014-01-18  Andrey Borzenkov <arvidjaar@gmail.com>
-+
- 	* configure.ac: Add support for BUILD_EXEEXT and use it ...
- 	* Makefile.am: ... here.
- 	* Makefile.util.def: ... and here.
 diff --git a/grub-core/commands/fileXX.c b/grub-core/commands/fileXX.c
-index c9857ff67..58e1094c6 100644
+index c9857ff67b1..58e1094c68b 100644
 --- a/grub-core/commands/fileXX.c
 +++ b/grub-core/commands/fileXX.c
 @@ -18,6 +18,7 @@
@@ -81,7 +56,7 @@ index c9857ff67..58e1094c6 100644
  #pragma GCC diagnostic ignored "-Wcast-align"
  
 diff --git a/grub-core/efiemu/prepare.c b/grub-core/efiemu/prepare.c
-index fb1b25d17..84c3368a8 100644
+index fb1b25d17f2..84c3368a82c 100644
 --- a/grub-core/efiemu/prepare.c
 +++ b/grub-core/efiemu/prepare.c
 @@ -21,6 +21,7 @@
@@ -93,7 +68,7 @@ index fb1b25d17..84c3368a8 100644
  #include <grub/crypto.h>
  
 diff --git a/grub-core/loader/i386/xen_file.c b/grub-core/loader/i386/xen_file.c
-index ebbf6aa11..ff23235f0 100644
+index ebbf6aa11ba..ff23235f064 100644
 --- a/grub-core/loader/i386/xen_file.c
 +++ b/grub-core/loader/i386/xen_file.c
 @@ -18,6 +18,7 @@
@@ -105,7 +80,7 @@ index ebbf6aa11..ff23235f0 100644
  grub_elf_t
  grub_xen_file (grub_file_t file)
 diff --git a/grub-core/loader/i386/xen_fileXX.c b/grub-core/loader/i386/xen_fileXX.c
-index 6df001576..73a5f90fd 100644
+index 6df00157629..73a5f90fdb9 100644
 --- a/grub-core/loader/i386/xen_fileXX.c
 +++ b/grub-core/loader/i386/xen_fileXX.c
 @@ -17,6 +17,7 @@
@@ -117,7 +92,7 @@ index 6df001576..73a5f90fd 100644
  static grub_err_t
  parse_xen_guest (grub_elf_t elf, struct grub_xen_file_info *xi,
 diff --git a/grub-core/video/capture.c b/grub-core/video/capture.c
-index 67c8edde8..4f83c7441 100644
+index 67c8edde824..4f83c744116 100644
 --- a/grub-core/video/capture.c
 +++ b/grub-core/video/capture.c
 @@ -4,6 +4,7 @@
@@ -129,7 +104,7 @@ index 67c8edde8..4f83c7441 100644
  static struct
  {
 diff --git a/include/grub/command.h b/include/grub/command.h
-index 8705a6355..eee4e847e 100644
+index 8705a635519..eee4e847ee4 100644
 --- a/include/grub/command.h
 +++ b/include/grub/command.h
 @@ -22,6 +22,7 @@
@@ -142,7 +117,7 @@ index 8705a6355..eee4e847e 100644
    {
 diff --git a/include/grub/compiler.h b/include/grub/compiler.h
 new file mode 100644
-index 000000000..c9e1d7a73
+index 00000000000..c9e1d7a73dc
 --- /dev/null
 +++ b/include/grub/compiler.h
 @@ -0,0 +1,51 @@
@@ -198,7 +173,7 @@ index 000000000..c9e1d7a73
 +
 +#endif /* ! GRUB_COMPILER_HEADER */
 diff --git a/include/grub/dl.h b/include/grub/dl.h
-index d29a899f5..9562fa663 100644
+index d29a899f52c..9562fa6634c 100644
 --- a/include/grub/dl.h
 +++ b/include/grub/dl.h
 @@ -26,6 +26,7 @@
@@ -210,7 +185,7 @@ index d29a899f5..9562fa663 100644
  
  /*
 diff --git a/include/grub/list.h b/include/grub/list.h
-index edd20adfd..d170ff6da 100644
+index edd20adfdb2..d170ff6da02 100644
 --- a/include/grub/list.h
 +++ b/include/grub/list.h
 @@ -21,8 +21,8 @@
@@ -225,7 +200,7 @@ index edd20adfd..d170ff6da 100644
  struct grub_list
  {
 diff --git a/include/grub/misc.h b/include/grub/misc.h
-index 2cf74b550..c6cd4564d 100644
+index 2cf74b55006..c6cd4564d86 100644
 --- a/include/grub/misc.h
 +++ b/include/grub/misc.h
 @@ -25,34 +25,7 @@
@@ -265,7 +240,7 @@ index 2cf74b550..c6cd4564d 100644
  #define ALIGN_UP(addr, align) \
  	((addr + (typeof (addr)) align - 1) & ~((typeof (addr)) align - 1))
 diff --git a/include/grub/procfs.h b/include/grub/procfs.h
-index d393da77f..8cc331d94 100644
+index d393da77f91..8cc331d946f 100644
 --- a/include/grub/procfs.h
 +++ b/include/grub/procfs.h
 @@ -20,6 +20,7 @@
@@ -276,6 +251,25 @@ index d393da77f..8cc331d94 100644
  
  struct grub_procfs_entry
  {
--- 
-2.13.0
-
+diff --git a/ChangeLog b/ChangeLog
+index dad2da2faef..dad469b43b1 100644
+--- a/ChangeLog
++++ b/ChangeLog
+@@ -1,3 +1,17 @@
++2014-01-18  Andrey Borzenkov <arvidjaar@gmail.com>
++
++	* include/grub/misc.h: Move macros for compiler features to ...
++	* include/grub/compiler.h: ... new file.
++	* include/grub/list.h: Include <grub/compiler.h> instead of <grub/misc.h>.
++	* grub-core/commands/fileXX.c: Include <grub/misc.h>.
++	* grub-core/efiemu/prepare.c: Include <grub/misc.h>.
++	* grub-core/loader/i386/xen_file.c: Include <grub/misc.h>.
++	* grub-core/loader/i386/xen_fileXX.c: Include <grub/misc.h>.
++	* grub-core/video/capture.c: Include <grub/misc.h>.
++	* include/grub/command.h: Include <grub/misc.h>.
++	* include/grub/dl.h: Include <grub/misc.h>.
++	* include/grub/procfs.h: Include <grub/misc.h>.
++
+ 2014-01-18  Andrey Borzenkov <arvidjaar@gmail.com>
+ 
+ 	* configure.ac: Add support for BUILD_EXEEXT and use it ...

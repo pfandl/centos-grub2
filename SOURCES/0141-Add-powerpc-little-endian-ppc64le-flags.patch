@@ -1,7 +1,7 @@
-From cc224a3b44036164ff95320190a3424a7c1ddb87 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Paulo Flabiano Smorigo <pfsmorigo@linux.vnet.ibm.com>
 Date: Wed, 13 Aug 2014 18:59:58 +0000
-Subject: [PATCH 141/260] Add powerpc little-endian (ppc64le) flags
+Subject: [PATCH] Add powerpc little-endian (ppc64le) flags
 
 libgcc dependency was removed *just* for this target because
 the distros that use ppc64el doesn't have 32-bit support on it.
@@ -14,7 +14,7 @@ the distros that use ppc64el doesn't have 32-bit support on it.
  2 files changed, 17 insertions(+), 2 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index 2632e2dad..53fd7c73e 100644
+index 2632e2dad9b..53fd7c73ee6 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -142,6 +142,7 @@ if test "x$with_platform" = x; then
@@ -77,7 +77,7 @@ index 2632e2dad..53fd7c73e 100644
  AM_CONDITIONAL([COND_mipsel], [test x$target_cpu = xmipsel])
  AM_CONDITIONAL([COND_mipseb], [test x$target_cpu = xmips])
 diff --git a/grub-core/Makefile.am b/grub-core/Makefile.am
-index 5c087c83b..cb7fd9f98 100644
+index 5c087c83b8f..cb7fd9f98e8 100644
 --- a/grub-core/Makefile.am
 +++ b/grub-core/Makefile.am
 @@ -84,8 +84,10 @@ KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/time.h
@@ -91,6 +91,3 @@ index 5c087c83b..cb7fd9f98 100644
  KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/memory.h
  
  if COND_i386_pc
--- 
-2.13.0
-

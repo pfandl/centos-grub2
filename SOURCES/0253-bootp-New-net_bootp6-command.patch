@@ -1,7 +1,7 @@
-From 64891c8f3d0521f595affec99ef74c1087dabe83 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Michael Chang <mchang@suse.com>
 Date: Sun, 10 Jul 2016 23:46:06 +0800
-Subject: [PATCH 251/260] bootp: New net_bootp6 command
+Subject: [PATCH] bootp: New net_bootp6 command
 
 Implement new net_bootp6 command for IPv6 network auto configuration via the
 DHCPv6 protocol (RFC3315).
@@ -9,13 +9,13 @@ DHCPv6 protocol (RFC3315).
 Signed-off-by: Michael Chang <mchang@suse.com>
 Signed-off-by: Ken Lin <ken.lin@hpe.com>
 ---
- grub-core/net/bootp.c | 1016 ++++++++++++++++++++++++++++++++++++++++++-------
+ grub-core/net/bootp.c | 1048 +++++++++++++++++++++++++++++++++++++++++--------
  grub-core/net/ip.c    |   39 ++
  include/grub/net.h    |   91 +++--
- 3 files changed, 969 insertions(+), 177 deletions(-)
+ 3 files changed, 985 insertions(+), 193 deletions(-)
 
 diff --git a/grub-core/net/bootp.c b/grub-core/net/bootp.c
-index 0a2d11b88..26b3d83d0 100644
+index 0a2d11b8820..26b3d83d0bc 100644
 --- a/grub-core/net/bootp.c
 +++ b/grub-core/net/bootp.c
 @@ -25,6 +25,98 @@
@@ -129,15 +129,18 @@ index 0a2d11b88..26b3d83d0 100644
 -				  const grub_net_link_level_address_t *hwaddr,
 -				  const struct grub_net_dhcpv6_packet *packet,
 -				  int is_def, char **device, char **path)
+-{
+-  struct grub_net_network_level_interface *inter = NULL;
+-  struct grub_net_network_level_address addr;
+-  int mask = -1;
+-
+-  if (!device || !path)
 +/* The default netbuff size for sending DHCPv6 packets which should be
 +   large enough to hold the information */
 +#define GRUB_DHCP6_DEFAULT_NETBUFF_ALLOC_SIZE 512
 +
 +struct grub_dhcp6_options
- {
--  struct grub_net_network_level_interface *inter = NULL;
--  struct grub_net_network_level_address addr;
--  int mask = -1;
++{
 +  grub_uint8_t *client_duid;
 +  grub_uint16_t client_duid_len;
 +  grub_uint8_t *server_duid;
@@ -166,25 +169,16 @@ index 0a2d11b88..26b3d83d0 100644
 +  grub_uint64_t start_time;
 +  struct grub_net_dhcp6_option_duid_ll duid;
 +  struct grub_net_network_level_interface *iface;
- 
--  if (!device || !path)
--    return NULL;
++
 +  /* The associated dhcpv6 options */
 +  grub_dhcp6_options_t adv;
 +  grub_dhcp6_options_t reply;
 +};
- 
--  *device = 0;
--  *path = 0;
++
 +typedef struct grub_dhcp6_session *grub_dhcp6_session_t;
- 
--  grub_dprintf ("net", "mac address is %02x:%02x:%02x:%02x:%02x:%02x\n",
--		hwaddr->mac[0], hwaddr->mac[1], hwaddr->mac[2],
--		hwaddr->mac[3], hwaddr->mac[4], hwaddr->mac[5]);
++
 +typedef void (*dhcp6_option_hook_fn) (const struct grub_net_dhcp6_option *opt, void *data);
- 
--  if (is_def)
--    grub_net_default_server = 0;
++
 +static void
 +foreach_dhcp6_option (const struct grub_net_dhcp6_option *opt, grub_size_t size,
 +		      dhcp6_option_hook_fn hook, void *hook_data);
@@ -196,22 +190,14 @@ index 0a2d11b88..26b3d83d0 100644
 +
 +  grub_uint16_t code = grub_be_to_cpu16 (opt->code);
 +  grub_uint16_t len = grub_be_to_cpu16 (opt->len);
- 
--  if (is_def && !grub_net_default_server && packet)
++
 +  if (code == GRUB_NET_DHCP6_OPTION_IAADDR)
-     {
--      const grub_uint8_t *options = packet->dhcp_options;
--      unsigned int option_max = 1024 - OFFSET_OF (dhcp_options, packet);
--      unsigned int i;
++    {
 +      const struct grub_net_dhcp6_option_iaaddr *iaaddr;
 +      iaaddr = (const struct grub_net_dhcp6_option_iaaddr *)opt->data;
- 
--      for (i = 0; i < option_max - sizeof (grub_net_dhcpv6_option_t); )
++
 +      if (len < sizeof (*iaaddr))
- 	{
--	  grub_uint16_t num, len;
--	  grub_net_dhcpv6_option_t *opt =
--	    (grub_net_dhcpv6_option_t *)(options + i);
++	{
 +	  grub_dprintf ("bootp", "DHCPv6: code %u with insufficient length %u\n", code, len);
 +	  return;
 +	}
@@ -226,26 +212,22 @@ index 0a2d11b88..26b3d83d0 100644
 +	}
 +    }
 +}
- 
--	  num = grub_be_to_cpu16(opt->option_num);
--	  len = grub_be_to_cpu16(opt->option_len);
++
 +static void
 +parse_dhcp6_option (const struct grub_net_dhcp6_option *opt, void *data)
 +{
 +  grub_dhcp6_options_t dhcp6 = (grub_dhcp6_options_t)data;
 +  grub_uint16_t code = grub_be_to_cpu16 (opt->code);
 +  grub_uint16_t len = grub_be_to_cpu16 (opt->len);
- 
--	  grub_dprintf ("net", "got dhcpv6 option %d len %d\n", num, len);
++
 +  switch (code)
 +    {
 +      case GRUB_NET_DHCP6_OPTION_CLIENTID:
- 
--	  if (len == 0)
++
 +	if (dhcp6->client_duid || !len)
 +	  {
 +	    grub_dprintf ("bootp", "Skipped DHCPv6 CLIENTID with length %u\n", len);
- 	    break;
++	    break;
 +	  }
 +	dhcp6->client_duid = grub_malloc (len);
 +	grub_memcpy (dhcp6->client_duid, opt->data, len);
@@ -253,26 +235,203 @@ index 0a2d11b88..26b3d83d0 100644
 +	break;
 +
 +      case GRUB_NET_DHCP6_OPTION_SERVERID:
- 
--	  if (len + i > 1024)
++
 +	if (dhcp6->server_duid || !len)
 +	  {
 +	    grub_dprintf ("bootp", "Skipped DHCPv6 SERVERID with length %u\n", len);
- 	    break;
++	    break;
 +	  }
 +	dhcp6->server_duid = grub_malloc (len);
 +	grub_memcpy (dhcp6->server_duid, opt->data, len);
 +	dhcp6->server_duid_len = len;
 +	break;
- 
--	  if (num == GRUB_NET_DHCP6_BOOTFILE_URL)
++
 +      case GRUB_NET_DHCP6_OPTION_IA_NA:
 +	{
 +	  const struct grub_net_dhcp6_option_iana *ia_na;
 +	  grub_uint16_t data_len;
 +
 +	  if (dhcp6->iaid || len < sizeof (*ia_na))
- 	    {
++	    {
++	      grub_dprintf ("bootp", "Skipped DHCPv6 IA_NA with length %u\n", len);
++	      break;
++	    }
++	  ia_na = (const struct grub_net_dhcp6_option_iana *)opt->data;
++	  dhcp6->iaid = grub_be_to_cpu32 (ia_na->iaid);
++	  dhcp6->t1 = grub_be_to_cpu32 (ia_na->t1);
++	  dhcp6->t2 = grub_be_to_cpu32 (ia_na->t2);
++
++	  data_len = len - sizeof (*ia_na);
++	  if (data_len)
++	    foreach_dhcp6_option ((const struct grub_net_dhcp6_option *)ia_na->data, data_len, parse_dhcp6_iaaddr, dhcp6);
++	}
++	break;
++
++      case GRUB_NET_DHCP6_OPTION_DNS_SERVERS:
++	{
++	  const grub_uint8_t *po;
++	  grub_uint16_t ln;
++	  grub_net_network_level_address_t *la;
++
++	  if (!len || len & 0xf)
++	    {
++	      grub_dprintf ("bootp", "Skip invalid length DHCPv6 DNS_SERVERS \n");
++	      break;
++	    }
++	  dhcp6->num_dns_server = ln = len >> 4;
++	  dhcp6->dns_server_addrs = la = grub_zalloc (ln * sizeof (*la));
++
++	  for (po = opt->data; ln > 0; po += 0x10, la++, ln--)
++	    {
++	      la->type = GRUB_NET_NETWORK_LEVEL_PROTOCOL_IPV6;
++	      la->ipv6[0] = grub_get_unaligned64 (po);
++	      la->ipv6[1] = grub_get_unaligned64 (po + 8);
++	      la->option = DNS_OPTION_PREFER_IPV6;
++	    }
++	}
++	break;
++
++      case GRUB_NET_DHCP6_OPTION_BOOTFILE_URL:
++	dissect_url ((const char *)opt->data,
++		      &dhcp6->boot_file_proto,
++		      &dhcp6->boot_file_server_ip,
++		      &dhcp6->boot_file_path);
++	break;
++
++      default:
++	break;
++    }
++}
++
++static void
++foreach_dhcp6_option (const struct grub_net_dhcp6_option *opt, grub_size_t size, dhcp6_option_hook_fn hook, void *hook_data)
++{
++  while (size)
++    {
++      grub_uint16_t code, len;
++
++      if (size < sizeof (*opt))
++	{
++	  grub_dprintf ("bootp", "DHCPv6: Options stopped with remaining size %" PRIxGRUB_SIZE "\n", size);
++	  break;
++	}
++      size -= sizeof (*opt);
++      len = grub_be_to_cpu16 (opt->len);
++      code = grub_be_to_cpu16 (opt->code);
++      if (size < len)
++	{
++	  grub_dprintf ("bootp", "DHCPv6: Options stopped at out of bound length %u for option %u\n", len, code);
++	  break;
++	}
++      if (!len)
++	{
++	  grub_dprintf ("bootp", "DHCPv6: Options stopped at zero length option %u\n", code);
++	  break;
++	}
++      else
++	{
++	  if (hook)
++	    hook (opt, hook_data);
++	  size -= len;
++	  opt = (const struct grub_net_dhcp6_option *)((grub_uint8_t *)opt + len + sizeof (*opt));
++	}
++    }
++}
++
++static grub_dhcp6_options_t
++grub_dhcp6_options_get (const struct grub_net_dhcp6_packet *v6h,
++			grub_size_t size)
++{
++  grub_dhcp6_options_t options;
++
++  if (size < sizeof (*v6h))
++    {
++      grub_error (GRUB_ERR_OUT_OF_RANGE, N_("DHCPv6 packet size too small"));
++      return NULL;
++    }
++
++  options = grub_zalloc (sizeof(*options));
++  if (!options)
+     return NULL;
+ 
+-  *device = 0;
+-  *path = 0;
+-
+-  grub_dprintf ("net", "mac address is %02x:%02x:%02x:%02x:%02x:%02x\n",
+-		hwaddr->mac[0], hwaddr->mac[1], hwaddr->mac[2],
+-		hwaddr->mac[3], hwaddr->mac[4], hwaddr->mac[5]);
+-
+-  if (is_def)
+-    grub_net_default_server = 0;
+-
+-  if (is_def && !grub_net_default_server && packet)
++  foreach_dhcp6_option ((const struct grub_net_dhcp6_option *)v6h->dhcp_options,
++		       size - sizeof (*v6h), parse_dhcp6_option, options);
++
++  return options;
++}
++
++static void
++grub_dhcp6_options_free (grub_dhcp6_options_t options)
++{
++  if (options->client_duid)
++    grub_free (options->client_duid);
++  if (options->server_duid)
++    grub_free (options->server_duid);
++  if (options->ia_addr)
++    grub_free (options->ia_addr);
++  if (options->dns_server_addrs)
++    grub_free (options->dns_server_addrs);
++  if (options->boot_file_proto)
++    grub_free (options->boot_file_proto);
++  if (options->boot_file_server_ip)
++    grub_free (options->boot_file_server_ip);
++  if (options->boot_file_path)
++    grub_free (options->boot_file_path);
++
++  grub_free (options);
++}
++
++static grub_dhcp6_session_t grub_dhcp6_sessions;
++#define FOR_DHCP6_SESSIONS_SAFE(var, next) FOR_LIST_ELEMENTS_SAFE (var, next, grub_dhcp6_sessions)
++#define FOR_DHCP6_SESSIONS(var) FOR_LIST_ELEMENTS (var, grub_dhcp6_sessions)
++
++static void
++grub_net_configure_by_dhcp6_info (const char *name,
++	  struct grub_net_card *card,
++	  grub_dhcp6_options_t dhcp6,
++	  int is_def,
++	  int flags,
++	  struct grub_net_network_level_interface **ret_inf)
++{
++  grub_net_network_level_netaddress_t netaddr;
++  struct grub_net_network_level_interface *inf;
++
++  if (dhcp6->ia_addr)
+     {
+-      const grub_uint8_t *options = packet->dhcp_options;
+-      unsigned int option_max = 1024 - OFFSET_OF (dhcp_options, packet);
+-      unsigned int i;
+-
+-      for (i = 0; i < option_max - sizeof (grub_net_dhcpv6_option_t); )
+-	{
+-	  grub_uint16_t num, len;
+-	  grub_net_dhcpv6_option_t *opt =
+-	    (grub_net_dhcpv6_option_t *)(options + i);
+-
+-	  num = grub_be_to_cpu16(opt->option_num);
+-	  len = grub_be_to_cpu16(opt->option_len);
+-
+-	  grub_dprintf ("net", "got dhcpv6 option %d len %d\n", num, len);
+-
+-	  if (len == 0)
+-	    break;
+-
+-	  if (len + i > 1024)
+-	    break;
+-
+-	  if (num == GRUB_NET_DHCP6_BOOTFILE_URL)
+-	    {
 -	      char *scheme, *userinfo, *host, *file;
 -	      char *tmp;
 -	      int hostlen;
@@ -303,11 +462,17 @@ index 0a2d11b88..26b3d83d0 100644
 -		}
 -	      else
 -		tmp = host;
--
++      inf = grub_net_add_addr (name, card, dhcp6->ia_addr, &card->default_address, flags);
+ 
 -	      *device = grub_xasprintf ("%s,%s", scheme, tmp);
 -	      grub_free (scheme);
 -	      grub_free (host);
--
++      netaddr.type = GRUB_NET_NETWORK_LEVEL_PROTOCOL_IPV6;
++      netaddr.ipv6.base[0] = dhcp6->ia_addr->ipv6[0];
++      netaddr.ipv6.base[1] = 0;
++      netaddr.ipv6.masksize = 64;
++      grub_net_add_route (name, netaddr, inf);
+ 
 -	      if (file && *file)
 -		{
 -		  tmp = grub_strrchr (file, '/');
@@ -326,29 +491,9 @@ index 0a2d11b88..26b3d83d0 100644
 -		}
 -	      else
 -		*path = file;
-+	      grub_dprintf ("bootp", "Skipped DHCPv6 IA_NA with length %u\n", len);
-+	      break;
- 	    }
+-	    }
 -	  else if (num == GRUB_NET_DHCP6_IA_NA)
-+	  ia_na = (const struct grub_net_dhcp6_option_iana *)opt->data;
-+	  dhcp6->iaid = grub_be_to_cpu32 (ia_na->iaid);
-+	  dhcp6->t1 = grub_be_to_cpu32 (ia_na->t1);
-+	  dhcp6->t2 = grub_be_to_cpu32 (ia_na->t2);
-+
-+	  data_len = len - sizeof (*ia_na);
-+	  if (data_len)
-+	    foreach_dhcp6_option ((const struct grub_net_dhcp6_option *)ia_na->data, data_len, parse_dhcp6_iaaddr, dhcp6);
-+	}
-+	break;
-+
-+      case GRUB_NET_DHCP6_OPTION_DNS_SERVERS:
-+	{
-+	  const grub_uint8_t *po;
-+	  grub_uint16_t ln;
-+	  grub_net_network_level_address_t *la;
-+
-+	  if (!len || len & 0xf)
- 	    {
+-	    {
 -	      const grub_net_dhcpv6_option_t *ia_na_opt;
 -	      const grub_net_dhcpv6_opt_ia_na_t *ia_na =
 -		(const grub_net_dhcpv6_opt_ia_na_t *)opt;
@@ -395,167 +540,35 @@ index 0a2d11b88..26b3d83d0 100644
 -		  j += ia_na_opt_len;
 -		  left -= ia_na_opt_len;
 -		}
-+	      grub_dprintf ("bootp", "Skip invalid length DHCPv6 DNS_SERVERS \n");
-+	      break;
- 	    }
-+	  dhcp6->num_dns_server = ln = len >> 4;
-+	  dhcp6->dns_server_addrs = la = grub_zalloc (ln * sizeof (*la));
- 
--	  i += len + 4;
-+	  for (po = opt->data; ln > 0; po += 0x10, la++, ln--)
-+	    {
-+	      la->type = GRUB_NET_NETWORK_LEVEL_PROTOCOL_IPV6;
-+	      la->ipv6[0] = grub_get_unaligned64 (po);
-+	      la->ipv6[1] = grub_get_unaligned64 (po + 8);
-+	      la->option = DNS_OPTION_PREFER_IPV6;
-+	    }
- 	}
-+	break;
- 
--      grub_print_error ();
-+      case GRUB_NET_DHCP6_OPTION_BOOTFILE_URL:
-+	dissect_url ((const char *)opt->data,
-+		      &dhcp6->boot_file_proto,
-+		      &dhcp6->boot_file_server_ip,
-+		      &dhcp6->boot_file_path);
-+	break;
-+
-+      default:
-+	break;
-     }
-+}
- 
--  if (is_def)
-+static void
-+foreach_dhcp6_option (const struct grub_net_dhcp6_option *opt, grub_size_t size, dhcp6_option_hook_fn hook, void *hook_data)
-+{
-+  while (size)
-     {
-+      grub_uint16_t code, len;
-+
-+      if (size < sizeof (*opt))
-+	{
-+	  grub_dprintf ("bootp", "DHCPv6: Options stopped with remaining size %" PRIxGRUB_SIZE "\n", size);
-+	  break;
-+	}
-+      size -= sizeof (*opt);
-+      len = grub_be_to_cpu16 (opt->len);
-+      code = grub_be_to_cpu16 (opt->code);
-+      if (size < len)
-+	{
-+	  grub_dprintf ("bootp", "DHCPv6: Options stopped at out of bound length %u for option %u\n", len, code);
-+	  break;
-+	}
-+      if (!len)
-+	{
-+	  grub_dprintf ("bootp", "DHCPv6: Options stopped at zero length option %u\n", code);
-+	  break;
-+	}
-+      else
-+	{
-+	  if (hook)
-+	    hook (opt, hook_data);
-+	  size -= len;
-+	  opt = (const struct grub_net_dhcp6_option *)((grub_uint8_t *)opt + len + sizeof (*opt));
-+	}
-+    }
-+}
-+
-+static grub_dhcp6_options_t
-+grub_dhcp6_options_get (const struct grub_net_dhcp6_packet *v6h,
-+			grub_size_t size)
-+{
-+  grub_dhcp6_options_t options;
-+
-+  if (size < sizeof (*v6h))
-+    {
-+      grub_error (GRUB_ERR_OUT_OF_RANGE, N_("DHCPv6 packet size too small"));
-+      return NULL;
-+    }
-+
-+  options = grub_zalloc (sizeof(*options));
-+  if (!options)
-+    return NULL;
-+
-+  foreach_dhcp6_option ((const struct grub_net_dhcp6_option *)v6h->dhcp_options,
-+		       size - sizeof (*v6h), parse_dhcp6_option, options);
-+
-+  return options;
-+}
-+
-+static void
-+grub_dhcp6_options_free (grub_dhcp6_options_t options)
-+{
-+  if (options->client_duid)
-+    grub_free (options->client_duid);
-+  if (options->server_duid)
-+    grub_free (options->server_duid);
-+  if (options->ia_addr)
-+    grub_free (options->ia_addr);
-+  if (options->dns_server_addrs)
-+    grub_free (options->dns_server_addrs);
-+  if (options->boot_file_proto)
-+    grub_free (options->boot_file_proto);
-+  if (options->boot_file_server_ip)
-+    grub_free (options->boot_file_server_ip);
-+  if (options->boot_file_path)
-+    grub_free (options->boot_file_path);
-+
-+  grub_free (options);
-+}
-+
-+static grub_dhcp6_session_t grub_dhcp6_sessions;
-+#define FOR_DHCP6_SESSIONS_SAFE(var, next) FOR_LIST_ELEMENTS_SAFE (var, next, grub_dhcp6_sessions)
-+#define FOR_DHCP6_SESSIONS(var) FOR_LIST_ELEMENTS (var, grub_dhcp6_sessions)
-+
-+static void
-+grub_net_configure_by_dhcp6_info (const char *name,
-+	  struct grub_net_card *card,
-+	  grub_dhcp6_options_t dhcp6,
-+	  int is_def,
-+	  int flags,
-+	  struct grub_net_network_level_interface **ret_inf)
-+{
-+  grub_net_network_level_netaddress_t netaddr;
-+  struct grub_net_network_level_interface *inf;
-+
-+  if (dhcp6->ia_addr)
-+    {
-+      inf = grub_net_add_addr (name, card, dhcp6->ia_addr, &card->default_address, flags);
-+
-+      netaddr.type = GRUB_NET_NETWORK_LEVEL_PROTOCOL_IPV6;
-+      netaddr.ipv6.base[0] = dhcp6->ia_addr->ipv6[0];
-+      netaddr.ipv6.base[1] = 0;
-+      netaddr.ipv6.masksize = 64;
-+      grub_net_add_route (name, netaddr, inf);
-+
+-	    }
 +      if (ret_inf)
 +	*ret_inf = inf;
 +    }
-+
+ 
+-	  i += len + 4;
+-	}
 +  if (dhcp6->dns_server_addrs)
 +    {
 +      grub_uint16_t i;
-+
+ 
+-      grub_print_error ();
 +      for (i = 0; i < dhcp6->num_dns_server; ++i)
 +	grub_net_add_dns_server (dhcp6->dns_server_addrs + i);
-+    }
-+
+     }
+ 
+-  if (is_def)
 +  if (dhcp6->boot_file_path)
 +    grub_env_set_net_property (name, "boot_file", dhcp6->boot_file_path,
 +			  grub_strlen (dhcp6->boot_file_path));
 +
 +  if (is_def && dhcp6->boot_file_server_ip)
-+    {
+     {
 +      grub_net_default_server = grub_strdup (dhcp6->boot_file_server_ip);
        grub_env_set ("net_default_interface", name);
        grub_env_export ("net_default_interface");
      }
 +}
- 
--    if (inter)
--      grub_net_add_ipv6_local (inter, mask);
--    return inter;
++
 +static void
 +grub_dhcp6_session_add (struct grub_net_network_level_interface *iface,
 +			grub_uint32_t iaid)
@@ -584,8 +597,8 @@ index 0a2d11b88..26b3d83d0 100644
 +  se->adv = NULL;
 +  se->reply = NULL;
 +  grub_list_push (GRUB_AS_LIST_P (&grub_dhcp6_sessions), GRUB_AS_LIST (se));
- }
- 
++}
++
 +static void
 +grub_dhcp6_session_remove (grub_dhcp6_session_t se)
 +{
@@ -613,7 +626,10 @@ index 0a2d11b88..26b3d83d0 100644
 +grub_dhcp6_session_configure_network (grub_dhcp6_session_t se)
 +{
 +  char *name;
-+
+ 
+-    if (inter)
+-      grub_net_add_ipv6_local (inter, mask);
+-    return inter;
 +  name = grub_xasprintf ("%s:dhcp6", se->iface->card->name);
 +  if (!name)
 +    return grub_errno;
@@ -622,8 +638,8 @@ index 0a2d11b88..26b3d83d0 100644
 +  grub_free (name);
 +
 +  return GRUB_ERR_NONE;
-+}
-+
+ }
+ 
 +static grub_err_t
 +grub_dhcp6_session_send_request (grub_dhcp6_session_t se)
 +{
@@ -1107,7 +1123,7 @@ index 0a2d11b88..26b3d83d0 100644
 +  grub_unregister_command (cmd_bootp6);
  }
 diff --git a/grub-core/net/ip.c b/grub-core/net/ip.c
-index 311213fee..daa5b0351 100644
+index 311213feec1..daa5b03516b 100644
 --- a/grub-core/net/ip.c
 +++ b/grub-core/net/ip.c
 @@ -235,6 +235,45 @@ handle_dgram (struct grub_net_buff *nb,
@@ -1157,7 +1173,7 @@ index 311213fee..daa5b0351 100644
        {
  	const struct grub_net_bootp_packet *bootp;
 diff --git a/include/grub/net.h b/include/grub/net.h
-index 20e699bb0..8ecfbb492 100644
+index 20e699bb025..8ecfbb49221 100644
 --- a/include/grub/net.h
 +++ b/include/grub/net.h
 @@ -423,50 +423,65 @@ struct grub_net_bootp_packet
@@ -1286,6 +1302,3 @@ index 20e699bb0..8ecfbb492 100644
  int
  grub_net_hwaddr_cmp (const grub_net_link_level_address_t *a,
  		     const grub_net_link_level_address_t *b);
--- 
-2.13.0
-

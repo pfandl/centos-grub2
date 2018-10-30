@@ -1,7 +1,7 @@
-From 66804a1e21978713902da654ec890574efe25e7d Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Josef Bacik <jbacik@fb.com>
 Date: Wed, 12 Aug 2015 08:16:22 -0700
-Subject: [PATCH 181/260] tcp: ack when we get an OOO/lost packet
+Subject: [PATCH] tcp: ack when we get an OOO/lost packet
 
 While adding tcp window scaling support I was finding that I'd get some packet
 loss or reordering when transferring from large distances and grub would just
@@ -17,7 +17,7 @@ Signed-off-by: Josef Bacik <jbacik@fb.com>
  1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/grub-core/net/tcp.c b/grub-core/net/tcp.c
-index 2077f5519..fa29a2afc 100644
+index 2077f5519b2..fa29a2afc6c 100644
 --- a/grub-core/net/tcp.c
 +++ b/grub-core/net/tcp.c
 @@ -882,7 +882,10 @@ grub_net_recv_tcp_packet (struct grub_net_buff *nb,
@@ -32,6 +32,3 @@ index 2077f5519..fa29a2afc 100644
        while (1)
  	{
  	  nb_top_p = grub_priority_queue_top (sock->pq);
--- 
-2.13.0
-

@@ -1,7 +1,7 @@
-From de072639935e3f8a0e43f7f5c5961a919d950406 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Robert Marshall <rmarshall@redhat.com>
 Date: Thu, 7 Jul 2016 15:05:26 -0400
-Subject: [PATCH 203/260] Fix coverity issues in shell scripts (#1226325)
+Subject: [PATCH] Fix coverity issues in shell scripts (#1226325)
 
 Remove unused variables called out by coverity. Convert a non-quoted
 variable to a quoted variable without use of deprecated backticks.
@@ -13,7 +13,7 @@ Related: rhbz#1226325
  2 files changed, 1 insertion(+), 10 deletions(-)
 
 diff --git a/util/grub-get-kernel-settings.in b/util/grub-get-kernel-settings.in
-index ae0b4696d..cee8c2096 100644
+index ae0b4696d49..cee8c209650 100644
 --- a/util/grub-get-kernel-settings.in
 +++ b/util/grub-get-kernel-settings.in
 @@ -21,27 +21,18 @@ prefix="@prefix@"
@@ -45,7 +45,7 @@ index ae0b4696d..cee8c2096 100644
  export TEXTDOMAINDIR="@localedir@"
  
 diff --git a/util/grub-mkconfig.in b/util/grub-mkconfig.in
-index aa4fdb8a3..86801aa4e 100644
+index aa4fdb8a3b2..86801aa4e5c 100644
 --- a/util/grub-mkconfig.in
 +++ b/util/grub-mkconfig.in
 @@ -149,7 +149,7 @@ if test -f ${sysconfdir}/default/grub ; then
@@ -57,6 +57,3 @@ index aa4fdb8a3..86801aa4e 100644
  
  if [ "x$GRUB_DISABLE_UUID" != "xtrue" -a -z "$GRUB_DEVICE_UUID" ]; then
    GRUB_DEVICE_UUID="$GRUB_DEVICE_UUID_GENERATED"
--- 
-2.13.0
-

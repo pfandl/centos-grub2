@@ -1,7 +1,7 @@
-From 3b0de305e13b88007b1e414f656ef8de02e92e1f Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Robert Marshall <rmarshall@redhat.com>
 Date: Thu, 7 Jul 2016 16:30:32 -0400
-Subject: [PATCH 204/260] Fix compiler warning (#1154226)
+Subject: [PATCH] Fix compiler warning (#1154226)
 
 Coverity threw a compiler warning for an incompatible pointer type when
 referencing a union. Converted the argument to pass the exact member of the
@@ -13,7 +13,7 @@ Related: rhbz#1154226
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/grub-core/net/drivers/efi/efinet.c b/grub-core/net/drivers/efi/efinet.c
-index d7befb2ba..ed103df7a 100644
+index d7befb2ba9b..ed103df7a80 100644
 --- a/grub-core/net/drivers/efi/efinet.c
 +++ b/grub-core/net/drivers/efi/efinet.c
 @@ -415,7 +415,7 @@ grub_efi_net_config_real (grub_efi_handle_t hnd, char **device,
@@ -25,6 +25,3 @@ index d7befb2ba..ed103df7a 100644
  					  1, device, path);
  	grub_dprintf ("efinet", "device: `%s' path: `%s'\n", *device, *path);
        }
--- 
-2.13.0
-

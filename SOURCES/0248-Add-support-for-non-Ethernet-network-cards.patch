@@ -1,7 +1,7 @@
-From fba1410c59351eb760ccf2de1b4b80bda407e635 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Andrzej Kacprowski <andrzej.kacprowski@intel.com>
 Date: Fri, 21 Apr 2017 10:06:20 +0200
-Subject: [PATCH 248/260] Add support for non-Ethernet network cards
+Subject: [PATCH] Add support for non-Ethernet network cards
 
 This patch replaces fixed 6-byte link layer address with
 up to 32-byte variable sized address.
@@ -24,7 +24,7 @@ Signed-off-by: Andrzej Kacprowski <andrzej.kacprowski@intel.com>
 Conflicts:
 	grub-core/net/ip.c
 ---
- grub-core/net/arp.c                    | 159 +++++++++++++++++++++------------
+ grub-core/net/arp.c                    | 157 +++++++++++++++++++++------------
  grub-core/net/bootp.c                  |  14 ++-
  grub-core/net/drivers/efi/efinet.c     |   8 +-
  grub-core/net/drivers/emu/emunet.c     |   1 +
@@ -36,10 +36,10 @@ Conflicts:
  grub-core/net/ip.c                     |   4 +-
  grub-core/net/net.c                    |  48 +++++-----
  include/grub/net.h                     |  19 ++--
- 12 files changed, 214 insertions(+), 153 deletions(-)
+ 12 files changed, 213 insertions(+), 152 deletions(-)
 
 diff --git a/grub-core/net/arp.c b/grub-core/net/arp.c
-index 996473e10..badd2d3e6 100644
+index 996473e1091..badd2d3e684 100644
 --- a/grub-core/net/arp.c
 +++ b/grub-core/net/arp.c
 @@ -31,22 +31,12 @@ enum
@@ -149,16 +149,15 @@ index 996473e10..badd2d3e6 100644
    grub_net_network_level_address_t sender_addr, target_addr;
    grub_net_link_level_address_t sender_mac_addr;
    struct grub_net_network_level_interface *inf;
--
--  if (arp_packet->pro != grub_cpu_to_be16_compile_time (GRUB_NET_ETHERTYPE_IP)
--      || arp_packet->pln != 4 || arp_packet->hln != 6
--      || nb->tail - nb->data < (int) sizeof (*arp_packet))
 +  grub_uint16_t hw_type;
 +  grub_uint8_t hln;
 +  grub_uint8_t pln;
 +  grub_uint8_t arp_packet_len;
 +  grub_uint8_t *tmp_ptr;
-+
+ 
+-  if (arp_packet->pro != grub_cpu_to_be16_compile_time (GRUB_NET_ETHERTYPE_IP)
+-      || arp_packet->pln != 4 || arp_packet->hln != 6
+-      || nb->tail - nb->data < (int) sizeof (*arp_packet))
 +  hw_type = card->default_address.type;
 +  hln = card->default_address.len;
 +  pln = sizeof(sender_addr.ipv4);
@@ -181,29 +180,29 @@ index 996473e10..badd2d3e6 100644
 +
 +  /* The source protocol address. */
    sender_addr.type = GRUB_NET_NETWORK_LEVEL_PROTOCOL_IPV4;
--  target_addr.type = GRUB_NET_NETWORK_LEVEL_PROTOCOL_IPV4;
--  sender_addr.ipv4 = arp_packet->sender_ip;
--  target_addr.ipv4 = arp_packet->recv_ip;
--  if (arp_packet->sender_ip == pending_req)
--    have_pending = 1;
 +  grub_memcpy(&sender_addr.ipv4, tmp_ptr, pln);
 +  tmp_ptr += pln;
- 
--  sender_mac_addr.type = GRUB_NET_LINK_LEVEL_PROTOCOL_ETHERNET;
--  grub_memcpy (sender_mac_addr.mac, arp_packet->sender_mac,
--	       sizeof (sender_mac_addr.mac));
-   grub_net_link_layer_add_address (card, &sender_addr, &sender_mac_addr, 1);
- 
++
++  grub_net_link_layer_add_address (card, &sender_addr, &sender_mac_addr, 1);
++
 +  /* The target hardware address. */
 +  tmp_ptr += hln;
 +
 +  /* The target protocol address. */
-+  target_addr.type = GRUB_NET_NETWORK_LEVEL_PROTOCOL_IPV4;
+   target_addr.type = GRUB_NET_NETWORK_LEVEL_PROTOCOL_IPV4;
+-  sender_addr.ipv4 = arp_packet->sender_ip;
+-  target_addr.ipv4 = arp_packet->recv_ip;
+-  if (arp_packet->sender_ip == pending_req)
 +  grub_memcpy(&target_addr.ipv4, tmp_ptr, pln);
 +
 +  if (sender_addr.ipv4 == pending_req)
-+    have_pending = 1;
-+
+     have_pending = 1;
+ 
+-  sender_mac_addr.type = GRUB_NET_LINK_LEVEL_PROTOCOL_ETHERNET;
+-  grub_memcpy (sender_mac_addr.mac, arp_packet->sender_mac,
+-	       sizeof (sender_mac_addr.mac));
+-  grub_net_link_layer_add_address (card, &sender_addr, &sender_mac_addr, 1);
+-
    FOR_NET_NETWORK_LEVEL_INTERFACES (inf)
    {
      /* Am I the protocol address target? */
@@ -272,7 +271,7 @@ index 996473e10..badd2d3e6 100644
  	/* Change operation to REPLY and send packet */
  	send_ethernet_packet (inf, &nb_reply, target, GRUB_NET_ETHERTYPE_ARP);
 diff --git a/grub-core/net/bootp.c b/grub-core/net/bootp.c
-index dfdf7e08d..0a2d11b88 100644
+index dfdf7e08d90..0a2d11b8820 100644
 --- a/grub-core/net/bootp.c
 +++ b/grub-core/net/bootp.c
 @@ -219,7 +219,6 @@ grub_net_configure_by_dhcp_ack (const char *name,
@@ -318,7 +317,7 @@ index dfdf7e08d..0a2d11b88 100644
  	  grub_netbuff_push (nb, sizeof (*udph));
  
 diff --git a/grub-core/net/drivers/efi/efinet.c b/grub-core/net/drivers/efi/efinet.c
-index 69b0fc7a8..b9ed13fca 100644
+index 69b0fc7a8fe..b9ed13fcad1 100644
 --- a/grub-core/net/drivers/efi/efinet.c
 +++ b/grub-core/net/drivers/efi/efinet.c
 @@ -290,6 +290,9 @@ grub_efinet_findcards (void)
@@ -346,7 +345,7 @@ index 69b0fc7a8..b9ed13fca 100644
        card->efi_handle = *handle;
  
 diff --git a/grub-core/net/drivers/emu/emunet.c b/grub-core/net/drivers/emu/emunet.c
-index 7c977cd52..962b0c86d 100644
+index 7c977cd52ca..962b0c86d2b 100644
 --- a/grub-core/net/drivers/emu/emunet.c
 +++ b/grub-core/net/drivers/emu/emunet.c
 @@ -46,6 +46,7 @@ static struct grub_net_card emucard =
@@ -358,7 +357,7 @@ index 7c977cd52..962b0c86d 100644
  		       },
      .flags = 0
 diff --git a/grub-core/net/drivers/i386/pc/pxe.c b/grub-core/net/drivers/i386/pc/pxe.c
-index e8c0b22e2..566014950 100644
+index e8c0b22e294..5660149503d 100644
 --- a/grub-core/net/drivers/i386/pc/pxe.c
 +++ b/grub-core/net/drivers/i386/pc/pxe.c
 @@ -387,20 +387,21 @@ GRUB_MOD_INIT(pxe)
@@ -390,7 +389,7 @@ index e8c0b22e2..566014950 100644
  
    grub_pxe_card.default_address.type = GRUB_NET_LINK_LEVEL_PROTOCOL_ETHERNET;
 diff --git a/grub-core/net/drivers/ieee1275/ofnet.c b/grub-core/net/drivers/ieee1275/ofnet.c
-index cd24ddc99..5a199bcaa 100644
+index cd24ddc99c5..5a199bcaa75 100644
 --- a/grub-core/net/drivers/ieee1275/ofnet.c
 +++ b/grub-core/net/drivers/ieee1275/ofnet.c
 @@ -154,6 +154,7 @@ grub_ieee1275_parse_bootpath (const char *devpath, char *bootpath,
@@ -410,7 +409,7 @@ index cd24ddc99..5a199bcaa 100644
  
    card->txbufsize = ALIGN_UP (card->mtu, 64) + 256;
 diff --git a/grub-core/net/drivers/uboot/ubootnet.c b/grub-core/net/drivers/uboot/ubootnet.c
-index 056052e40..22ebcbf21 100644
+index 056052e40d5..22ebcbf211e 100644
 --- a/grub-core/net/drivers/uboot/ubootnet.c
 +++ b/grub-core/net/drivers/uboot/ubootnet.c
 @@ -131,6 +131,7 @@ GRUB_MOD_INIT (ubootnet)
@@ -422,7 +421,7 @@ index 056052e40..22ebcbf21 100644
        card->txbufsize = ALIGN_UP (card->mtu, 64) + 256;
        card->txbuf = grub_zalloc (card->txbufsize);
 diff --git a/grub-core/net/ethernet.c b/grub-core/net/ethernet.c
-index faaca67c5..1b479d3ca 100644
+index faaca67c50e..1b479d3cadc 100644
 --- a/grub-core/net/ethernet.c
 +++ b/grub-core/net/ethernet.c
 @@ -29,13 +29,6 @@
@@ -567,7 +566,7 @@ index faaca67c5..1b479d3ca 100644
      {
        /* ARP packet. */
 diff --git a/grub-core/net/icmp6.c b/grub-core/net/icmp6.c
-index 7953e68ec..7e7a6bcbd 100644
+index 7953e68ecfa..7e7a6bcbd68 100644
 --- a/grub-core/net/icmp6.c
 +++ b/grub-core/net/icmp6.c
 @@ -230,8 +230,9 @@ grub_net_recv_icmp6_packet (struct grub_net_buff *nb,
@@ -607,7 +606,7 @@ index 7953e68ec..7e7a6bcbd 100644
  	      }
  	    if (ohdr->type == OPTION_PREFIX && ohdr->len == 4)
 diff --git a/grub-core/net/ip.c b/grub-core/net/ip.c
-index 9e7930caa..311213fee 100644
+index 9e7930caa03..311213feec1 100644
 --- a/grub-core/net/ip.c
 +++ b/grub-core/net/ip.c
 @@ -273,8 +273,8 @@ handle_dgram (struct grub_net_buff *nb,
@@ -622,7 +621,7 @@ index 9e7930caa..311213fee 100644
  	      grub_net_process_dhcp (nb, inf->card);
  	      grub_netbuff_free (nb);
 diff --git a/grub-core/net/net.c b/grub-core/net/net.c
-index fc6f714bf..b3a80ba29 100644
+index fc6f714bf7f..b3a80ba2954 100644
 --- a/grub-core/net/net.c
 +++ b/grub-core/net/net.c
 @@ -143,8 +143,9 @@ grub_net_link_layer_resolve (struct grub_net_network_level_interface *inf,
@@ -706,7 +705,7 @@ index fc6f714bf..b3a80ba29 100644
  
  int
 diff --git a/include/grub/net.h b/include/grub/net.h
-index b1bc23048..0d9213d67 100644
+index b1bc23048f1..0d9213d6759 100644
 --- a/include/grub/net.h
 +++ b/include/grub/net.h
 @@ -29,7 +29,8 @@
@@ -757,6 +756,3 @@ index b1bc23048..0d9213d67 100644
  
  void
  grub_net_addr_to_str (const grub_net_network_level_address_t *target,
--- 
-2.13.0
-

@@ -1,7 +1,7 @@
-From ced9279bcfc644d1b6a5e06b91974b82bdb19965 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Thu, 25 Aug 2016 14:15:29 -0400
-Subject: [PATCH 211/260] Export grub-get-kernel-settings variables
+Subject: [PATCH] Export grub-get-kernel-settings variables
 
 Without this export, the generators for various configs never get the
 setting.
@@ -15,7 +15,7 @@ Signed-off-by: Peter Jones <example@example.com>
  2 files changed, 6 insertions(+), 3 deletions(-)
 
 diff --git a/util/grub-get-kernel-settings.in b/util/grub-get-kernel-settings.in
-index 6a68a0ef6..120462198 100644
+index 6a68a0ef664..12046219878 100644
 --- a/util/grub-get-kernel-settings.in
 +++ b/util/grub-get-kernel-settings.in
 @@ -70,6 +70,9 @@ fi
@@ -29,7 +29,7 @@ index 6a68a0ef6..120462198 100644
 +    echo export GRUB_LINUX_DEBUG_TITLE_POSTFIX
  fi
 diff --git a/util/grub.d/10_linux.in b/util/grub.d/10_linux.in
-index 0d0086d3b..bf0fb727b 100644
+index 0d0086d3b6a..bf0fb727bcd 100644
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
 @@ -127,13 +127,13 @@ linux_entry ()
@@ -49,6 +49,3 @@ index 0d0086d3b..bf0fb727b 100644
    if [ x$type != xrecovery ] ; then
        save_default_entry | grub_add_tab
    fi
--- 
-2.13.0
-

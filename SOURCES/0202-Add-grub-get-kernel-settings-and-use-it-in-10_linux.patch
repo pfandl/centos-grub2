@@ -1,7 +1,7 @@
-From c299f8584bb1084916ac794a9ebed8324ae4bb10 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Thu, 23 Jun 2016 11:01:39 -0400
-Subject: [PATCH 202/260] Add grub-get-kernel-settings and use it in 10_linux
+Subject: [PATCH] Add grub-get-kernel-settings and use it in 10_linux
 
 This patch adds grub-get-kernel-settings, which reads the system kernel
 installation configuration from /etc/sysconfig/kernel, and outputs
@@ -11,9 +11,9 @@ debug stanzas.
 
 Resolves: rhbz#1226325
 ---
- .gitignore                                     |  1 +
- Makefile.util.def                              |  7 ++
  configure.ac                                   |  2 +
+ Makefile.util.def                              |  7 ++
+ .gitignore                                     |  1 +
  util/bash-completion.d/grub-completion.bash.in | 22 +++++++
  util/grub-get-kernel-settings.3                | 20 ++++++
  util/grub-get-kernel-settings.in               | 91 ++++++++++++++++++++++++++
@@ -23,38 +23,8 @@ Resolves: rhbz#1226325
  create mode 100644 util/grub-get-kernel-settings.3
  create mode 100644 util/grub-get-kernel-settings.in
 
-diff --git a/.gitignore b/.gitignore
-index e49f76b11..547ef0bcf 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -61,6 +61,7 @@ grub-fstest.exe
- grub_fstest_init.c
- grub_fstest_init.h
- grub_func_test
-+grub-get-kernel-settings
- grub-install
- grub-install.exe
- grub-kbdcomp
-diff --git a/Makefile.util.def b/Makefile.util.def
-index e2821a2f3..3918e3b52 100644
---- a/Makefile.util.def
-+++ b/Makefile.util.def
-@@ -705,6 +705,13 @@ script = {
- };
- 
- script = {
-+  name = grub-get-kernel-settings;
-+  common = util/grub-get-kernel-settings.in;
-+  mansection = 3;
-+  installdir = sbin;
-+};
-+
-+script = {
-   name = grub-set-default;
-   common = util/grub-set-default.in;
-   mansection = 8;
 diff --git a/configure.ac b/configure.ac
-index 04c052dc6..8b10a93cb 100644
+index 04c052dc610..8b10a93cb56 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -58,6 +58,7 @@ grub_TRANSFORM([grub-install])
@@ -73,14 +43,45 @@ index 04c052dc6..8b10a93cb 100644
  grub_TRANSFORM([grub-glue-efi.3])
  grub_TRANSFORM([grub-install.1])
  grub_TRANSFORM([grub-kbdcomp.3])
+diff --git a/Makefile.util.def b/Makefile.util.def
+index e2821a2f3a5..3918e3b5292 100644
+--- a/Makefile.util.def
++++ b/Makefile.util.def
+@@ -704,6 +704,13 @@ script = {
+   installdir = sbin;
+ };
+ 
++script = {
++  name = grub-get-kernel-settings;
++  common = util/grub-get-kernel-settings.in;
++  mansection = 3;
++  installdir = sbin;
++};
++
+ script = {
+   name = grub-set-default;
+   common = util/grub-set-default.in;
+diff --git a/.gitignore b/.gitignore
+index e49f76b114a..547ef0bcff0 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -61,6 +61,7 @@ grub-fstest.exe
+ grub_fstest_init.c
+ grub_fstest_init.h
+ grub_func_test
++grub-get-kernel-settings
+ grub-install
+ grub-install.exe
+ grub-kbdcomp
 diff --git a/util/bash-completion.d/grub-completion.bash.in b/util/bash-completion.d/grub-completion.bash.in
-index 44bf135b9..5c4acd496 100644
+index 44bf135b9f8..5c4acd496d4 100644
 --- a/util/bash-completion.d/grub-completion.bash.in
 +++ b/util/bash-completion.d/grub-completion.bash.in
-@@ -265,6 +265,28 @@ unset __grub_sparc64_setup_program
+@@ -264,6 +264,28 @@ have ${__grub_sparc64_setup_program} && \
+ unset __grub_sparc64_setup_program
  
  
- #
++#
 +# grub-get-kernel-settings
 +#
 +_grub_get_kernel_settings () {
@@ -102,13 +103,12 @@ index 44bf135b9..5c4acd496 100644
 +unset __grub_get_kernel_settings_program
 +
 +
-+#
+ #
  # grub-install
  #
- _grub_install () {
 diff --git a/util/grub-get-kernel-settings.3 b/util/grub-get-kernel-settings.3
 new file mode 100644
-index 000000000..ba33330e2
+index 00000000000..ba33330e28d
 --- /dev/null
 +++ b/util/grub-get-kernel-settings.3
 @@ -0,0 +1,20 @@
@@ -134,7 +134,7 @@ index 000000000..ba33330e2
 +.BR "info grub"
 diff --git a/util/grub-get-kernel-settings.in b/util/grub-get-kernel-settings.in
 new file mode 100644
-index 000000000..ae0b4696d
+index 00000000000..ae0b4696d49
 --- /dev/null
 +++ b/util/grub-get-kernel-settings.in
 @@ -0,0 +1,91 @@
@@ -230,7 +230,7 @@ index 000000000..ae0b4696d
 +    echo GRUB_LINUX_DEBUG_TITLE_POSTFIX=\" with debugging\"
 +fi
 diff --git a/util/grub-mkconfig.in b/util/grub-mkconfig.in
-index 0cfe60475..aa4fdb8a3 100644
+index 0cfe6047539..aa4fdb8a3b2 100644
 --- a/util/grub-mkconfig.in
 +++ b/util/grub-mkconfig.in
 @@ -42,6 +42,7 @@ grub_probe="${sbindir}/@grub_probe@"
@@ -251,7 +251,7 @@ index 0cfe60475..aa4fdb8a3 100644
    GRUB_DEVICE_UUID="$GRUB_DEVICE_UUID_GENERATED"
  fi
 diff --git a/util/grub.d/10_linux.in b/util/grub.d/10_linux.in
-index b3c460cb2..0d0086d3b 100644
+index b3c460cb266..0d0086d3b6a 100644
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
 @@ -99,7 +99,8 @@ linux_entry ()
@@ -310,6 +310,3 @@ index b3c460cb2..0d0086d3b 100644
                  "single ${GRUB_CMDLINE_LINUX}"
    fi
  
--- 
-2.13.0
-

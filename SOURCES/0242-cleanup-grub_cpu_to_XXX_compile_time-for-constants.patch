@@ -1,7 +1,7 @@
-From 36d301077a6ea9794d9017602f87c5da2d3139f7 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Andrey Borzenkov <arvidjaar@gmail.com>
 Date: Mon, 22 Sep 2014 20:47:10 +0400
-Subject: [PATCH 242/260] cleanup: grub_cpu_to_XXX_compile_time for constants
+Subject: [PATCH] cleanup: grub_cpu_to_XXX_compile_time for constants
 
 This tries to catch all cases where grub_cpu_to_XXX was used for constant
 expressions (including sizeof).
@@ -34,7 +34,7 @@ expressions (including sizeof).
  25 files changed, 90 insertions(+), 89 deletions(-)
 
 diff --git a/grub-core/bus/usb/ehci.c b/grub-core/bus/usb/ehci.c
-index c0feefafe..8ece40086 100644
+index c0feefafe4a..8ece40086ec 100644
 --- a/grub-core/bus/usb/ehci.c
 +++ b/grub-core/bus/usb/ehci.c
 @@ -670,23 +670,23 @@ grub_ehci_pci_iter (grub_pci_device_t dev, grub_pci_id_t pciid,
@@ -156,7 +156,7 @@ index c0feefafe..8ece40086 100644
    /* Print debug data here if necessary */
  
 diff --git a/grub-core/bus/usb/ohci.c b/grub-core/bus/usb/ohci.c
-index 946a4ed7d..d27bfe7fb 100644
+index 946a4ed7d5b..d27bfe7fb9d 100644
 --- a/grub-core/bus/usb/ohci.c
 +++ b/grub-core/bus/usb/ohci.c
 @@ -314,7 +314,7 @@ grub_ohci_pci_iter (grub_pci_device_t dev, grub_pci_id_t pciid,
@@ -191,7 +191,7 @@ index 946a4ed7d..d27bfe7fb 100644
        /* We should wait for next SOF to be sure that all EDs are
         * unaccessed by OHCI. But OHCI can be non-functional, so
 diff --git a/grub-core/commands/gptsync.c b/grub-core/commands/gptsync.c
-index 3db62887b..16592e9bb 100644
+index 3db62887b92..16592e9bbe8 100644
 --- a/grub-core/commands/gptsync.c
 +++ b/grub-core/commands/gptsync.c
 @@ -101,7 +101,7 @@ grub_cmd_gptsync (grub_command_t cmd __attribute__ ((unused)),
@@ -222,7 +222,7 @@ index 3db62887b..16592e9bb 100644
    if (grub_disk_write (dev->disk, 0, 0, sizeof (mbr), &mbr))
      {
 diff --git a/grub-core/disk/mdraid_linux.c b/grub-core/disk/mdraid_linux.c
-index 4aa588235..11024ae31 100644
+index 4aa5882352e..11024ae31e0 100644
 --- a/grub-core/disk/mdraid_linux.c
 +++ b/grub-core/disk/mdraid_linux.c
 @@ -33,16 +33,16 @@ GRUB_MOD_LICENSE ("GPLv3+");
@@ -249,7 +249,7 @@ index 4aa588235..11024ae31 100644
  
  #define RESERVED_BYTES			(64 * 1024)
 diff --git a/grub-core/disk/scsi.c b/grub-core/disk/scsi.c
-index b6cb2f421..92084d0f8 100644
+index b6cb2f42109..92084d0f8ed 100644
 --- a/grub-core/disk/scsi.c
 +++ b/grub-core/disk/scsi.c
 @@ -201,7 +201,7 @@ grub_scsi_read_capacity16 (grub_scsi_t scsi)
@@ -262,7 +262,7 @@ index b6cb2f421..92084d0f8 100644
    rc.control = 0;
  	
 diff --git a/grub-core/disk/usbms.c b/grub-core/disk/usbms.c
-index 2b769bdd8..380ca4c4c 100644
+index 2b769bdd8e1..380ca4c4cbf 100644
 --- a/grub-core/disk/usbms.c
 +++ b/grub-core/disk/usbms.c
 @@ -307,7 +307,7 @@ grub_usbms_transfer_bo (struct grub_scsi *scsi, grub_size_t cmdsize, char *cmd,
@@ -284,7 +284,7 @@ index 2b769bdd8..380ca4c4c 100644
        grub_dprintf ("usb", "Bulk-only reset device - bad status\n");
        grub_usbms_reset (dev);
 diff --git a/grub-core/fs/hfs.c b/grub-core/fs/hfs.c
-index 1e593059a..d1dc01545 100644
+index 1e593059a74..d1dc015455d 100644
 --- a/grub-core/fs/hfs.c
 +++ b/grub-core/fs/hfs.c
 @@ -369,7 +369,7 @@ grub_hfs_mount (grub_disk_t disk)
@@ -297,7 +297,7 @@ index 1e593059a..d1dc01545 100644
    grub_strcpy ((char *) key.str, (char *) (data->sblock.volname + 1));
  
 diff --git a/grub-core/fs/reiserfs.c b/grub-core/fs/reiserfs.c
-index ac65054d3..de3d4fa3c 100644
+index ac65054d363..de3d4fa3c64 100644
 --- a/grub-core/fs/reiserfs.c
 +++ b/grub-core/fs/reiserfs.c
 @@ -365,7 +365,7 @@ grub_reiserfs_set_key_offset (struct grub_reiserfs_key *key,
@@ -341,7 +341,7 @@ index ac65054d3..de3d4fa3c 100644
    grub_reiserfs_set_key_type (&root_key, GRUB_REISERFS_DIRECTORY, 2);
    grub_reiserfs_set_key_offset (&root_key, 1);
 diff --git a/grub-core/lib/fdt.c b/grub-core/lib/fdt.c
-index 907a7bff6..7e76dc06b 100644
+index 907a7bff61f..7e76dc06bbc 100644
 --- a/grub-core/lib/fdt.c
 +++ b/grub-core/lib/fdt.c
 @@ -164,10 +164,10 @@ static int add_subnode (void *fdt, int parentoffset, const char *name)
@@ -394,7 +394,7 @@ index 907a7bff6..7e76dc06b 100644
    grub_fdt_set_off_dt_strings (fdt, sizeof (*et));
    grub_fdt_set_off_dt_struct (fdt,
 diff --git a/grub-core/loader/i386/linux.c b/grub-core/loader/i386/linux.c
-index 764cde203..e3906eb65 100644
+index 764cde20318..e3906eb658f 100644
 --- a/grub-core/loader/i386/linux.c
 +++ b/grub-core/loader/i386/linux.c
 @@ -734,7 +734,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
@@ -407,7 +407,7 @@ index 764cde203..e3906eb65 100644
      {
        grub_error (GRUB_ERR_BAD_OS, "version too old for 32-bit boot"
 diff --git a/grub-core/loader/i386/pc/linux.c b/grub-core/loader/i386/pc/linux.c
-index 60bb31fbf..c2e5fa9ab 100644
+index 60bb31fbf0d..c2e5fa9abcc 100644
 --- a/grub-core/loader/i386/pc/linux.c
 +++ b/grub-core/loader/i386/pc/linux.c
 @@ -201,7 +201,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
@@ -443,7 +443,7 @@ index 60bb31fbf..c2e5fa9ab 100644
        setup_sects = GRUB_LINUX_DEFAULT_SETUP_SECTS;
  
 diff --git a/grub-core/loader/i386/xen_file.c b/grub-core/loader/i386/xen_file.c
-index ff23235f0..583621890 100644
+index ff23235f064..58362189098 100644
 --- a/grub-core/loader/i386/xen_file.c
 +++ b/grub-core/loader/i386/xen_file.c
 @@ -38,8 +38,8 @@ grub_xen_file (grub_file_t file)
@@ -458,7 +458,7 @@ index ff23235f0..583621890 100644
      {
        grub_error (GRUB_ERR_BAD_OS, "version too old for xen boot");
 diff --git a/grub-core/net/arp.c b/grub-core/net/arp.c
-index d62d0cc1e..8cc390b0e 100644
+index d62d0cc1e01..8cc390b0e28 100644
 --- a/grub-core/net/arp.c
 +++ b/grub-core/net/arp.c
 @@ -81,11 +81,11 @@ grub_net_arp_send_request (struct grub_net_network_level_interface *inf,
@@ -476,7 +476,7 @@ index d62d0cc1e..8cc390b0e 100644
    /* Sender hardware address.  */
    grub_memcpy (aux, &inf->hwaddress.mac, 6);
 diff --git a/grub-core/net/bootp.c b/grub-core/net/bootp.c
-index 46ce8135a..b4b8159cd 100644
+index 46ce8135ac5..b4b8159cdad 100644
 --- a/grub-core/net/bootp.c
 +++ b/grub-core/net/bootp.c
 @@ -767,8 +767,8 @@ grub_cmd_bootp (struct grub_command *cmd __attribute__ ((unused)),
@@ -491,7 +491,7 @@ index 46ce8135a..b4b8159cd 100644
  	  udph->len = grub_cpu_to_be16 (nb->tail - nb->data);
  	  target.type = GRUB_NET_NETWORK_LEVEL_PROTOCOL_IPV4;
 diff --git a/grub-core/net/ip.c b/grub-core/net/ip.c
-index c6971f9fc..5a6095444 100644
+index c6971f9fcd2..5a609544403 100644
 --- a/grub-core/net/ip.c
 +++ b/grub-core/net/ip.c
 @@ -611,7 +611,7 @@ grub_net_send_ip6_packet (struct grub_net_network_level_interface *inf,
@@ -504,7 +504,7 @@ index c6971f9fc..5a6095444 100644
    iph->protocol = proto;
    iph->ttl = 0xff;
 diff --git a/grub-core/net/net.c b/grub-core/net/net.c
-index 36fc0d8b2..fc6f714bf 100644
+index 36fc0d8b2e8..fc6f714bf7f 100644
 --- a/grub-core/net/net.c
 +++ b/grub-core/net/net.c
 @@ -306,7 +306,7 @@ grub_net_ipv6_get_link_local (struct grub_net_card *card,
@@ -517,7 +517,7 @@ index 36fc0d8b2..fc6f714bf 100644
  
    FOR_NET_NETWORK_LEVEL_INTERFACES (inf)
 diff --git a/grub-core/net/tftp.c b/grub-core/net/tftp.c
-index 8632339de..3931884c6 100644
+index 8632339de97..3931884c6dd 100644
 --- a/grub-core/net/tftp.c
 +++ b/grub-core/net/tftp.c
 @@ -149,7 +149,7 @@ ack (tftp_data_t data, grub_uint64_t block)
@@ -550,7 +550,7 @@ index 8632339de..3931884c6 100644
  
  	  err = grub_net_send_udp_packet (data->sock, &nb_err);
 diff --git a/grub-core/partmap/acorn.c b/grub-core/partmap/acorn.c
-index 7bb93d9be..c022c61dd 100644
+index 7bb93d9bec9..c022c61ddfc 100644
 --- a/grub-core/partmap/acorn.c
 +++ b/grub-core/partmap/acorn.c
 @@ -25,8 +25,8 @@
@@ -565,7 +565,7 @@ index 7bb93d9be..c022c61dd 100644
  
  #define NONADFS_PARTITION_TYPE_LINUX 9
 diff --git a/grub-core/partmap/bsdlabel.c b/grub-core/partmap/bsdlabel.c
-index cf0f967c1..1d785906b 100644
+index cf0f967c1fa..1d785906b6a 100644
 --- a/grub-core/partmap/bsdlabel.c
 +++ b/grub-core/partmap/bsdlabel.c
 @@ -53,7 +53,7 @@ iterate_real (grub_disk_t disk, grub_disk_addr_t sector, int freebsd,
@@ -578,7 +578,7 @@ index cf0f967c1..1d785906b 100644
  
    /* A kludge to determine a base of be.offset.  */
 diff --git a/grub-core/partmap/gpt.c b/grub-core/partmap/gpt.c
-index 38df7b3c9..83bcba779 100644
+index 38df7b3c9b8..83bcba77914 100644
 --- a/grub-core/partmap/gpt.c
 +++ b/grub-core/partmap/gpt.c
 @@ -65,7 +65,7 @@ grub_gpt_partition_map_iterate (grub_disk_t disk,
@@ -591,7 +591,7 @@ index 38df7b3c9..83bcba779 100644
  
    /* Make sure the MBR is a protective MBR and not a normal MBR.  */
 diff --git a/grub-core/partmap/msdos.c b/grub-core/partmap/msdos.c
-index 1d81a5357..46c406bff 100644
+index 1d81a53573b..46c406bff1f 100644
 --- a/grub-core/partmap/msdos.c
 +++ b/grub-core/partmap/msdos.c
 @@ -162,7 +162,7 @@ grub_partition_msdos_iterate (grub_disk_t disk,
@@ -613,7 +613,7 @@ index 1d81a5357..46c406bff 100644
  
        for (i = 0; i < 4; i++)
 diff --git a/grub-core/tests/video_checksum.c b/grub-core/tests/video_checksum.c
-index 491bc5573..74d5b65e5 100644
+index 491bc55731c..74d5b65e5c7 100644
 --- a/grub-core/tests/video_checksum.c
 +++ b/grub-core/tests/video_checksum.c
 @@ -288,16 +288,16 @@ grub_video_capture_write_bmp (const char *fname,
@@ -637,7 +637,7 @@ index 491bc5573..74d5b65e5 100644
    head.height = grub_cpu_to_le16 (mode_info->height);
    head.planes = grub_cpu_to_le16_compile_time (1);
 diff --git a/util/grub-mkfont.c b/util/grub-mkfont.c
-index e6485b40f..a0cab3a93 100644
+index e6485b40f28..a0cab3a93f8 100644
 --- a/util/grub-mkfont.c
 +++ b/util/grub-mkfont.c
 @@ -704,7 +704,7 @@ write_be16_section (const char *name, grub_uint16_t data, int* offset,
@@ -659,7 +659,7 @@ index e6485b40f..a0cab3a93 100644
    			 sizeof(FONT_FORMAT_SECTION_NAMES_FILE) - 1, file,
  			 output_file);
 diff --git a/util/grub-mklayout.c b/util/grub-mklayout.c
-index 692f88190..1a4f1b4c8 100644
+index 692f881900b..1a4f1b4c855 100644
 --- a/util/grub-mklayout.c
 +++ b/util/grub-mklayout.c
 @@ -329,7 +329,7 @@ write_file (FILE *out, const char *fname, struct grub_keyboard_layout *layout)
@@ -672,7 +672,7 @@ index 692f88190..1a4f1b4c8 100644
    for (i = 0; i < ARRAY_SIZE (layout->keyboard_map); i++)
      layout->keyboard_map[i] = grub_cpu_to_le32(layout->keyboard_map[i]);
 diff --git a/util/mkimage.c b/util/mkimage.c
-index 26d9816e0..e6b799fd7 100644
+index 26d9816e07e..e6b799fd73c 100644
 --- a/util/mkimage.c
 +++ b/util/mkimage.c
 @@ -1528,9 +1528,10 @@ grub_install_generate_image (const char *dir, const char *prefix,
@@ -725,6 +725,3 @@ index 26d9816e0..e6b799fd7 100644
  			      | GRUB_PE32_SCN_MEM_DISCARDABLE
  			      | GRUB_PE32_SCN_MEM_READ);
  	free (core_img);
--- 
-2.13.0
-

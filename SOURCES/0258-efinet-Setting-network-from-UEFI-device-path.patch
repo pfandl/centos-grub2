@@ -1,7 +1,7 @@
-From 083e05daa723dcb8ddca934341d523e80c63aba4 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Michael Chang <mchang@suse.com>
 Date: Sun, 10 Jul 2016 23:46:31 +0800
-Subject: [PATCH 255/260] efinet: Setting network from UEFI device path
+Subject: [PATCH] efinet: Setting network from UEFI device path
 
 The PXE Base Code protocol used to obtain cached PXE DHCPACK packet is no
 longer provided for HTTP Boot. Instead, we have to get the HTTP boot
@@ -27,12 +27,12 @@ the same way it used to be.
 Signed-off-by: Michael Chang <mchang@suse.com>
 Signed-off-by: Ken Lin <ken.lin@hpe.com>
 ---
- grub-core/net/drivers/efi/efinet.c | 293 +++++++++++++++++++++++++++++++++++--
+ grub-core/net/drivers/efi/efinet.c | 273 +++++++++++++++++++++++++++++++++++--
  include/grub/efi/api.h             |  11 ++
- 2 files changed, 292 insertions(+), 12 deletions(-)
+ 2 files changed, 275 insertions(+), 9 deletions(-)
 
 diff --git a/grub-core/net/drivers/efi/efinet.c b/grub-core/net/drivers/efi/efinet.c
-index c00ac2e64..08e9d7aa3 100644
+index 8bb0db014ac..6f75ff1f9d1 100644
 --- a/grub-core/net/drivers/efi/efinet.c
 +++ b/grub-core/net/drivers/efi/efinet.c
 @@ -27,6 +27,7 @@
@@ -43,7 +43,7 @@ index c00ac2e64..08e9d7aa3 100644
  
  GRUB_MOD_LICENSE ("GPLv3+");
  
-@@ -342,6 +343,244 @@ grub_efinet_findcards (void)
+@@ -342,6 +343,227 @@ grub_efinet_findcards (void)
    grub_free (handles);
  }
  
@@ -66,7 +66,6 @@ index c00ac2e64..08e9d7aa3 100644
 +      || GRUB_EFI_DEVICE_PATH_SUBTYPE (ldp) != GRUB_EFI_URI_DEVICE_PATH_SUBTYPE)
 +    {
 +      grub_free (ddp);
-+      grub_free (ldp);
 +      return NULL;
 +    }
 +
@@ -75,7 +74,6 @@ index c00ac2e64..08e9d7aa3 100644
 +  if (!uri_len)
 +    {
 +      grub_free (ddp);
-+      grub_free (ldp);
 +      return NULL;
 +    }
 +
@@ -92,7 +90,6 @@ index c00ac2e64..08e9d7aa3 100644
 +          && GRUB_EFI_DEVICE_PATH_SUBTYPE (ldp) != GRUB_EFI_IPV6_DEVICE_PATH_SUBTYPE))
 +    {
 +      grub_free (ddp);
-+      grub_free (ldp);
 +      return NULL;
 +    }
 +
@@ -100,7 +97,6 @@ index c00ac2e64..08e9d7aa3 100644
 +  if (!nb)
 +    {
 +      grub_free (ddp);
-+      grub_free (ldp);
 +      return NULL;
 +    }
 +
@@ -115,7 +111,6 @@ index c00ac2e64..08e9d7aa3 100644
 +      if (err)
 +	{
 +	  grub_free (ddp);
-+	  grub_free (ldp);
 +	  grub_netbuff_free (nb);
 +	  return NULL;
 +	}
@@ -123,7 +118,6 @@ index c00ac2e64..08e9d7aa3 100644
 +      if (sizeof(bp->boot_file) < uri_len)
 +	{
 +	  grub_free (ddp);
-+	  grub_free (ldp);
 +	  grub_netbuff_free (nb);
 +	  return NULL;
 +	}
@@ -141,7 +135,6 @@ index c00ac2e64..08e9d7aa3 100644
 +      if (err)
 +	{
 +	  grub_free (ddp);
-+	  grub_free (ldp);
 +	  grub_netbuff_free (nb);
 +	  return NULL;
 +	}
@@ -154,7 +147,6 @@ index c00ac2e64..08e9d7aa3 100644
 +      if (err)
 +	{
 +	  grub_free (ddp);
-+	  grub_free (ldp);
 +	  grub_netbuff_free (nb);
 +	  return NULL;
 +	}
@@ -167,7 +159,6 @@ index c00ac2e64..08e9d7aa3 100644
 +      if (err)
 +	{
 +	  grub_free (ddp);
-+	  grub_free (ldp);
 +	  grub_netbuff_free (nb);
 +	  return NULL;
 +	}
@@ -180,7 +171,6 @@ index c00ac2e64..08e9d7aa3 100644
 +      if (err)
 +	{
 +	  grub_free (ddp);
-+	  grub_free (ldp);
 +	  grub_netbuff_free (nb);
 +	  return NULL;
 +	}
@@ -214,7 +204,6 @@ index c00ac2e64..08e9d7aa3 100644
 +      if (err)
 +	{
 +	  grub_free (ddp);
-+	  grub_free (ldp);
 +	  grub_netbuff_free (nb);
 +	  return NULL;
 +	}
@@ -225,7 +214,6 @@ index c00ac2e64..08e9d7aa3 100644
 +      if (err)
 +	{
 +	  grub_free (ddp);
-+	  grub_free (ldp);
 +	  grub_netbuff_free (nb);
 +	  return NULL;
 +	}
@@ -236,7 +224,6 @@ index c00ac2e64..08e9d7aa3 100644
 +      if (err)
 +	{
 +	  grub_free (ddp);
-+	  grub_free (ldp);
 +	  grub_netbuff_free (nb);
 +	  return NULL;
 +	}
@@ -246,7 +233,6 @@ index c00ac2e64..08e9d7aa3 100644
 +      if (err)
 +	{
 +	  grub_free (ddp);
-+	  grub_free (ldp);
 +	  grub_netbuff_free (nb);
 +	  return NULL;
 +	}
@@ -258,7 +244,6 @@ index c00ac2e64..08e9d7aa3 100644
 +      if (err)
 +	{
 +	  grub_free (ddp);
-+	  grub_free (ldp);
 +	  grub_netbuff_free (nb);
 +	  return NULL;
 +	}
@@ -269,7 +254,6 @@ index c00ac2e64..08e9d7aa3 100644
 +      if (err)
 +	{
 +	  grub_free (ddp);
-+	  grub_free (ldp);
 +	  grub_netbuff_free (nb);
 +	  return NULL;
 +	}
@@ -280,7 +264,6 @@ index c00ac2e64..08e9d7aa3 100644
 +      *use_ipv6 = 1;
 +    }
 +
-+  grub_free (ldp);
 +  grub_free (ddp);
 +  return nb;
 +}
@@ -288,7 +271,7 @@ index c00ac2e64..08e9d7aa3 100644
  static void
  grub_efi_net_config_real (grub_efi_handle_t hnd, char **device,
  			  char **path)
-@@ -358,6 +597,10 @@ grub_efi_net_config_real (grub_efi_handle_t hnd, char **device,
+@@ -358,6 +580,10 @@ grub_efi_net_config_real (grub_efi_handle_t hnd, char **device,
      grub_efi_device_path_t *cdp;
      struct grub_efi_pxe *pxe;
      struct grub_efi_pxe_mode *pxe_mode;
@@ -299,7 +282,7 @@ index c00ac2e64..08e9d7aa3 100644
  
      if (card->driver != &efidriver)
        continue;
-@@ -381,11 +624,21 @@ grub_efi_net_config_real (grub_efi_handle_t hnd, char **device,
+@@ -381,11 +607,21 @@ grub_efi_net_config_real (grub_efi_handle_t hnd, char **device,
           */
  	if (GRUB_EFI_DEVICE_PATH_TYPE (ldp) != GRUB_EFI_MESSAGING_DEVICE_PATH_TYPE
  	    || (GRUB_EFI_DEVICE_PATH_SUBTYPE (ldp) != GRUB_EFI_IPV4_DEVICE_PATH_SUBTYPE
@@ -322,7 +305,7 @@ index c00ac2e64..08e9d7aa3 100644
  	dup_ldp = grub_efi_find_last_device_path (dup_dp);
  	dup_ldp->type = GRUB_EFI_END_DEVICE_PATH_TYPE;
  	dup_ldp->subtype = GRUB_EFI_END_ENTIRE_DEVICE_PATH_SUBTYPE;
-@@ -398,20 +651,32 @@ grub_efi_net_config_real (grub_efi_handle_t hnd, char **device,
+@@ -398,11 +634,26 @@ grub_efi_net_config_real (grub_efi_handle_t hnd, char **device,
  
      pxe = grub_efi_open_protocol (hnd, &pxe_io_guid,
  				  GRUB_EFI_OPEN_PROTOCOL_GET_PROTOCOL);
@@ -352,9 +335,9 @@ index c00ac2e64..08e9d7aa3 100644
 +    if (ipv6)
        {
  	grub_dprintf ("efinet", "using ipv6 and dhcpv6\n");
--	grub_dprintf ("efinet", "dhcp_ack_received: %s%s\n",
--		      pxe_mode->dhcp_ack_received ? "yes" : "no",
--		      pxe_mode->dhcp_ack_received ? "" : " cannot continue");
+ 	grub_dprintf ("efinet", "dhcp_ack_received: %s%s\n",
+@@ -413,8 +664,8 @@ grub_efi_net_config_real (grub_efi_handle_t hnd, char **device,
+ 
  	grub_net_configure_by_dhcpv6_reply (card->name, card, 0,
  					    (struct grub_net_dhcp6_packet *)
 -					    &pxe_mode->dhcp_ack,
@@ -362,9 +345,9 @@ index c00ac2e64..08e9d7aa3 100644
 +					    packet_buf,
 +					    packet_bufsz,
  					    1, device, path);
- 	if (device && path)
- 	  grub_dprintf ("efinet", "device: `%s' path: `%s'\n", *device, *path);
-@@ -423,11 +688,15 @@ grub_efi_net_config_real (grub_efi_handle_t hnd, char **device,
+ 	if (grub_errno)
+ 	  grub_print_error ();
+@@ -428,11 +679,15 @@ grub_efi_net_config_real (grub_efi_handle_t hnd, char **device,
  	grub_dprintf ("efinet", "using ipv4 and dhcp\n");
  	grub_net_configure_by_dhcp_ack (card->name, card, 0,
  					(struct grub_net_bootp_packet *)
@@ -383,7 +366,7 @@ index c00ac2e64..08e9d7aa3 100644
    }
  }
 diff --git a/include/grub/efi/api.h b/include/grub/efi/api.h
-index 0821e3364..a37fb50de 100644
+index 2d0f37a8164..76ad56aa2b0 100644
 --- a/include/grub/efi/api.h
 +++ b/include/grub/efi/api.h
 @@ -786,6 +786,8 @@ struct grub_efi_ipv4_device_path
@@ -411,6 +394,3 @@ index 0821e3364..a37fb50de 100644
  #define GRUB_EFI_VENDOR_MESSAGING_DEVICE_PATH_SUBTYPE	10
  
  /* Media Device Path.  */
--- 
-2.13.0
-

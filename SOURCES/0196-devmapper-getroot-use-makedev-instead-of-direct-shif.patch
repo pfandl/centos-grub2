@@ -1,8 +1,7 @@
-From 5317bbcd5aa96b1c38d888ead78d640ec58d91a4 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Andrei Borzenkov <arvidjaar@gmail.com>
 Date: Sat, 7 Nov 2015 09:46:46 +0300
-Subject: [PATCH 196/260] devmapper/getroot: use makedev instead of direct
- shift
+Subject: [PATCH] devmapper/getroot: use makedev instead of direct shift
 
 Fixes device detection with large number of devices.
 
@@ -16,7 +15,7 @@ Resolves: rhbz#1279599
  1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/grub-core/osdep/devmapper/getroot.c b/grub-core/osdep/devmapper/getroot.c
-index d02386b34..de3210232 100644
+index d02386b3498..de32102322b 100644
 --- a/grub-core/osdep/devmapper/getroot.c
 +++ b/grub-core/osdep/devmapper/getroot.c
 @@ -204,8 +204,7 @@ grub_util_devmapper_part_to_disk (struct stat *st,
@@ -29,6 +28,3 @@ index d02386b34..de3210232 100644
      }
    *is_part = 0;
    return xstrdup (path);
--- 
-2.13.0
-
