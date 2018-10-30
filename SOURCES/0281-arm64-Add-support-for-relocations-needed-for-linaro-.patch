@@ -1,0 +1,212 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Vladimir Serbinenko <phcoder@gmail.com>
+Date: Fri, 22 Jan 2016 19:09:37 +0100
+Subject: [PATCH] arm64: Add support for relocations needed for linaro gcc
+
+---
+ grub-core/kern/arm64/dl.c        | 18 ++++++++++++++++++
+ grub-core/kern/arm64/dl_helper.c | 40 ++++++++++++++++++++++++++++++++++++++++
+ util/grub-mkimagexx.c            | 31 +++++++++++++++++++++++++++++++
+ util/grub-module-verifier.c      |  8 +++++++-
+ include/grub/arm64/reloc.h       |  8 ++++++++
+ include/grub/elf.h               |  3 +++
+ 6 files changed, 107 insertions(+), 1 deletion(-)
+
+diff --git a/grub-core/kern/arm64/dl.c b/grub-core/kern/arm64/dl.c
+index e19ba6a0d58..cf50d7250d9 100644
+--- a/grub-core/kern/arm64/dl.c
++++ b/grub-core/kern/arm64/dl.c
+@@ -132,6 +132,12 @@ grub_arch_dl_relocate_symbols (grub_dl_t mod, void *ehdr,
+ 	    *abs_place = (grub_uint64_t) sym_addr;
+ 	  }
+ 	  break;
++	case R_AARCH64_ADD_ABS_LO12_NC:
++	  grub_arm64_set_abs_lo12 (place, sym_addr);
++	  break;
++	case R_AARCH64_LDST64_ABS_LO12_NC:
++	  grub_arm64_set_abs_lo12_ldst64 (place, sym_addr);
++	  break;
+ 	case R_AARCH64_CALL26:
+ 	case R_AARCH64_JUMP26:
+ 	  {
+@@ -154,6 +160,18 @@ grub_arch_dl_relocate_symbols (grub_dl_t mod, void *ehdr,
+ 	    grub_arm64_set_xxxx26_offset (place, offset);
+ 	  }
+ 	  break;
++	case R_AARCH64_ADR_PREL_PG_HI21:
++	  {
++	    grub_int64_t offset = (sym_addr & ~0xfffULL) - (((grub_uint64_t) place) & ~0xfffULL);
++
++	    if (!grub_arm64_check_hi21_signed (offset))
++		return grub_error (GRUB_ERR_BAD_MODULE,
++				   "HI21 out of range");
++
++	    grub_arm64_set_hi21 (place, offset);
++	  }
++	  break;
++
+ 	default:
+ 	  return grub_error (GRUB_ERR_NOT_IMPLEMENTED_YET,
+ 			     N_("relocation 0x%x is not implemented yet"),
+diff --git a/grub-core/kern/arm64/dl_helper.c b/grub-core/kern/arm64/dl_helper.c
+index d213ab93e88..f031b1ae921 100644
+--- a/grub-core/kern/arm64/dl_helper.c
++++ b/grub-core/kern/arm64/dl_helper.c
+@@ -53,3 +53,43 @@ grub_arm64_set_xxxx26_offset (grub_uint32_t *place, grub_int64_t offset)
+   *place &= insmask;
+   *place |= grub_cpu_to_le32 (offset >> 2) & ~insmask;
+ }
++
++int
++grub_arm64_check_hi21_signed (grub_int64_t offset)
++{
++  if (offset != (grub_int64_t)(grub_int32_t)offset)
++    return 0;
++  return 1;
++}
++
++void
++grub_arm64_set_hi21 (grub_uint32_t *place, grub_int64_t offset)
++{
++  const grub_uint32_t insmask = grub_cpu_to_le32_compile_time (0x9f00001f);
++  grub_uint32_t val;
++
++  offset >>= 12;
++  
++  val = ((offset & 3) << 29) | (((offset >> 2) & 0x7ffff) << 5);
++  
++  *place &= insmask;
++  *place |= grub_cpu_to_le32 (val) & ~insmask;
++}
++
++void
++grub_arm64_set_abs_lo12 (grub_uint32_t *place, grub_int64_t target)
++{
++  const grub_uint32_t insmask = grub_cpu_to_le32_compile_time (0xffc003ff);
++
++  *place &= insmask;
++  *place |= grub_cpu_to_le32 (target << 10) & ~insmask;
++}
++
++void
++grub_arm64_set_abs_lo12_ldst64 (grub_uint32_t *place, grub_int64_t target)
++{
++  const grub_uint32_t insmask = grub_cpu_to_le32_compile_time (0xfff803ff);
++
++  *place &= insmask;
++  *place |= grub_cpu_to_le32 (target << 7) & ~insmask;
++}
+diff --git a/util/grub-mkimagexx.c b/util/grub-mkimagexx.c
+index 66e8576411e..d1bc95e350d 100644
+--- a/util/grub-mkimagexx.c
++++ b/util/grub-mkimagexx.c
+@@ -836,6 +836,14 @@ SUFFIX (relocate_addresses) (Elf_Ehdr *e, Elf_Shdr *sections,
+ 		       *target = grub_host_to_target64 (grub_target_to_host64 (*target) + sym_addr);
+ 		     }
+ 		     break;
++		   case R_AARCH64_ADD_ABS_LO12_NC:
++		     grub_arm64_set_abs_lo12 ((grub_uint32_t *) target,
++					      sym_addr);
++		     break;
++		   case R_AARCH64_LDST64_ABS_LO12_NC:
++		     grub_arm64_set_abs_lo12_ldst64 ((grub_uint32_t *) target,
++						     sym_addr);
++		     break;
+ 		   case R_AARCH64_JUMP26:
+ 		   case R_AARCH64_CALL26:
+ 		     {
+@@ -848,6 +856,17 @@ SUFFIX (relocate_addresses) (Elf_Ehdr *e, Elf_Shdr *sections,
+ 						     sym_addr);
+ 		     }
+ 		     break;
++		   case R_AARCH64_ADR_PREL_PG_HI21:
++		     {
++		       sym_addr &= ~0xfffULL;
++		       sym_addr -= (offset + SUFFIX (entry_point)) & ~0xfffULL;
++		       if (!grub_arm64_check_hi21_signed (sym_addr))
++			 grub_util_error ("%s", "CALL26 Relocation out of range");
++
++		       grub_arm64_set_hi21((grub_uint32_t *)target,
++					   sym_addr);
++		     }
++		     break;
+ 		   default:
+ 		     grub_util_error (_("relocation 0x%x is not implemented yet"),
+ 				      (unsigned int) ELF_R_TYPE (info));
+@@ -1200,6 +1219,15 @@ SUFFIX (make_reloc_section) (Elf_Ehdr *e, void **out,
+ 		  case R_AARCH64_CALL26:
+ 		  case R_AARCH64_JUMP26:
+ 		    break;
++		    /* Page-relative relocations do not require fixup entries. */
++		  case R_AARCH64_ADR_PREL_PG_HI21:
++		     /* We page-align the whole kernel, so no need
++			for fixup entries.
++		      */
++		  case R_AARCH64_ADD_ABS_LO12_NC:
++		  case R_AARCH64_LDST64_ABS_LO12_NC:
++		    break;
++
+ 		  default:
+ 		    grub_util_error (_("relocation 0x%x is not implemented yet"),
+ 				     (unsigned int) ELF_R_TYPE (info));
+@@ -1343,6 +1371,9 @@ SUFFIX (locate_sections) (const char *kernel_path,
+   Elf_Shdr *s;
+ 
+   *all_align = 1;
++  /* Page-aligning simplifies relocation handling.  */
++  if (image_target->elf_target == EM_AARCH64)
++    *all_align = 4096;
+ 
+   section_addresses = xmalloc (sizeof (*section_addresses) * num_sections);
+   memset (section_addresses, 0, sizeof (*section_addresses) * num_sections);
+diff --git a/util/grub-module-verifier.c b/util/grub-module-verifier.c
+index e217dcddc07..405c9117051 100644
+--- a/util/grub-module-verifier.c
++++ b/util/grub-module-verifier.c
+@@ -107,7 +107,13 @@ struct grub_module_verifier_arch archs[] = {
+       R_AARCH64_CALL26,
+       R_AARCH64_JUMP26,
+       -1
+-    } },
++    }, (int[]){
++      R_AARCH64_ADR_PREL_PG_HI21,
++      R_AARCH64_ADD_ABS_LO12_NC,
++      R_AARCH64_LDST64_ABS_LO12_NC,
++      -1
++    }
++  },
+ };
+ 
+ 
+diff --git a/include/grub/arm64/reloc.h b/include/grub/arm64/reloc.h
+index 4aed3d715e0..452c148226d 100644
+--- a/include/grub/arm64/reloc.h
++++ b/include/grub/arm64/reloc.h
+@@ -22,5 +22,13 @@
+ int grub_arm_64_check_xxxx26_offset (grub_int64_t offset);
+ void
+ grub_arm64_set_xxxx26_offset (grub_uint32_t *place, grub_int64_t offset);
++int
++grub_arm64_check_hi21_signed (grub_int64_t offset);
++void
++grub_arm64_set_hi21 (grub_uint32_t *place, grub_int64_t offset);
++void
++grub_arm64_set_abs_lo12 (grub_uint32_t *place, grub_int64_t target);
++void
++grub_arm64_set_abs_lo12_ldst64 (grub_uint32_t *place, grub_int64_t target);
+ 
+ #endif
+diff --git a/include/grub/elf.h b/include/grub/elf.h
+index caa79639082..db15acecf9f 100644
+--- a/include/grub/elf.h
++++ b/include/grub/elf.h
+@@ -2068,6 +2068,9 @@ typedef Elf32_Addr Elf32_Conflict;
+ #define R_AARCH64_NONE			0	/* No relocation.  */
+ #define R_AARCH64_ABS64			257	/* Direct 64 bit. */
+ #define R_AARCH64_ABS32			258	/* Direct 32 bit.  */
++#define R_AARCH64_ADR_PREL_PG_HI21	275
++#define R_AARCH64_ADD_ABS_LO12_NC	277
++#define R_AARCH64_LDST64_ABS_LO12_NC	286
+ #define R_AARCH64_JUMP26		282	/* 26-bit relative. */
+ #define R_AARCH64_CALL26		283	/* 26-bit relative. */
+ #define R_AARCH64_COPY			1024	/* Copy symbol at runtime.  */

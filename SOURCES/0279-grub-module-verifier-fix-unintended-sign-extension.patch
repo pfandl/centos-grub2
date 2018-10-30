@@ -1,0 +1,24 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Andrei Borzenkov <arvidjaar@gmail.com>
+Date: Fri, 8 Jan 2016 11:05:16 +0300
+Subject: [PATCH] grub-module-verifier: fix unintended sign extension
+
+Found by: Coverity scan.
+CID: 156533, 156532
+---
+ util/grub-module-verifierXX.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/util/grub-module-verifierXX.c b/util/grub-module-verifierXX.c
+index 25988ebc21d..f612d51f389 100644
+--- a/util/grub-module-verifierXX.c
++++ b/util/grub-module-verifierXX.c
+@@ -337,7 +337,7 @@ SUFFIX(grub_module_verify) (void *module_img, size_t size, const struct grub_mod
+ 
+   /* Make sure that every section is within the core.  */
+   if (size < grub_target_to_host (e->e_shoff)
+-      + grub_target_to_host16 (e->e_shentsize) * grub_target_to_host16(e->e_shnum))
++      + (grub_uint32_t) grub_target_to_host16 (e->e_shentsize) * grub_target_to_host16(e->e_shnum))
+     {
+       grub_util_error ("ELF sections outside core");
+     }

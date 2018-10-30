@@ -1,0 +1,71 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Michael Chang <mchang@suse.com>
+Date: Sun, 10 Jul 2016 23:46:31 +0800
+Subject: [PATCH] efinet: Setting network from UEFI device path
+
+The PXE Base Code protocol used to obtain cached PXE DHCPACK packet is no
+longer provided for HTTP Boot. Instead, we have to get the HTTP boot
+information from the device path nodes defined in following UEFI Specification
+sections.
+
+ 9.3.5.12 IPv4 Device Path
+ 9.3.5.13 IPv6 Device Path
+ 9.3.5.23 Uniform Resource Identifiers (URI) Device Path
+
+This patch basically does:
+
+include/grub/efi/api.h:
+Add new structure of Uniform Resource Identifiers (URI) Device Path
+
+grub-core/net/drivers/efi/efinet.c:
+Check if PXE Base Code is available, if not it will try to obtain the netboot
+information from the device path where the image booted from. The DHCPACK
+packet is recoverd from the information in device patch and feed into the same
+DHCP packet processing functions to ensure the network interface is setting up
+the same way it used to be.
+
+Signed-off-by: Michael Chang <mchang@suse.com>
+Signed-off-by: Ken Lin <ken.lin@hpe.com>
+---
+ grub-core/net/drivers/efi/efinet.c | 14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
+
+diff --git a/grub-core/net/drivers/efi/efinet.c b/grub-core/net/drivers/efi/efinet.c
+index 3bea6221745..a161e7a5f26 100644
+--- a/grub-core/net/drivers/efi/efinet.c
++++ b/grub-core/net/drivers/efi/efinet.c
+@@ -475,9 +475,6 @@ grub_efinet_create_dhcp_ack_from_device_path (grub_efi_device_path_t *dp, int *u
+   grub_err_t err;
+ 
+   ddp = grub_efi_duplicate_device_path (dp);
+-  if (!ddp)
+-    return NULL;
+-
+   ldp = grub_efi_find_last_device_path (ddp);
+ 
+   if (GRUB_EFI_DEVICE_PATH_TYPE (ldp) != GRUB_EFI_MESSAGING_DEVICE_PATH_TYPE
+@@ -754,7 +751,7 @@ grub_efi_net_config_real (grub_efi_handle_t hnd, char **device,
+   {
+     grub_efi_device_path_t *cdp;
+     struct grub_efi_pxe *pxe;
+-    struct grub_efi_pxe_mode *pxe_mode;
++    struct grub_efi_pxe_mode *pxe_mode = NULL;
+     grub_uint8_t *packet_buf;
+     grub_size_t packet_bufsz ;
+     int ipv6;
+@@ -841,11 +838,10 @@ grub_efi_net_config_real (grub_efi_handle_t hnd, char **device,
+     if (ipv6)
+       {
+ 	grub_dprintf ("efinet", "using ipv6 and dhcpv6\n");
+-	grub_dprintf ("efinet", "dhcp_ack_received: %s%s\n",
+-		      pxe_mode->dhcp_ack_received ? "yes" : "no",
+-		      pxe_mode->dhcp_ack_received ? "" : " cannot continue");
+-	if (!pxe_mode->dhcp_ack_received)
+-	  continue;
++	if (pxe_mode)
++	  grub_dprintf ("efinet", "dhcp_ack_received: %s%s\n",
++			pxe_mode->dhcp_ack_received ? "yes" : "no",
++			pxe_mode->dhcp_ack_received ? "" : " cannot continue");
+ 
+ 	grub_net_configure_by_dhcpv6_reply (card->name, card, 0,
+ 					    (struct grub_net_dhcp6_packet *)

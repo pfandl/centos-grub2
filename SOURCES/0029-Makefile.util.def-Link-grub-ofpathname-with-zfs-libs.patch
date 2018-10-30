@@ -1,0 +1,35 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Mike Gilbert <floppym@gentoo.org>
+Date: Sat, 18 Jan 2014 19:41:15 +0100
+Subject: [PATCH] * Makefile.util.def: Link grub-ofpathname with zfs libs.
+
+---
+ Makefile.util.def | 2 +-
+ ChangeLog         | 4 ++++
+ 2 files changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/Makefile.util.def b/Makefile.util.def
+index 83df212f412..a286a89cd8d 100644
+--- a/Makefile.util.def
++++ b/Makefile.util.def
+@@ -384,7 +384,7 @@ program = {
+   ldadd = libgrubgcry.a;
+   ldadd = libgrubkern.a;
+   ldadd = grub-core/gnulib/libgnu.a;
+-  ldadd = '$(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBGEOM)';
++  ldadd = '$(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM)';
+ };
+ 
+ program = {
+diff --git a/ChangeLog b/ChangeLog
+index 9d1a3f051c1..edceb66dbcc 100644
+--- a/ChangeLog
++++ b/ChangeLog
+@@ -1,3 +1,7 @@
++2014-01-01  Mike Gilbert <floppym@gentoo.org>
++
++	* Makefile.util.def: Link grub-ofpathname with zfs libs.
++
+ 2014-01-18  Vladimir Serbinenko  <phcoder@gmail.com>
+ 
+ 	* grub-core/commands/macbless.c: Rename FILE and DIR to avoid

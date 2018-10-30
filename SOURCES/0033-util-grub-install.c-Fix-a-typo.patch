@@ -1,0 +1,35 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Vladimir Serbinenko <phcoder@gmail.com>
+Date: Sat, 18 Jan 2014 20:02:51 +0100
+Subject: [PATCH] * util/grub-install.c: Fix a typo.
+
+---
+ util/grub-install.c | 2 +-
+ ChangeLog           | 4 ++++
+ 2 files changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/util/grub-install.c b/util/grub-install.c
+index 4608b80fe05..5903f340a61 100644
+--- a/util/grub-install.c
++++ b/util/grub-install.c
+@@ -1259,7 +1259,7 @@ main (int argc, char *argv[])
+ 
+   if (!config.is_cryptodisk_enabled && have_cryptodisk)
+     grub_util_error (_("attempt to install to encrypted disk without cryptodisk enabled. "
+-		       "Set `%s' in file `%s'."), "GRUB_ENABLE_CRYPTODISK=1",
++		       "Set `%s' in file `%s'."), "GRUB_ENABLE_CRYPTODISK=y",
+ 		     grub_util_get_config_filename ());
+ 
+   if (disk_module && grub_strcmp (disk_module, "ata") == 0)
+diff --git a/ChangeLog b/ChangeLog
+index c84f7e7cc00..9360345efc2 100644
+--- a/ChangeLog
++++ b/ChangeLog
+@@ -1,3 +1,7 @@
++2014-01-18  Vladimir Serbinenko  <phcoder@gmail.com>
++
++	* util/grub-install.c: Fix a typo.
++
+ 2014-01-18  Vladimir Serbinenko  <phcoder@gmail.com>
+ 
+ 	* grub-core/normal/main.c (read_config_file): Buffer config file.

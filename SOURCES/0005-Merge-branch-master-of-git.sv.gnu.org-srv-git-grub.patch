@@ -1,0 +1,45 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Vladimir Serbinenko <phcoder@gmail.com>
+Date: Fri, 27 Dec 2013 11:20:37 +0100
+Subject: [PATCH] Merge branch 'master' of git.sv.gnu.org:/srv/git/grub
+
+Conflicts:
+    ChangeLog
+---
+ ChangeLog | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/ChangeLog b/ChangeLog
+index 82dc61d24c9..da3c2dfdf0a 100644
+--- a/ChangeLog
++++ b/ChangeLog
+@@ -1,19 +1,19 @@
+-2013-12-27  Colin Watson  <cjwatson@ubuntu.com>
+-
+-	* NEWS: First draft of 2.02 entry.
+-
+-2013-12-27  Colin Watson  <cjwatson@ubuntu.com>
+-
+-	* INSTALL (Cross-compiling the GRUB): Fix some spelling mistakes.
+-	* docs/grub.texi (Getting the source code): Likewise.
+-
+-2013-12-25  Vladimir Serbinenko  <phcoder@gmail.com>
++2013-12-27  Vladimir Serbinenko  <phcoder@gmail.com>
+ 
+ 	* grub-core/kern/arm/cache_armv6.S: Remove .arch directive.
+ 
+ 	As these functions are used on pre-ARMv6 CPUs as well we don't want
+ 	to make assembler assume that architecture is higher than default one.
+ 
++2013-12-27  Colin Watson  <cjwatson@ubuntu.com>
++
++	* NEWS: First draft of 2.02 entry.
++
++2013-12-27  Colin Watson  <cjwatson@ubuntu.com>
++
++	* INSTALL (Cross-compiling the GRUB): Fix some spelling mistakes.
++	* docs/grub.texi (Getting the source code): Likewise.
++
+ 2013-12-25  Andrey Borzenkov <arvidjaar@gmail.com>
+ 
+ 	* grub-core/osdep/windows/platform.c (get_platform): Fix EFI
