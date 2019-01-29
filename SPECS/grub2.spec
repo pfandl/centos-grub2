@@ -1,23 +1,12 @@
 %undefine _hardened_build
-%global flagday 1:2.02-0.76.el7.centos
+
 %global tarversion 2.02~beta2
 %undefine _missing_build_ids_terminate_build
-%define pesign_name centossecureboot001
-
-%ifarch i686
-%define platform pc
-%define legacy_package_arch i386
-%define legacy_target_cpu_name i386
-%define target_cpu_name i386
-%endif
-%ifarch x86_64
-%define mock 1
-%endif
 
 Name:           grub2
 Epoch:          1
 Version:        2.02
-Release:        0.76%{?dist}%{?buildid}
+Release:        0.76%{?dist}%{?buildid}.1
 Summary:        Bootloader with support for Linux, Multiboot and more
 Group:          System Environment/Base
 License:        GPLv3+
@@ -26,9 +15,8 @@ Source0:        ftp://alpha.gnu.org/gnu/grub/grub-%{tarversion}.tar.xz
 #Source0:	ftp://ftp.gnu.org/gnu/grub/grub-%%{tarversion}.tar.xz
 Source1:	grub.macros
 Source2:	grub.patches
-Source3:	centos-ca-secureboot.der
-Source4:	centossecureboot001.crt
-#(source removed)
+Source3:	securebootca.cer
+Source4:	secureboot.cer
 Source5:	http://unifoundry.com/unifont-5.1.20080820.pcf.gz
 Source6:	gitignore
 
@@ -70,11 +58,8 @@ BuildRequires:	pesign >= 0.99-8
 %if %{?_with_ccache: 1}%{?!_with_ccache: 0}
 BuildRequires:  ccache
 %endif
-%if 0%{?centos}
-%global efidir centos
-%endif
 
-ExcludeArch:	s390 s390x %{arm} 
+ExcludeArch:	s390 s390x %{arm} %{?ix86}
 Obsoletes:	%{name} <= %{flagday}
 
 %if 0%{with_legacy_arch}
@@ -157,11 +142,6 @@ This subpackage provides tools for support of all platforms.
 %prep
 %setup -T -c -n grub-%{tarversion}
 %do_common_setup
-sed -i.orig -e 's@/efi/EFI/redhat/@/efi/EFI/%{efidir}/@' \
-    grub-%{tarversion}/util/grub-setpassword.in
-touch --reference=grub-%{tarversion}/util/grub-setpassword.in.orig \
-    grub-%{tarversion}/util/grub-setpassword.in
-rm -f grub-%{tarversion}/util/grub-setpassword.in.orig
 %if 0%{with_efi_arch}
 %do_setup %{grubefiarch}
 %endif
@@ -174,10 +154,10 @@ rm -f grub-%{tarversion}/util/grub-setpassword.in.orig
 
 %build
 %if 0%{with_efi_arch}
-%do_primary_efi_build %{grubefiarch} %{grubefiname} %{grubeficdname} %{_target_platform} "'%{efi_cflags}'" %{SOURCE3} %{SOURCE4} %{pesign_name}
+%do_primary_efi_build %{grubefiarch} %{grubefiname} %{grubeficdname} %{_target_platform} "'%{efi_cflags}'" %{SOURCE3} %{SOURCE4} redhatsecureboot301
 %endif
 %if 0%{with_alt_efi_arch}
-%do_alt_efi_build %{grubaltefiarch} %{grubaltefiname} %{grubalteficdname} %{_alt_target_platform} "'%{alt_efi_cflags}'" %{SOURCE3} %{SOURCE4} %{pesign_name}
+%do_alt_efi_build %{grubaltefiarch} %{grubaltefiname} %{grubalteficdname} %{_alt_target_platform} "'%{alt_efi_cflags}'" %{SOURCE3} %{SOURCE4} redhatsecureboot301
 %endif
 %if 0%{with_legacy_arch}%{with_legacy_utils}
 %do_legacy_build %{grublegacyarch}
@@ -314,9 +294,6 @@ fi
 %exclude %{_bindir}/%{name}-render-label
 %exclude %{_sbindir}/%{name}-bios-setup
 %exclude %{_sbindir}/%{name}-macbless
-%endif
-%ifarch %{ix86}
-/boot/grub2/grub.cfg
 %endif
 %ifnarch x86_64
 %exclude /boot/grub2/grubenv
@@ -492,9 +469,9 @@ fi
 %endif
 
 %changelog
-* Tue Oct 30 2018 CentOS Sources <bugs@centos.org> - 2.02-0.76.el7.centos
-- Roll in CentOS Secureboot keys
-- Move the edidir to be CentOS, so people can co-install fedora, rhel and centos
+* Mon Nov 12 2018 Javier Martinez Canillas <javierm@redhat.com> - 2.02-0.76.e7_6.1
+- Re-enable regexp module
+  Resolves: rhbz#1647527
 
 * Mon Jul 30 2018 pjones <pjones@redhat.com> - 2.02.0.76
 - Fix PCIe probing in EFI UGA driver.
