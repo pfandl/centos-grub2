@@ -1,7 +1,18 @@
 %undefine _hardened_build
-
+%global flagday 1:2.02-0.76.el7.centos
 %global tarversion 2.02~beta2
 %undefine _missing_build_ids_terminate_build
+%define pesign_name centossecureboot001
+
+%ifarch i686
+%define platform pc
+%define legacy_package_arch i386
+%define legacy_target_cpu_name i386
+%define target_cpu_name i386
+%endif
+%ifarch x86_64
+%define mock 1
+%endif
 
 Name:           grub2
 Epoch:          1
@@ -15,7 +26,8 @@ Source0:        ftp://alpha.gnu.org/gnu/grub/grub-%{tarversion}.tar.xz
 #Source0:	ftp://ftp.gnu.org/gnu/grub/grub-%%{tarversion}.tar.xz
 Source1:	grub.macros
 Source2:	grub.patches
-Source3:	centos.cer
+Source3:	centos-ca-secureboot.der
+Source4:	centossecureboot001.crt
 #(source removed)
 Source5:	http://unifoundry.com/unifont-5.1.20080820.pcf.gz
 Source6:	gitignore
@@ -62,7 +74,7 @@ BuildRequires:  ccache
 %global efidir centos
 %endif
 
-ExcludeArch:	s390 s390x %{arm} %{?ix86}
+ExcludeArch:	s390 s390x %{arm} 
 Obsoletes:	%{name} <= %{flagday}
 
 %if 0%{with_legacy_arch}
@@ -145,6 +157,11 @@ This subpackage provides tools for support of all platforms.
 %prep
 %setup -T -c -n grub-%{tarversion}
 %do_common_setup
+sed -i.orig -e 's@/efi/EFI/redhat/@/efi/EFI/%{efidir}/@' \
+    grub-%{tarversion}/util/grub-setpassword.in
+touch --reference=grub-%{tarversion}/util/grub-setpassword.in.orig \
+    grub-%{tarversion}/util/grub-setpassword.in
+rm -f grub-%{tarversion}/util/grub-setpassword.in.orig
 %if 0%{with_efi_arch}
 %do_setup %{grubefiarch}
 %endif
@@ -157,10 +174,10 @@ This subpackage provides tools for support of all platforms.
 
 %build
 %if 0%{with_efi_arch}
-%do_primary_efi_build %{grubefiarch} %{grubefiname} %{grubeficdname} %{_target_platform} "'%{efi_cflags}'" %{SOURCE3} %{SOURCE4} redhatsecureboot301
+%do_primary_efi_build %{grubefiarch} %{grubefiname} %{grubeficdname} %{_target_platform} "'%{efi_cflags}'" %{SOURCE3} %{SOURCE4} %{pesign_name}
 %endif
 %if 0%{with_alt_efi_arch}
-%do_alt_efi_build %{grubaltefiarch} %{grubaltefiname} %{grubalteficdname} %{_alt_target_platform} "'%{alt_efi_cflags}'" %{SOURCE3} %{SOURCE4} redhatsecureboot301
+%do_alt_efi_build %{grubaltefiarch} %{grubaltefiname} %{grubalteficdname} %{_alt_target_platform} "'%{alt_efi_cflags}'" %{SOURCE3} %{SOURCE4} %{pesign_name}
 %endif
 %if 0%{with_legacy_arch}%{with_legacy_utils}
 %do_legacy_build %{grublegacyarch}
