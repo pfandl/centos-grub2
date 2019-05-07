@@ -25,7 +25,7 @@ Source8:	strtoull_test.c
 Source9:	20-grub.install
 Source12:	99-grub-mkconfig.install
 Source13:	securebootca.cer
-Source14:	secureboot.cer
+#(source removed)
 
 %include %{SOURCE1}
 
@@ -498,6 +498,9 @@ fi
 %endif
 
 %changelog
+* Tue May 07 2019 CentOS Sources <bugs@centos.org> - 2.02-66.el8.centos
+- Apply debranding changes
+
 * Wed Dec 19 2018 Javier Martinez Canillas <javierm@redhat.com> - 2.02-66
 - Fix grub.cfg-XXX look up when booting over TFTP
   Resolves: rhbz#1658500
