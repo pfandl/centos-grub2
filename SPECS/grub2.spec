@@ -25,7 +25,7 @@ Source8:	strtoull_test.c
 Source9:	20-grub.install
 Source12:	99-grub-mkconfig.install
 Source13:	securebootca.cer
-Source14:	secureboot.cer
+#(source removed)
 
 %include %{SOURCE1}
 
