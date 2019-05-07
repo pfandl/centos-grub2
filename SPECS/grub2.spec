@@ -498,6 +498,9 @@ fi
 %endif
 
 %changelog
+* Tue May 07 2019 CentOS Sources <bugs@centos.org> - 2.02-66.el8.centos
+- Apply debranding changes
+
 * Wed Dec 19 2018 Javier Martinez Canillas <javierm@redhat.com> - 2.02-66
 - Fix grub.cfg-XXX look up when booting over TFTP
   Resolves: rhbz#1658500
