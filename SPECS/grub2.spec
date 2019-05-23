@@ -52,7 +52,7 @@ BuildRequires:	pesign >= 0.99-8
 BuildRequires:	ccache
 %endif
 
-ExcludeArch:	s390 s390x %{arm}
+ExcludeArch:	s390 s390x
 Obsoletes:	%{name} <= %{evr}
 
 %if 0%{with_legacy_arch}
@@ -498,6 +498,9 @@ fi
 %endif
 
 %changelog
+* Thu May 23 2019 Pablo Greco <pablo@centosproject.org> - 2.02-66.el8.centos
+- Fix build on armhfp
+
 * Tue May 07 2019 CentOS Sources <bugs@centos.org> - 2.02-66.el8.centos
 - Apply debranding changes
 
