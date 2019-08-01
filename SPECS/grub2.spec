@@ -498,6 +498,9 @@ fi
 %endif
 
 %changelog
+* Wed Jul 31 2019 CentOS Sources <bugs@centos.org> - 2.02-74.el8.centos
+- Apply debranding changes
+
 * Tue Jun 04 2019 Sergio Durigan Junior <sergiodj@redhat.com> - 2.02-74
 - Use '-g' instead of '-g3' when compiling grub2.
   Related: rhbz#1653961
