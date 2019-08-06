@@ -1,23 +1,12 @@
 %undefine _hardened_build
-%global flagday 1:2.02-0.76.el7.centos
+
 %global tarversion 2.02~beta2
 %undefine _missing_build_ids_terminate_build
-%define pesign_name centossecureboot001
-
-%ifarch i686
-%define platform pc
-%define legacy_package_arch i386
-%define legacy_target_cpu_name i386
-%define target_cpu_name i386
-%endif
-%ifarch x86_64
-%define mock 1
-%endif
 
 Name:           grub2
 Epoch:          1
 Version:        2.02
-Release:        0.76%{?dist}%{?buildid}.1
+Release:        0.80%{?dist}%{?buildid}
 Summary:        Bootloader with support for Linux, Multiboot and more
 Group:          System Environment/Base
 License:        GPLv3+
@@ -26,9 +15,8 @@ Source0:        ftp://alpha.gnu.org/gnu/grub/grub-%{tarversion}.tar.xz
 #Source0:	ftp://ftp.gnu.org/gnu/grub/grub-%%{tarversion}.tar.xz
 Source1:	grub.macros
 Source2:	grub.patches
-Source3:	centos-ca-secureboot.der
-Source4:	centossecureboot001.crt
-#(source removed)
+Source3:	securebootca.cer
+Source4:	secureboot.cer
 Source5:	http://unifoundry.com/unifont-5.1.20080820.pcf.gz
 Source6:	gitignore
 
@@ -47,13 +35,6 @@ BuildRequires:  /usr/lib64/crt1.o glibc-static glibc-devel
 %else
 %ifarch x86_64
 BuildRequires:  /usr/lib64/crt1.o glibc-static(x86-64) glibc-devel(x86-64)
-# glibc32 is what will be in the buildroots, but glibc-static(x86-32) is what
-# will be in an epel-7 (i.e. centos) mock root.  I think.
-%if 0%{?centos}%{?mock}
-BuildRequires:  /usr/lib/crt1.o glibc-static(x86-32) glibc-devel(x86-32)
-%else
-BuildRequires:  /usr/lib/crt1.o glibc32
-%endif
 %else
 # ppc64 builds need the ppc crt1.o
 BuildRequires:  /usr/lib/crt1.o glibc-static glibc-devel
@@ -70,11 +51,8 @@ BuildRequires:	pesign >= 0.99-8
 %if %{?_with_ccache: 1}%{?!_with_ccache: 0}
 BuildRequires:  ccache
 %endif
-%if 0%{?centos}
-%global efidir centos
-%endif
 
-ExcludeArch:	s390 s390x %{arm} 
+ExcludeArch:	s390 s390x %{arm} %{?ix86}
 Obsoletes:	%{name} <= %{flagday}
 
 %if 0%{with_legacy_arch}
@@ -157,11 +135,6 @@ This subpackage provides tools for support of all platforms.
 %prep
 %setup -T -c -n grub-%{tarversion}
 %do_common_setup
-sed -i.orig -e 's@/efi/EFI/redhat/@/efi/EFI/%{efidir}/@' \
-    grub-%{tarversion}/util/grub-setpassword.in
-touch --reference=grub-%{tarversion}/util/grub-setpassword.in.orig \
-    grub-%{tarversion}/util/grub-setpassword.in
-rm -f grub-%{tarversion}/util/grub-setpassword.in.orig
 %if 0%{with_efi_arch}
 %do_setup %{grubefiarch}
 %endif
@@ -174,10 +147,10 @@ rm -f grub-%{tarversion}/util/grub-setpassword.in.orig
 
 %build
 %if 0%{with_efi_arch}
-%do_primary_efi_build %{grubefiarch} %{grubefiname} %{grubeficdname} %{_target_platform} "'%{efi_cflags}'" %{SOURCE3} %{SOURCE4} %{pesign_name}
+%do_primary_efi_build %{grubefiarch} %{grubefiname} %{grubeficdname} %{_target_platform} "'%{efi_cflags}'" %{SOURCE3} %{SOURCE4} redhatsecureboot301
 %endif
 %if 0%{with_alt_efi_arch}
-%do_alt_efi_build %{grubaltefiarch} %{grubaltefiname} %{grubalteficdname} %{_alt_target_platform} "'%{alt_efi_cflags}'" %{SOURCE3} %{SOURCE4} %{pesign_name}
+%do_alt_efi_build %{grubaltefiarch} %{grubaltefiname} %{grubalteficdname} %{_alt_target_platform} "'%{alt_efi_cflags}'" %{SOURCE3} %{SOURCE4} redhatsecureboot301
 %endif
 %if 0%{with_legacy_arch}%{with_legacy_utils}
 %do_legacy_build %{grublegacyarch}
@@ -336,7 +309,7 @@ fi
 %exclude /boot/%{name}/themes/system/*
 %attr(0700,root,root) %dir /boot/grub2
 %exclude /boot/grub2/*
-%dir %attr(0700,root,root)/boot/efi/EFI/%{efidir}
+%dir %verify(not mtime) %attr(0700,root,root)/boot/efi/EFI/%{efidir}
 %exclude /boot/efi/EFI/%{efidir}/*
 %license %{common_srcdir}/COPYING
 %ghost %config(noreplace) /boot/grub2/grubenv
@@ -489,13 +462,25 @@ fi
 %endif
 
 %changelog
-* Tue Jan 29 2019 CentOS Sources <bugs@centos.org> - 2.02-0.76.el7.centos.1
-- Roll in CentOS Secureboot keys
-- Move the edidir to be CentOS, so people can co-install fedora, rhel and centos
+* Wed Mar 27 2019 Javier Martinez Canillas <javierm@redhat.com> - 2.02-0.80
+- Rebuild with correct build target for signing
+  Resolves: rhbz#1693213
 
-* Mon Nov 12 2018 Javier Martinez Canillas <javierm@redhat.com> - 2.02-0.76.e7_6.1
+* Tue Mar 26 2019 Javier Martinez Canillas <javierm@redhat.com> - 2.02-0.79
+- Ignore the modification time when doing RPM verification of /boot/efi files
+  Resolves: rhbz#1496952
+
+* Wed Mar 20 2019 Javier Martinez Canillas <javierm@redhat.com> - 2.02-0.78
+- Prevent errors from diskfilter scan of removable drives
+  Resolves: rhbz#1446418
+- Avoid grub2-efi package to overwrite existing /boot/grub2/grubenv file
+  Resolves: rhbz#1497918
+- Remove glibc32 and glibc-static(x86-32) BuildRequires
+  Resolves: rhbz#1614259
+
+* Thu Oct 25 2018 Javier Martinez Canillas <javierm@redhat.com> - 2.02-0.77
 - Re-enable regexp module
-  Resolves: rhbz#1647527
+  Resolves: rhbz#1630678
 
 * Mon Jul 30 2018 pjones <pjones@redhat.com> - 2.02.0.76
 - Fix PCIe probing in EFI UGA driver.

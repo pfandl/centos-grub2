@@ -285,4 +285,5 @@ Patch0284: 0284-arm64-setjmp-Add-missing-license-macro.patch
 Patch0285: 0285-editenv-handle-relative-symlinks.patch
 Patch0286: 0286-efinet-also-use-the-firmware-acceleration-for-http.patch
 Patch0287: 0287-Make-root_url-reflect-the-protocol-hostname-of-our-b.patch
-Patch0289: 0288-efi-uga-Fix-PCIe-LER-when-GRUB2-accesses-non-enabled.patch
+Patch0288: 0288-efi-uga-Fix-PCIe-LER-when-GRUB2-accesses-non-enabled.patch
+Patch0289: 0289-efidisk-prevent-errors-from-diskfilter-scan-of-remov.patch

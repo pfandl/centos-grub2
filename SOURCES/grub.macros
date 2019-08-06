@@ -101,6 +101,16 @@
 		-e 's/-m64//g'				\\\
 	) %{nil}
 %endif
+%ifarch %{ix86}
+%global target_cpu_name %{_arch}
+%global grub_target_name %{_arch}-pc
+
+%global legacy_target_cpu_name i386
+%global legacy_package_arch pc
+%global platform pc
+
+%global with_legacy_arch 0
+%endif
 
 %ifarch aarch64
 %global efiarch aa64
@@ -151,6 +161,14 @@
 %else
 %global with_efi_common 1
 %global with_legacy_common 0
+%endif
+%ifarch %{ix86}
+%global with_efi_arch 0
+%global with_alt_efi_arch 0
+%global with_efi_common 0
+%global with_legacy_common 1
+%global with_legacy_utils 1
+%global with_legacy_arch 0
 %endif
 
 %if 0%{with_efi_common}
@@ -327,7 +345,7 @@ GRUB_MODULES="	all_video boot btrfs cat chain configfile echo	\\\
 		gzio halt hfsplus iso9660 jpeg loadenv loopback \\\
 		lvm mdraid09 mdraid1x minicmd normal part_apple \\\
 		part_msdos part_gpt password_pbkdf2 png reboot	\\\
-		search search_fs_uuid search_fs_file		\\\
+		regexp search search_fs_uuid search_fs_file	\\\
 		search_label serial sleep syslinuxcfg test tftp \\\
 		video xfs"					\
 GRUB_MODULES+=%{efi_modules}					\
@@ -472,11 +490,11 @@ cd ..								\
 %{expand:%%files %{1}}						\
 %defattr(-,root,root,-)						\
 %config(noreplace) %{_sysconfdir}/%{name}-efi.cfg		\
-%dir %attr(0700,root,root)/boot/efi/EFI/%{efidir}		\
-%attr(0700,root,root)/boot/efi/EFI/%{efidir}/%{2}		\
-%attr(0700,root,root)/boot/efi/EFI/%{efidir}/fonts		\
-%ghost %config(noreplace) %attr(0700,root,root)/boot/efi/EFI/%{efidir}/grub.cfg	\
-/boot/grub2/grubenv						\
+%verify(not mtime) %dir %attr(0700,root,root)/boot/efi/EFI/%{efidir} \
+%verify(not mtime) %attr(0700,root,root)/boot/efi/EFI/%{efidir}/%{2} \
+%verify(not mtime) %attr(0700,root,root)/boot/efi/EFI/%{efidir}/fonts \
+%ghost %config(noreplace) %verify(not mtime) %attr(0700,root,root)/boot/efi/EFI/%{efidir}/grub.cfg \
+%config(noreplace) /boot/grub2/grubenv						\
 %ghost %config(noreplace) %attr(0700,root,root)/boot/efi/EFI/%{efidir}/grubenv \
 								\
 %{expand:%%files %{1}-modules}					\
@@ -487,6 +505,6 @@ cd ..								\
 								\
 %{expand:%%files %{1}-cdboot}					\
 %defattr(-,root,root,-)						\
-%attr(0700,root,root)/boot/efi/EFI/%{efidir}/%{3}		\
-%attr(0700,root,root)/boot/efi/EFI/%{efidir}/fonts		\
+%verify(not mtime) %attr(0700,root,root)/boot/efi/EFI/%{efidir}/%{3} \
+%verify(not mtime) %attr(0700,root,root)/boot/efi/EFI/%{efidir}/fonts \
 %{nil}

@@ -1,0 +1,54 @@
+From 8f4dc1510c0f42a549b91c28eda74fe8a1e2a5d4 Mon Sep 17 00:00:00 2001
+From: Andrei Borzenkov <arvidjaar@gmail.com>
+Date: Fri, 26 Feb 2016 21:44:37 +0300
+Subject: [PATCH] efidisk: prevent errors from diskfilter scan of removable
+ drives
+
+Map EFI_NO_MEDIA to GRUB_ERR_OUT_OF_RANGE that is ignored by diskfilter. This
+actually matches pretty close (we obviously attempt to read outside of media)
+and avoids adding more error codes.
+
+This affects only internally initiated scans. If read/write from removable is
+explicitly requested, we still return an error and text explanation is more
+clear for user than generic error.
+
+Reported and tested by Andreas Loew <Andreas.Loew@gmx.net>
+---
+ grub-core/disk/efi/efidisk.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/grub-core/disk/efi/efidisk.c b/grub-core/disk/efi/efidisk.c
+index f04f20b84ff..41adc1b0421 100644
+--- a/grub-core/disk/efi/efidisk.c
++++ b/grub-core/disk/efi/efidisk.c
+@@ -575,9 +575,11 @@ grub_efidisk_read (struct grub_disk *disk, grub_disk_addr_t sector,
+ 
+   status = grub_efidisk_readwrite (disk, sector, size, buf, 0);
+ 
+-  if (status != GRUB_EFI_SUCCESS)
++  if (status == GRUB_EFI_NO_MEDIA)
++    return grub_error (GRUB_ERR_OUT_OF_RANGE, "no media in `%s'", disk->name);
++  else if (status != GRUB_EFI_SUCCESS)
+     return grub_error (GRUB_ERR_READ_ERROR,
+-		       N_("failure reading sector 0x%llx from `%s'"),
++		       "failure reading sector 0x%llx from `%s'",
+ 		       (unsigned long long) sector,
+ 		       disk->name);
+ 
+@@ -596,9 +598,11 @@ grub_efidisk_write (struct grub_disk *disk, grub_disk_addr_t sector,
+ 
+   status = grub_efidisk_readwrite (disk, sector, size, (char *) buf, 1);
+ 
+-  if (status != GRUB_EFI_SUCCESS)
++  if (status == GRUB_EFI_NO_MEDIA)
++    return grub_error (GRUB_ERR_OUT_OF_RANGE, "no media in `%s'", disk->name);
++  else if (status != GRUB_EFI_SUCCESS)
+     return grub_error (GRUB_ERR_WRITE_ERROR,
+-		       N_("failure writing sector 0x%llx to `%s'"),
++		       "failure writing sector 0x%llx to `%s'",
+ 		       (unsigned long long) sector, disk->name);
+ 
+   return GRUB_ERR_NONE;
+-- 
+2.20.1
+
