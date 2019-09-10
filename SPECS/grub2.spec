@@ -7,7 +7,7 @@
 Name:		grub2
 Epoch:		1
 Version:	2.02
-Release:	66%{?dist}
+Release:	66%{?dist}.1
 Summary:	Bootloader with support for Linux, Multiboot and more
 Group:		System Environment/Base
 License:	GPLv3+
@@ -24,8 +24,8 @@ Source6:	gitignore
 Source8:	strtoull_test.c
 Source9:	20-grub.install
 Source12:	99-grub-mkconfig.install
-Source13:      centos-ca-secureboot.der
-Source14:      centossecureboot001.crt
+Source13:	securebootca.cer
+Source14:	secureboot.cer
 
 %include %{SOURCE1}
 
@@ -52,11 +52,7 @@ BuildRequires:	pesign >= 0.99-8
 BuildRequires:	ccache
 %endif
 
-%if 0%{?centos}            
-%global efidir centos            
-%endif
-
-ExcludeArch:	s390 s390x
+ExcludeArch:	s390 s390x %{arm}
 Obsoletes:	%{name} <= %{evr}
 
 %if 0%{with_legacy_arch}
@@ -168,10 +164,10 @@ git commit -m "After making subdirs"
 
 %build
 %if 0%{with_efi_arch}
-%{expand:%do_primary_efi_build %%{grubefiarch} %%{grubefiname} %%{grubeficdname} %%{_target_platform} %%{efi_target_cflags} %%{efi_host_cflags} %{SOURCE13} %{SOURCE14} centossecureboot001}
+%{expand:%do_primary_efi_build %%{grubefiarch} %%{grubefiname} %%{grubeficdname} %%{_target_platform} %%{efi_target_cflags} %%{efi_host_cflags} %{SOURCE13} %{SOURCE14} redhatsecureboot301}
 %endif
 %if 0%{with_alt_efi_arch}
-%{expand:%do_alt_efi_build %%{grubaltefiarch} %%{grubaltefiname} %%{grubalteficdname} %%{_alt_target_platform} %%{alt_efi_target_cflags} %%{alt_efi_host_cflags} %{SOURCE13} %{SOURCE14} centossecureboot001}
+%{expand:%do_alt_efi_build %%{grubaltefiarch} %%{grubaltefiname} %%{grubalteficdname} %%{_alt_target_platform} %%{alt_efi_target_cflags} %%{alt_efi_host_cflags} %{SOURCE13} %{SOURCE14} redhatsecureboot301}
 %endif
 %if 0%{with_legacy_arch}
 %{expand:%do_legacy_build %%{grublegacyarch}}
@@ -502,15 +498,9 @@ fi
 %endif
 
 %changelog
-* Tue May 28 2019 Fabian Arrotin <arrfab@centos.org> -2.02-66.el8
-- Apply Secureboot centos certs
-- Defined efidir to centos
-
-* Thu May 23 2019 Pablo Greco <pablo@centosproject.org> - 2.02-66.el8.centos
-- Fix build on armhfp
-
-* Tue May 07 2019 CentOS Sources <bugs@centos.org> - 2.02-66.el8.centos
-- Apply debranding changes
+* Fri Aug 23 2019 Javier Martinez Canillas <javierm@redhat.com> - 2.02-66.el8_0.1
+- Include regexp module in EFI builds
+  Resolves: rhbz#1743549
 
 * Wed Dec 19 2018 Javier Martinez Canillas <javierm@redhat.com> - 2.02-66
 - Fix grub.cfg-XXX look up when booting over TFTP
