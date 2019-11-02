@@ -467,6 +467,10 @@ fi
 %endif
 
 %changelog
+* Sat Nov 02 2019 CentOS Sources <bugs@centos.org> - 2.02-0.81.el7.centos
+- Roll in CentOS Secureboot keys
+- Move the edidir to be CentOS, so people can co-install fedora, rhel and centos
+
 * Fri Sep 13 2019 Javier Martinez Canillas <javierm@redhat.com> - 2.02-0.81
 - Only make grub2-tools Obsoletes and Provides grub2-tools-efi for x86_64
   Resolves: rhbz#1748019
