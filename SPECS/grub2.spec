@@ -25,7 +25,7 @@ Source8:	strtoull_test.c
 Source9:	20-grub.install
 Source12:	99-grub-mkconfig.install
 Source13:	securebootca.cer
-Source14:	secureboot.cer
+#(source removed)
 
 %include %{SOURCE1}
 
@@ -498,6 +498,9 @@ fi
 %endif
 
 %changelog
+* Tue Nov 05 2019 CentOS Sources <bugs@centos.org> - 2.02-78.el8.centos
+- Apply debranding changes
+
 * Thu Sep 26 2019 Javier Martinez Canillas <javierm@redhat.com> - 2.02-77
 - 10_linux_bls: don't add --users option to generated menu entries
   Resolves: rhbz#1755815
