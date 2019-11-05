@@ -256,3 +256,10 @@ Patch0255: 0255-Make-grub2-mkconfig-to-honour-GRUB_CMDLINE_LINUX-in-.patch
 Patch0256: 0256-grub-boot-success.timer-Add-a-few-Conditions-for-run.patch
 Patch0257: 0257-docs-Stop-using-polkit-pkexec-for-grub-boot-success..patch
 Patch0258: 0258-Fix-the-looking-up-grub.cfg-XXX-while-tftp-booting.patch
+Patch0259: 0259-HTTP-boot-strncmp-returns-0-on-equal.patch
+Patch0260: 0260-Don-t-duplicate-net-name-string-if-not-needed.patch
+Patch0261: 0261-Try-to-set-fPIE-and-friends-on-libgnu.a.patch
+Patch0262: 0262-blscfg-fallback-to-default_kernelopts-if-BLS-option-.patch
+Patch0263: 0263-Remove-bogus-load_env-after-blscfg-command-in-10_lin.patch
+Patch0264: 0264-10_linux_bls-use-to-separate-id-argument-due-a-Petit.patch
+Patch0265: 0265-10_linux_bls-don-t-add-users-option-to-generated-men.patch

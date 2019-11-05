@@ -7,7 +7,7 @@
 Name:		grub2
 Epoch:		1
 Version:	2.02
-Release:	66%{?dist}.1
+Release:	78%{?dist}
 Summary:	Bootloader with support for Linux, Multiboot and more
 Group:		System Environment/Base
 License:	GPLv3+
@@ -24,8 +24,8 @@ Source6:	gitignore
 Source8:	strtoull_test.c
 Source9:	20-grub.install
 Source12:	99-grub-mkconfig.install
-Source13:      centos-ca-secureboot.der
-Source14:      centossecureboot001.crt
+Source13:	securebootca.cer
+Source14:	secureboot.cer
 
 %include %{SOURCE1}
 
@@ -52,11 +52,7 @@ BuildRequires:	pesign >= 0.99-8
 BuildRequires:	ccache
 %endif
 
-%if 0%{?centos}            
-%global efidir centos            
-%endif
-
-ExcludeArch:	s390 s390x
+ExcludeArch:	s390 s390x %{arm}
 Obsoletes:	%{name} <= %{evr}
 
 %if 0%{with_legacy_arch}
@@ -168,10 +164,10 @@ git commit -m "After making subdirs"
 
 %build
 %if 0%{with_efi_arch}
-%{expand:%do_primary_efi_build %%{grubefiarch} %%{grubefiname} %%{grubeficdname} %%{_target_platform} %%{efi_target_cflags} %%{efi_host_cflags} %{SOURCE13} %{SOURCE14} centossecureboot001}
+%{expand:%do_primary_efi_build %%{grubefiarch} %%{grubefiname} %%{grubeficdname} %%{_target_platform} %%{efi_target_cflags} %%{efi_host_cflags} %{SOURCE13} %{SOURCE14} redhatsecureboot301}
 %endif
 %if 0%{with_alt_efi_arch}
-%{expand:%do_alt_efi_build %%{grubaltefiarch} %%{grubaltefiname} %%{grubalteficdname} %%{_alt_target_platform} %%{alt_efi_target_cflags} %%{alt_efi_host_cflags} %{SOURCE13} %{SOURCE14} centossecureboot001}
+%{expand:%do_alt_efi_build %%{grubaltefiarch} %%{grubaltefiname} %%{grubalteficdname} %%{_alt_target_platform} %%{alt_efi_target_cflags} %%{alt_efi_host_cflags} %{SOURCE13} %{SOURCE14} redhatsecureboot301}
 %endif
 %if 0%{with_legacy_arch}
 %{expand:%do_legacy_build %%{grublegacyarch}}
@@ -502,12 +498,54 @@ fi
 %endif
 
 %changelog
-* Tue Sep 10 2019 CentOS Sources <bugs@centos.org> - 2.02-66.el8.centos.1
-- Apply debranding changes
+* Thu Sep 26 2019 Javier Martinez Canillas <javierm@redhat.com> - 2.02-77
+- 10_linux_bls: don't add --users option to generated menu entries
+  Resolves: rhbz#1755815
 
-* Fri Aug 23 2019 Javier Martinez Canillas <javierm@redhat.com> - 2.02-66.el8_0.1
+* Fri Aug 09 2019 Javier Martinez Canillas <javierm@redhat.com> - 2.02-76
 - Include regexp module in EFI builds
-  Resolves: rhbz#1743549
+  Resolves: rhbz#1737670
+
+* Wed Jun 19 2019 Javier Martinez Canillas <javierm@redhat.com> - 2.02-75
+- Fix setting default entry on ppc64le when using OPAL
+  Resolves: rhbz#1721815
+
+* Tue Jun 04 2019 Sergio Durigan Junior <sergiodj@redhat.com> - 2.02-74
+- Use '-g' instead of '-g3' when compiling grub2.
+  Related: rhbz#1653961
+
+* Wed May 29 2019 Peter Jones <pjones@redhat.com> - 2.02-73
+- Rebuild once again to try to get rpmdiff happy.
+  Related: rhbz#1653961
+
+* Mon May 27 2019 Javier Martinez Canillas <javierm@redhat.com> - 2.02-72
+- Build with the correct target
+  Related: rhbz#1653961
+
+* Fri May 24 2019 Peter Jones <pjones@redhat.com> - 2.02-71
+- Fix (a fourth time, due to a typo) how LDFLAGS works on non-efi platforms.
+  Related: rhbz#1653961
+
+* Thu May 23 2019 Peter Jones <pjones@redhat.com> - 2.02-70
+- Fix (once again) how CFLAGS and LDFLAGS propogate the settings for hardened
+  builds, because rpmdiff doesn't like the current way failing.
+  Related: rhbz#1653961
+
+* Tue May 21 2019 Javier Martinez Canillas <javierm@redhat.com> - 2.02-69
+- Enable package gating
+  Resolves: rhbz#1653961
+
+* Mon May 20 2019 Javier Martinez Canillas <javierm@redhat.com> - 2.02-68
+- Avoid grub2-efi package to overwrite existing /boot/grub2/grubenv file
+  Resolves: rhbz#1680572
+- Try to set -fPIE and friends on libgnu.a (pjones)
+- blscfg: fallback to default_kernelopts if BLS option field isn't set
+  Related: rhbz#1680572
+- Remove bogus load_env after blscfg command in 10_linux
+
+* Mon Apr 29 2019 Javier Martinez Canillas <javierm@redhat.com> - 2.02-67
+- Fix failure to request grub.cfg over HTTP
+  Resolves: rhbz#1490991
 
 * Wed Dec 19 2018 Javier Martinez Canillas <javierm@redhat.com> - 2.02-66
 - Fix grub.cfg-XXX look up when booting over TFTP
