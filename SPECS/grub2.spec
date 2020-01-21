@@ -25,7 +25,7 @@ Source8:	strtoull_test.c
 Source9:	20-grub.install
 Source12:	99-grub-mkconfig.install
 Source13:	securebootca.cer
-Source14:	secureboot.cer
+#(source removed)
 
 %include %{SOURCE1}
 
@@ -498,6 +498,9 @@ fi
 %endif
 
 %changelog
+* Tue Jan 21 2020 CentOS Sources <bugs@centos.org> - 2.02-81.el8.centos
+- Apply debranding changes
+
 * Thu Dec 05 2019 Javier Martinez Canillas <javierm@redhat.com> - 2.02-81
 - Another fix for blscfg variable expansion support
   Related: rhbz#1669252
