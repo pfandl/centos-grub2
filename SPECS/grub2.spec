@@ -7,7 +7,7 @@
 Name:		grub2
 Epoch:		1
 Version:	2.02
-Release:	74%{?dist}
+Release:	81%{?dist}
 Summary:	Bootloader with support for Linux, Multiboot and more
 Group:		System Environment/Base
 License:	GPLv3+
@@ -25,7 +25,7 @@ Source8:	strtoull_test.c
 Source9:	20-grub.install
 Source12:	99-grub-mkconfig.install
 Source13:	securebootca.cer
-#(source removed)
+Source14:	secureboot.cer
 
 %include %{SOURCE1}
 
@@ -498,8 +498,35 @@ fi
 %endif
 
 %changelog
-* Wed Jul 31 2019 CentOS Sources <bugs@centos.org> - 2.02-74.el8.centos
-- Apply debranding changes
+* Thu Dec 05 2019 Javier Martinez Canillas <javierm@redhat.com> - 2.02-81
+- Another fix for blscfg variable expansion support
+  Related: rhbz#1669252
+
+* Thu Nov 28 2019 Javier Martinez Canillas <javierm@redhat.com> - 2.02-80
+- Fix PRIxGRUB_EFI_STATUS definition
+  Related: rhbz#1761811
+- TPM: Print messages if measuraments fail as debug instead of error
+  Resolves: rhbz#1761811
+- unix/platform: Initialize variable to fix grub-install on UEFI system
+  Resolves: rhbz#1768689
+- blscfg: add a space char when appending fields for variable expansion
+  Resolves: rhbz#1669252
+
+* Fri Nov 22 2019 Javier Martinez Canillas <javierm@redhat.com> - 2.02-79
+- grub-set-bootflag: Write new env to tmpfile and then rename (hdegoede)
+  Resolves: CVE-2019-14865
+
+* Thu Sep 26 2019 Javier Martinez Canillas <javierm@redhat.com> - 2.02-77
+- 10_linux_bls: don't add --users option to generated menu entries
+  Resolves: rhbz#1755815
+
+* Fri Aug 09 2019 Javier Martinez Canillas <javierm@redhat.com> - 2.02-76
+- Include regexp module in EFI builds
+  Resolves: rhbz#1737670
+
+* Wed Jun 19 2019 Javier Martinez Canillas <javierm@redhat.com> - 2.02-75
+- Fix setting default entry on ppc64le when using OPAL
+  Resolves: rhbz#1721815
 
 * Tue Jun 04 2019 Sergio Durigan Junior <sergiodj@redhat.com> - 2.02-74
 - Use '-g' instead of '-g3' when compiling grub2.
