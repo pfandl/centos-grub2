@@ -25,7 +25,7 @@ Source8:	strtoull_test.c
 Source9:	20-grub.install
 Source12:	99-grub-mkconfig.install
 Source13:	securebootca.cer
-Source14:	secureboot.cer
+#(source removed)
 
 %include %{SOURCE1}
 
@@ -498,6 +498,9 @@ fi
 %endif
 
 %changelog
+* Tue Feb 04 2020 CentOS Sources <bugs@centos.org> - 2.02-78.el8.centos.1
+- Apply debranding changes
+
 * Tue Dec 03 2019 Javier Martinez Canillas <javierm@redhat.com> - 2.02-78.el8_1.1
 - grub-set-bootflag: Write new env to tmpfile and then rename (hdegoede)
   Resolves: CVE-2019-14865
