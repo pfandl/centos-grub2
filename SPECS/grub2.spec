@@ -7,7 +7,7 @@
 Name:		grub2
 Epoch:		1
 Version:	2.02
-Release:	78%{?dist}
+Release:	78%{?dist}.1
 Summary:	Bootloader with support for Linux, Multiboot and more
 Group:		System Environment/Base
 License:	GPLv3+
@@ -24,8 +24,8 @@ Source6:	gitignore
 Source8:	strtoull_test.c
 Source9:	20-grub.install
 Source12:	99-grub-mkconfig.install
-Source13:      centos-ca-secureboot.der
-Source14:      centossecureboot001.crt
+Source13:	securebootca.cer
+Source14:	secureboot.cer
 
 %include %{SOURCE1}
 
@@ -52,11 +52,7 @@ BuildRequires:	pesign >= 0.99-8
 BuildRequires:	ccache
 %endif
 
-%if 0%{?centos}
-%global efidir centos
-%endif
-
-ExcludeArch:	s390 s390x
+ExcludeArch:	s390 s390x %{arm}
 Obsoletes:	%{name} <= %{evr}
 
 %if 0%{with_legacy_arch}
@@ -168,10 +164,10 @@ git commit -m "After making subdirs"
 
 %build
 %if 0%{with_efi_arch}
-%{expand:%do_primary_efi_build %%{grubefiarch} %%{grubefiname} %%{grubeficdname} %%{_target_platform} %%{efi_target_cflags} %%{efi_host_cflags} %{SOURCE13} %{SOURCE14} centossecureboot001}
+%{expand:%do_primary_efi_build %%{grubefiarch} %%{grubefiname} %%{grubeficdname} %%{_target_platform} %%{efi_target_cflags} %%{efi_host_cflags} %{SOURCE13} %{SOURCE14} redhatsecureboot301}
 %endif
 %if 0%{with_alt_efi_arch}
-%{expand:%do_alt_efi_build %%{grubaltefiarch} %%{grubaltefiname} %%{grubalteficdname} %%{_alt_target_platform} %%{alt_efi_target_cflags} %%{alt_efi_host_cflags} %{SOURCE13} %{SOURCE14} centossecureboot001}
+%{expand:%do_alt_efi_build %%{grubaltefiarch} %%{grubaltefiname} %%{grubalteficdname} %%{_alt_target_platform} %%{alt_efi_target_cflags} %%{alt_efi_host_cflags} %{SOURCE13} %{SOURCE14} redhatsecureboot301}
 %endif
 %if 0%{with_legacy_arch}
 %{expand:%do_legacy_build %%{grublegacyarch}}
@@ -502,8 +498,9 @@ fi
 %endif
 
 %changelog
-* Tue Nov 05 2019 CentOS Sources <bugs@centos.org> - 2.02-78.el8.centos
-- Apply debranding changes
+* Tue Dec 03 2019 Javier Martinez Canillas <javierm@redhat.com> - 2.02-78.el8_1.1
+- grub-set-bootflag: Write new env to tmpfile and then rename (hdegoede)
+  Resolves: CVE-2019-14865
 
 * Thu Sep 26 2019 Javier Martinez Canillas <javierm@redhat.com> - 2.02-77
 - 10_linux_bls: don't add --users option to generated menu entries
