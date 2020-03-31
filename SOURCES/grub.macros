@@ -123,7 +123,7 @@
 %global efiarch ia32
 %global target_cpu_name i386
 %global grub_target_name i386-efi
-%global package_arch efi-ia32
+%global package_arch efi
 
 %global legacy_target_cpu_name i386
 %global legacy_package_arch pc
@@ -134,17 +134,11 @@
 %global efiarch x64
 %global target_cpu_name %{_arch}
 %global grub_target_name %{_arch}-efi
-%global package_arch efi-x64
+%global package_arch efi
 
 %global legacy_target_cpu_name i386
 %global legacy_package_arch pc
 %global platform pc
-
-%global alt_efi_arch ia32
-%global alt_target_cpu_name i386
-%global alt_grub_target_name i386-efi
-%global alt_platform efi
-%global alt_package_arch efi-ia32
 
 %global alt_efi_host_cflags %{expand:%%(echo %{efi_host_cflags})}
 %global alt_efi_target_cflags					\\\
@@ -158,14 +152,14 @@
 %global efiarch aa64
 %global target_cpu_name aarch64
 %global grub_target_name arm64-efi
-%global package_arch efi-aa64
+%global package_arch efi
 %endif
 
 %ifarch %{arm}
 %global efiarch arm
 %global target_cpu_name arm
 %global grub_target_name arm-efi
-%global package_arch efi-arm
+%global package_arch efi
 %global efi_target_cflags						\\\
 	%{expand:%%(echo %{optflags} |					\\\
 	%{cflags_sed}							\\\
@@ -209,7 +203,7 @@
 
 %ifarch x86_64
 %global with_efi_common 1
-%global with_legacy_modules 0
+%global with_legacy_modules 1
 %global with_legacy_common 0
 %else
 %global with_efi_common 0
@@ -240,7 +234,6 @@ This subpackage provides support for %%{1} systems.			\
 %%package %%{1}-modules							\
 Summary:	Modules used to build custom grub images		\
 Group:		System Environment/Base					\
-BuildArch:	noarch							\
 Requires:	%%{name}-common = %%{evr}				\
 %%description %%{1}-modules						\
 %%{desc}								\
@@ -270,9 +263,11 @@ Group:		System Environment/Base					\
 Requires:	efi-filesystem						\
 Requires:	%{name}-common = %{evr}					\
 Requires:	%{name}-tools-minimal >= %{evr}				\
+Requires: %{name}-%{1}-modules = %{evr}       \
 Requires:	%{name}-tools-extra = %{evr}				\
 Requires:	%{name}-tools = %{evr}					\
-Provides:	%{name}-efi = %{evr}					\
+Provides: %{name}-efi = %{evr}					\
+Obsoletes: %{name}-efi-%{efiarch} \
 %{?legacy_provides:Provides:	%{name} = %{evr}}			\
 %{-o:Obsoletes:	%{name}-efi < %{evr}}					\
 									\
@@ -285,7 +280,6 @@ This subpackage provides support for %{1} systems.			\
 %{expand:%%package %{1}-modules}					\
 Summary:	Modules used to build custom grub.efi images		\
 Group:		System Environment/Base					\
-BuildArch:	noarch							\
 Requires:	%{name}-common = %{evr}					\
 Provides:	%{name}-efi-modules = %{evr}				\
 Obsoletes:	%{name}-efi-modules < %{evr}				\
